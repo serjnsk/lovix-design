@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (imgs.length < 2) return;
     const dots = [...box.querySelectorAll('.dot')];
     const nameEl = box.querySelector('[data-muse-name]');
+    const phraseEl = box.querySelector('[data-muse-phrase]');
     let cur = Math.max(0, imgs.findIndex(i => i.classList.contains('on')));
     let timer;
 
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       imgs.forEach((im, k) => im.classList.toggle('on', k === cur));
       dots.forEach((d, k) => d.classList.toggle('on', k === cur));
       if (nameEl && imgs[cur].dataset.name) nameEl.textContent = imgs[cur].dataset.name;
+      if (phraseEl && imgs[cur].dataset.phrase) phraseEl.textContent = imgs[cur].dataset.phrase;
       restart();
     };
     const restart = () => { clearInterval(timer); timer = setInterval(() => go(cur + 1), 5000); };

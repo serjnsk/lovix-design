@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — Тарифы · V4 «VIP-спотлайт»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  .hero { text-align: center; max-width: 780px; margin: 16px auto 0; }
+  .hero .glow-word {
+    background: linear-gradient(90deg, #f0abfc, #d946ef, #f43f5e);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .seg-row { display: flex; justify-content: center; margin: 30px 0 40px; }
+
+  .spot { display: grid; grid-template-columns: .85fr 1fr 1.5fr; gap: 20px; align-items: end; }
+
+  .plan.mini { gap: 12px; padding: 20px 22px; background: rgba(16,14,16,.42); }
+  .plan.mini .plan-tag { min-height: 0; }
+  .plan.mini .price b { font-size: 1.9rem; }
+  .plan.mini .fl { gap: 8px; }
+  .plan.mini .fl li { font-size: .88rem; }
+  .plan.mini .btn { padding: .65rem 1rem; font-size: .92rem; }
+
+  .plan.mid .price b { font-size: 2.2rem; }
+
+  .plan.vip.big {
+    padding: 36px 34px 30px;
+    gap: 22px;
+    box-shadow: 0 0 90px rgba(217,70,239,.3), 0 30px 80px rgba(0,0,0,.45);
+  }
+  .plan.vip.big::after {
+    content: ""; position: absolute; inset: -60px -60px auto;
+    height: 180px;
+    background: radial-gradient(420px 160px at 50% 0, rgba(217,70,239,.28), transparent 70%);
+    pointer-events: none;
+  }
+  .vip-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+  .vip-name { font-size: 2rem; font-weight: 900; letter-spacing: .02em; }
+  .plan.vip.big .price b { font-size: 3.4rem; }
+  .vip-feats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px 22px; }
+  .vip-feats .hd { grid-column: 1 / -1; }
+  .boost {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .boost span {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(217,70,239,.13);
+    border: 1px solid rgba(217,70,239,.35);
+    color: #f0abfc; border-radius: 999px;
+    padding: 6px 12px; font-size: .8rem; font-weight: 700;
+  }
+
+  .pay-sec { margin: 46px auto 0; max-width: 980px; }
+  .note-sec { margin: 24px auto 0; max-width: 980px; text-align: center; }
+
+  @media (max-width: 1180px) {
+    .spot { grid-template-columns: 1fr 1fr; }
+    .plan.vip.big { grid-column: 1 / -1; order: -1; }
+  }
+  @media (max-width: 760px) {
+    .spot { grid-template-columns: 1fr; }
+    .vip-feats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="g-gem" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0abfc"/><stop offset="1" stop-color="#c026d3"/>
+    </linearGradient>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".55"/></symbol>
+    <symbol id="i-gem-f" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="url(#g-gem)"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z" fill="currentColor"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M1 10h22" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-crypto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 7.5h4a2 2 0 0 1 0 4h-4zm0 4h4.5a2 2 0 0 1 0 4H9.5zM10.5 5.5v2m2 0v-2m-2 12v2m2 0v-2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sb">
+  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <nav class="sb-top">
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item on"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+  </nav>
+  <nav class="sb-bottom">
+    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
+    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+  </nav>
+</aside>
+
+<div class="page">
+  <header class="tb">
+    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
+    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
+    <div class="tb-right">
+      <a class="promo">Летняя Распродажа до 75% 🔥</a>
+      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>1</i></button>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <div class="hero">
+      <h1 class="h1">Всё, на что способен <span class="glow-word">Lovix</span></h1>
+      <p class="sub">Видео, звонки, группы и лучшая нейромодель — на максимальном тарифе.</p>
+    </div>
+
+    <div class="seg-row">
+      <div class="seg" role="group" aria-label="Период подписки">
+        <button data-period="m1" class="on">1 месяц</button>
+        <button data-period="m3">3 месяца <span class="off">−10%</span></button>
+        <button data-period="y1">1 год <span class="off">−20%</span></button>
+      </div>
+    </div>
+
+    <div class="spot">
+
+      <section class="plan mini">
+        <div>
+          <div class="plan-name">Free</div>
+          <div class="plan-tag">Познакомиться с компаньонами</div>
+        </div>
+        <div>
+          <div class="price"><b>0 ₽</b></div>
+          <div class="total">навсегда бесплатно</div>
+        </div>
+        <ul class="fl">
+          <li><svg class="ic"><use href="#i-check"/></svg>5 сообщений в месяц</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Каталог компаньонов</li>
+          <li class="no"><svg class="ic"><use href="#i-minus"/></svg>Медиа и создание компаньонов</li>
+        </ul>
+        <button class="btn btn-outline btn-block">Начать бесплатно</button>
+      </section>
+
+      <section class="plan mid">
+        <div>
+          <div class="plan-name">Premium</div>
+          <div class="plan-tag">Полноценное общение и генерация фото</div>
+        </div>
+        <div>
+          <div class="price"><b><span data-pm="premium">990</span> ₽</b><span class="per">/мес</span></div>
+          <div class="total" data-total="premium">оплата раз в месяц</div>
+        </div>
+        <div class="tok">
+          <svg class="ic"><use href="#i-gem-f"/></svg>
+          <div><b>300 токенов каждый месяц</b><small>на фото и аудио</small></div>
+        </div>
+        <ul class="fl">
+          <li><svg class="ic"><use href="#i-check"/></svg>500 сообщений в день</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Создание своих компаньонов</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Генерация фото</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Аудио сообщения</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Докупка токенов пакетами</li>
+        </ul>
+        <button class="btn btn-outline btn-block">Выбрать Premium</button>
+      </section>
+
+      <section class="plan vip big">
+        <div class="flag">Максимум Lovix</div>
+        <div class="vip-head">
+          <div>
+            <div class="vip-name">VIP</div>
+            <div class="plan-tag" style="min-height:0">Без ограничений: видео, звонки и лучшая модель</div>
+          </div>
+        </div>
+        <div>
+          <div class="price"><b><span data-pm="vip">1590</span> ₽</b><span class="per">/мес</span></div>
+          <div class="total" data-total="vip">оплата раз в месяц</div>
+        </div>
+        <div class="boost">
+          <span><svg class="ic" style="width:13px;height:13px"><use href="#i-gem"/></svg>+83% токенов к Premium</span>
+          <span>токен −12%</span>
+          <span>видео и звонки</span>
+          <span>Lovix 2.0</span>
+        </div>
+        <div class="tok">
+          <svg class="ic"><use href="#i-gem-f"/></svg>
+          <div><b>550 токенов каждый месяц</b><small>токен на 12% дешевле, чем в Premium</small></div>
+        </div>
+        <ul class="fl vip-feats">
+          <li class="hd"><svg class="ic"><use href="#i-star"/></svg>Всё из Premium, плюс:</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Нейромодель Lovix 2.0</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Безлимитные сообщения</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Генерация видео</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Аудио звонки</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Групповые чаты
+            <span class="tip"><button class="q" aria-label="Что такое групповые чаты">?</button>
+              <span class="bubble">Общение с несколькими компаньонами в одном чате — они видят реплики друг друга.</span>
+            </span>
+          </li>
+        </ul>
+        <button class="btn btn-grad btn-block" style="padding:1rem 1.5rem;font-size:1.05rem">Выбрать VIP</button>
+      </section>
+
+    </div>
+
+    <div class="pay-sec">
+      <div class="pay-h">Способ оплаты:</div>
+      <div class="pay">
+        <div class="pm"><svg class="ic"><use href="#i-card"/></svg>Карта Worldwide</div>
+        <div class="pm"><svg class="ic"><use href="#i-card"/></svg>Карта RU</div>
+        <div class="pm"><svg class="ic"><use href="#i-crypto"/></svg>Криптовалюта</div>
+      </div>
+    </div>
+
+    <div class="note-sec">
+      <p class="foot-note">Токены начисляются ежемесячно и действуют в течение месячного цикла. Объём токенов одинаков при любом периоде оплаты. Купленные пакеты токенов не сгорают. Подписку можно отменить в любой момент.</p>
+    </div>
+
+  </main>
+</div>
+
+<script src="../assets/pricing.js"></script>
+</body>
+</html>

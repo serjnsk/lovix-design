@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix Design — Тарифы: 5 вариантов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  body { background: rgb(var(--page)); }
+  .wrap {
+    max-width: 1180px; margin: 0 auto; padding: 40px 24px 90px;
+    background:
+      radial-gradient(900px 380px at 60% -160px, rgba(var(--page-from), .7), transparent 70%);
+  }
+  .crumbs { display: flex; align-items: center; gap: 10px; color: rgb(var(--muted)); font-size: .9rem; margin-bottom: 30px; }
+  .crumbs a:hover { color: #fff; }
+  .crumbs .logo { font-size: 1.1rem; }
+  .crumbs .logo .ic { width: 21px; height: 21px; }
+  .head { max-width: 760px; margin-bottom: 8px; }
+  .meta-line { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 36px; }
+  .meta-chip {
+    font-size: .8rem; font-weight: 700; color: rgb(var(--muted));
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    padding: 6px 13px; border-radius: 999px;
+  }
+  .meta-chip b { color: #f0abfc; }
+
+  .vgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .vcard {
+    background: rgba(16,14,16,.55);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 1.1rem; overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .18s, border-color .18s, box-shadow .18s;
+  }
+  .vcard:hover { transform: translateY(-3px); border-color: rgba(217,70,239,.5); box-shadow: 0 18px 50px rgba(217,70,239,.14); }
+
+  /* мини-мокапы */
+  .thumb {
+    aspect-ratio: 16 / 8.6; padding: 16px 18px;
+    background: linear-gradient(180deg, rgba(37,54,107,.5), rgba(16,14,16,.4) 82%);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    display: flex; align-items: stretch; justify-content: center; gap: 6px;
+    position: relative; overflow: hidden;
+  }
+  .t-col { border-radius: 6px; background: rgba(255,255,255,.09); flex: 1; }
+  .t-acc { background: linear-gradient(160deg, rgba(217,70,239,.55), rgba(244,63,94,.4)); }
+  .t-rows { display: grid; gap: 6px; flex: 2.2; }
+  .t-row { border-radius: 6px; background: rgba(255,255,255,.09); }
+  .t-side { border-radius: 8px; flex: 1; background: linear-gradient(160deg, rgba(37,99,235,.65), rgba(147,51,234,.6)); }
+  .t-stack { display: flex; flex-direction: column; gap: 6px; flex: 1; justify-content: flex-end; }
+  .t-lines { position: absolute; inset: auto 18px 16px; display: grid; gap: 5px; }
+  .t-line { height: 5px; border-radius: 3px; background: rgba(255,255,255,.08); }
+
+  .vbody { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .vnum {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 9px;
+    background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    font-weight: 800; font-size: .95rem;
+  }
+  .vtitle { display: flex; align-items: center; gap: 12px; font-size: 1.2rem; font-weight: 800; }
+  .vdesc { color: rgb(var(--muted)); font-size: .92rem; line-height: 1.5; }
+  .vwho { font-size: .82rem; color: #f0abfc; }
+  .vlinks { margin-top: auto; padding-top: 12px; }
+
+  @media (max-width: 860px) { .vgrid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <div class="crumbs">
+    <a class="logo" href="../"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span style="color:#d946ef">X</span></b></a>
+    <span>·</span>
+    <a href="../">Lovix Design</a>
+    <span>/</span>
+    <span style="color:#fff">Страница тарифов</span>
+  </div>
+
+  <div class="head">
+    <h1 class="h1">Редизайн страницы тарифов</h1>
+    <p class="sub">Пять вариантов новой страницы под токеномику: сетка Free / Premium / VIP, периоды 1 · 3 · 12 месяцев, токены вместо кредитов. Все варианты собраны на дизайн-токенах текущего сайта lovix.ai.</p>
+  </div>
+
+  <div class="meta-line">
+    <span class="meta-chip">Сетка: <b>Free · Premium 990 ₽ · VIP 1590 ₽</b></span>
+    <span class="meta-chip">Периоды: <b>1 мес · 3 мес −10% · год −20%</b></span>
+    <span class="meta-chip">Токены: <b>300 и 550 в месяц</b></span>
+    <span class="meta-chip">Переключатель цен: <b>рабочий</b></span>
+  </div>
+
+  <div class="vgrid">
+
+    <a class="vcard" href="v1.html">
+      <div class="thumb">
+        <div class="t-col"></div>
+        <div class="t-col"></div>
+        <div class="t-col t-acc"></div>
+      </div>
+      <div class="vbody">
+        <div class="vtitle"><span class="vnum">1</span>Классика</div>
+        <div class="vdesc">Эволюция текущей страницы: знакомая композиция с хиро-заголовком, три равные карточки, токен-плашки, способы оплаты внизу. Минимальный риск для конверсии — пользователи не заметят «переезда» на новую сетку.</div>
+        <div class="vwho">Безопасный вариант по умолчанию</div>
+        <div class="vlinks"><span class="btn btn-outline btn-block">Открыть вариант →</span></div>
+      </div>
+    </a>
+
+    <a class="vcard" href="v2.html">
+      <div class="thumb">
+        <div class="t-side"></div>
+        <div class="t-rows"><div class="t-row" style="background:linear-gradient(90deg,rgba(217,70,239,.5),rgba(244,63,94,.35))"></div><div class="t-row"></div><div class="t-row"></div></div>
+      </div>
+      <div class="vbody">
+        <div class="vtitle"><span class="vnum">2</span>Эмоциональный</div>
+        <div class="vdesc">Сохраняет главную силу текущей страницы — персонажа с репликами. Слева «Алиса ждёт», справа компактные горизонтальные карточки с фичами-чипами. VIP первым в списке. Покупка как продолжение флирта.</div>
+        <div class="vwho">Для максимальной эмоциональной вовлечённости</div>
+        <div class="vlinks"><span class="btn btn-outline btn-block">Открыть вариант →</span></div>
+      </div>
+    </a>
+
+    <a class="vcard" href="v3.html">
+      <div class="thumb" style="flex-direction:column;gap:8px">
+        <div style="display:flex;gap:6px;height:34%"><div style="flex:1.2"></div><div class="t-col"></div><div class="t-col"></div><div class="t-col t-acc"></div></div>
+        <div class="t-lines" style="position:static;flex:1;display:grid;align-content:space-evenly">
+          <div class="t-line"></div><div class="t-line"></div><div class="t-line"></div><div class="t-line"></div>
+        </div>
+      </div>
+      <div class="vbody">
+        <div class="vtitle"><span class="vnum">3</span>Сравнение</div>
+        <div class="vdesc">Вся сетка возможностей в одной таблице со sticky-шапкой: цены и кнопки всегда на экране. Честно показывает разницу тарифов по группам — токены, общение, медиа. VIP-колонка подсвечена.</div>
+        <div class="vwho">Для рационального выбора и прозрачности сетки</div>
+        <div class="vlinks"><span class="btn btn-outline btn-block">Открыть вариант →</span></div>
+      </div>
+    </a>
+
+    <a class="vcard" href="v4.html">
+      <div class="thumb" style="align-items:flex-end">
+        <div class="t-col" style="height:45%"></div>
+        <div class="t-col" style="height:70%"></div>
+        <div class="t-col t-acc" style="height:100%;flex:1.5;box-shadow:0 0 30px rgba(217,70,239,.5)"></div>
+      </div>
+      <div class="vbody">
+        <div class="vtitle"><span class="vnum">4</span>VIP-спотлайт</div>
+        <div class="vdesc">Лесенка тарифов с нарастанием к большой VIP-карточке со свечением: «+83% токенов, токен −12%, видео и звонки». Free и Premium работают трамплином. Максимизирует средний чек и апгрейды.</div>
+        <div class="vwho">Для акцента на апсейл в VIP</div>
+        <div class="vlinks"><span class="btn btn-outline btn-block">Открыть вариант →</span></div>
+      </div>
+    </a>
+
+    <a class="vcard" href="v5.html">
+      <div class="thumb" style="flex-direction:column;gap:8px">
+        <div style="display:flex;gap:6px;height:26%"><div class="t-col"></div><div class="t-col"></div><div class="t-col"></div><div class="t-col"></div></div>
+        <div style="display:flex;gap:6px;flex:1"><div class="t-col"></div><div class="t-col"></div><div class="t-col t-acc"></div></div>
+        <div style="display:grid;gap:5px"><div class="t-line"></div><div class="t-line"></div></div>
+      </div>
+      <div class="vbody">
+        <div class="vtitle"><span class="vnum">5</span>Токен-центричный</div>
+        <div class="vdesc">Страница объясняет новую валюту: сверху «на что тратятся токены» (фото, аудио — Premium; видео, звонки — VIP), в карточках токены крупнее цены, внизу FAQ. Обучающий вариант для мягкого перехода с кредитов.</div>
+        <div class="vwho">Для запуска токеномики с онбордингом</div>
+        <div class="vlinks"><span class="btn btn-outline btn-block">Открыть вариант →</span></div>
+      </div>
+    </a>
+
+    <div class="vcard" style="border-style:dashed;background:transparent">
+      <div class="vbody" style="justify-content:center;align-items:center;text-align:center;min-height:220px">
+        <div class="vdesc">Исходные материалы:<br>
+          <a href="https://serjnsk.github.io/lovix-tokenomics/" style="color:#f0abfc">Документ токеномики →</a><br>
+          <a href="https://lovix.ai" style="color:#f0abfc">Текущий сайт lovix.ai →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

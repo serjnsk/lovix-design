@@ -40,11 +40,39 @@
     padding: 18px; min-height: 420px;
   }
   .muse-card::before {
-    content: ""; position: absolute; inset: 0;
+    content: ""; position: absolute; inset: 0; z-index: 1;
     background:
-      radial-gradient(180px 160px at 55% 30%, rgba(255,255,255,.14), transparent 70%),
-      radial-gradient(420px 300px at 50% 115%, rgba(16,14,16,.9), transparent 70%);
+      linear-gradient(180deg, rgba(16,14,16,.5), rgba(16,14,16,0) 20%),
+      linear-gradient(180deg, rgba(16,14,16,0) 42%, rgba(16,14,16,.45) 70%, rgba(16,14,16,.92) 100%);
   }
+
+  /* фото-слайдер */
+  .slides { position: absolute; inset: 0; z-index: 0; }
+  .slides img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: contain; object-position: bottom center;
+    opacity: 0; transition: opacity .5s ease;
+  }
+  .slides img.on { opacity: 1; }
+  .muse-ava, .bubbles, .muse-cta, .sl-dots { z-index: 2; }
+  .bubbles, .muse-cta, .sl-dots { position: relative; }
+  .sl-btn {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.3);
+    background: rgba(10,8,12,.5); backdrop-filter: blur(6px);
+    color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .2s, background .2s;
+  }
+  .sl-btn .ic { width: 14px; height: 14px; }
+  .muse-card:hover .sl-btn { opacity: 1; }
+  .sl-btn:hover { background: rgba(217,70,239,.55); }
+  .sl-prev { left: 8px; } .sl-next { right: 8px; }
+  .sl-dots { display: flex; gap: 6px; justify-content: center; margin-top: 9px; }
+  .dot { width: 6px; height: 6px; border-radius: 999px; background: rgba(255,255,255,.35); border: 0; cursor: pointer; padding: 0; transition: .2s; }
+  .dot.on { background: #fff; width: 16px; }
+  .dot:hover { background: #f0abfc; }
   .muse-ava { position: absolute; top: 18px; left: 18px; display: flex; align-items: center; gap: 10px; }
   .muse-ava .circle {
     width: 40px; height: 40px; border-radius: 50%;
@@ -185,16 +213,26 @@
 
     <div class="plans">
 
-      <aside class="muse-card">
+      <aside class="muse-card" data-muse>
+        <div class="slides">
+          <img src="../assets/img/model-1.webp" alt="Алиса" data-name="Алиса" class="on">
+          <img src="../assets/img/model-2.webp" alt="Майя" data-name="Майя">
+        </div>
+        <button class="sl-btn sl-prev" aria-label="Предыдущее фото"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="sl-btn sl-next" aria-label="Следующее фото"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
         <div class="muse-ava">
           <div class="circle"><svg class="ic"><use href="#i-heart-o"/></svg></div>
-          <div><b>Алиса</b><small>онлайн</small></div>
+          <div><b data-muse-name>Алиса</b><small>онлайн</small></div>
         </div>
         <div class="bubbles">
           <div class="bubble-msg">Хочешь поиграть со мной? 😈</div>
           <div class="bubble-msg b2">Не могу перестать думать о тебе… 😏</div>
         </div>
         <div class="muse-cta">Выбери тариф — я рядом 💕</div>
+        <div class="sl-dots">
+          <button class="dot on" aria-label="Фото 1"></button>
+          <button class="dot" aria-label="Фото 2"></button>
+        </div>
       </aside>
 
       <section class="plan">
@@ -316,5 +354,6 @@
 </div>
 
 <script src="../assets/pricing.js"></script>
+<script src="../assets/muse-slider.js"></script>
 </body>
 </html>

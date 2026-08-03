@@ -16,7 +16,34 @@
   .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
   .plan .btn { margin-top: auto; }
 
-  .pay-sec { margin: 46px auto 0; max-width: 980px; }
+  /* оплата внутри карточки */
+  .paychips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
+  .paychip {
+    width: 46px; height: 30px; border-radius: 6px;
+    background: #f4f4f8;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .paychip svg { width: 36px; height: 20px; }
+
+  /* FAQ */
+  .faq { max-width: 860px; margin: 52px auto 0; }
+  .faq h2 { font-size: 1.35rem; font-weight: 800; text-align: center; margin-bottom: 18px; }
+  .faq details {
+    background: rgba(16,14,16,.55);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: var(--r);
+    margin-bottom: 10px; overflow: hidden;
+  }
+  .faq summary {
+    list-style: none; cursor: pointer;
+    padding: 16px 20px; font-weight: 700; font-size: .98rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-size: 1.3rem; color: #e879f9; font-weight: 400; transition: transform .2s; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { padding: 0 20px 17px; color: rgb(var(--muted)); font-size: .93rem; line-height: 1.55; }
+
   .note-sec { margin: 26px auto 0; max-width: 980px; text-align: center; }
 
   @media (max-width: 980px) {
@@ -51,6 +78,11 @@
     <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z" fill="currentColor"/></symbol>
     <symbol id="i-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M1 10h22" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-crypto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 7.5h4a2 2 0 0 1 0 4h-4zm0 4h4.5a2 2 0 0 1 0 4H9.5zM10.5 5.5v2m2 0v-2m-2 12v2m2 0v-2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="p-visa" viewBox="0 0 36 20"><text x="18" y="14.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" font-style="italic" font-weight="800" fill="#1A1F71" letter-spacing=".5">VISA</text></symbol>
+    <symbol id="p-mc" viewBox="0 0 36 20"><circle cx="14" cy="10" r="7" fill="#EB001B"/><circle cx="22" cy="10" r="7" fill="#F79E1B"/><path d="M18 4.4a7 7 0 0 1 0 11.2A7 7 0 0 1 18 4.4z" fill="#FF5F00"/></symbol>
+    <symbol id="p-mir" viewBox="0 0 36 20"><text x="18" y="14" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="800" fill="#3DAE2B">МИР</text></symbol>
+    <symbol id="p-btc" viewBox="0 0 36 20"><circle cx="18" cy="10" r="8.5" fill="#F7931A"/><text x="18" y="13.8" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="800" fill="#fff">₿</text></symbol>
+    <symbol id="p-usdt" viewBox="0 0 36 20"><circle cx="18" cy="10" r="8.5" fill="#26A17B"/><text x="18" y="13.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="800" fill="#fff">₮</text></symbol>
   </defs>
 </svg>
 
@@ -142,6 +174,13 @@
           <li><svg class="ic"><use href="#i-check"/></svg>Докупка токенов пакетами</li>
         </ul>
         <button class="btn btn-outline btn-block">Выбрать Premium</button>
+        <div class="paychips" aria-label="Способы оплаты: карта Worldwide, карта RU, криптовалюта">
+          <span class="paychip" title="Visa"><svg><use href="#p-visa"/></svg></span>
+          <span class="paychip" title="Mastercard"><svg><use href="#p-mc"/></svg></span>
+          <span class="paychip" title="МИР"><svg><use href="#p-mir"/></svg></span>
+          <span class="paychip" title="Bitcoin"><svg><use href="#p-btc"/></svg></span>
+          <span class="paychip" title="USDT"><svg><use href="#p-usdt"/></svg></span>
+        </div>
       </section>
 
       <section class="plan vip">
@@ -171,17 +210,35 @@
           </li>
         </ul>
         <button class="btn btn-grad btn-block">Выбрать VIP</button>
+        <div class="paychips" aria-label="Способы оплаты: карта Worldwide, карта RU, криптовалюта">
+          <span class="paychip" title="Visa"><svg><use href="#p-visa"/></svg></span>
+          <span class="paychip" title="Mastercard"><svg><use href="#p-mc"/></svg></span>
+          <span class="paychip" title="МИР"><svg><use href="#p-mir"/></svg></span>
+          <span class="paychip" title="Bitcoin"><svg><use href="#p-btc"/></svg></span>
+          <span class="paychip" title="USDT"><svg><use href="#p-usdt"/></svg></span>
+        </div>
       </section>
 
     </div>
 
-    <div class="pay-sec">
-      <div class="pay-h">Способ оплаты:</div>
-      <div class="pay">
-        <div class="pm"><svg class="ic"><use href="#i-card"/></svg>Карта Worldwide</div>
-        <div class="pm"><svg class="ic"><use href="#i-card"/></svg>Карта RU</div>
-        <div class="pm"><svg class="ic"><use href="#i-crypto"/></svg>Криптовалюта</div>
-      </div>
+    <div class="faq">
+      <h2>Частые вопросы о токенах</h2>
+      <details>
+        <summary>Что такое токены?</summary>
+        <p>Токены — внутренняя валюта Lovix для медиа-действий: генерации фото и видео, аудио сообщений и звонков. Текстовые сообщения токены не расходуют — у них свои лимиты по тарифу.</p>
+      </details>
+      <details>
+        <summary>Сгорают ли токены?</summary>
+        <p>Тарифные токены приходят каждый месяц и действуют до конца месячного цикла. Токены, купленные пакетами, не сгорают никогда.</p>
+      </details>
+      <details>
+        <summary>Что, если токены закончатся?</summary>
+        <p>На Premium и VIP можно докупить пакет токенов в любой момент — или перейти на VIP, где токенов больше, а каждый токен дешевле.</p>
+      </details>
+      <details>
+        <summary>Меняется ли количество токенов при оплате за год?</summary>
+        <p>Нет. Объём токенов одинаков при любом периоде: 300 в месяц на Premium и 550 на VIP. Длинный период даёт скидку на цену подписки.</p>
+      </details>
     </div>
 
     <div class="note-sec">

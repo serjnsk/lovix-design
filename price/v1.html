@@ -12,7 +12,8 @@
 <style>
   .content { max-width: 1320px; padding: 30px 26px 80px; }
 
-  .layout { display: grid; grid-template-columns: 290px 1fr; gap: 26px; align-items: start; }
+  .layout { display: grid; grid-template-columns: 1fr 290px; gap: 26px; align-items: start; }
+  .layout .muse { order: 2; }   /* девушка справа, после тарифов */
 
   /* -------- панель персонажа (из v2, sticky на всю высоту) -------- */
   .muse {
@@ -131,7 +132,7 @@
 
   @media (max-width: 1150px) {
     .layout { grid-template-columns: 1fr; }
-    .muse { position: static; min-height: 280px; }
+    .muse { display: none; }
   }
   @media (max-width: 940px) {
     .plans { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; }

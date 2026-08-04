@@ -4,9 +4,9 @@
    Правило П2: цена токена падает с размером; П3: даже мелкий пакет дороже тарифного токена. */
 
 const PACKS = {
-  p100: { tok: 100, price: 390,  per: '3,90 ₽', disc: null,   hot: false },
-  p300: { tok: 300, price: 1090, per: '3,63 ₽', disc: '−7%',  hot: true  },
-  p700: { tok: 700, price: 2490, per: '3,56 ₽', disc: '−9%',  hot: false },
+  p100: { tok: 100, price: 390,  hot: false },
+  p300: { tok: 300, price: 1090, hot: true  },
+  p700: { tok: 700, price: 2490, hot: false },
 };
 const PAY_NAMES = { ru: 'Карта РФ', world: 'Карта Worldwide', crypto: 'Криптовалюта' };
 
@@ -20,14 +20,6 @@ function renderCk() {
   document.getElementById('ck-pack-name').textContent = fmtN(p.tok) + ' токенов';
   document.getElementById('ck-pack').classList.toggle('hot', p.hot);
   document.getElementById('ck-price').textContent = fmtN(p.price) + ' ₽';
-  document.getElementById('ck-per').textContent = p.per + ' за токен';
-  const saveRow = document.getElementById('ck-save-row');
-  if (p.disc) {
-    saveRow.style.display = 'flex';
-    document.getElementById('ck-save').textContent = 'токены ' + p.disc + ' к базовому';
-  } else {
-    saveRow.style.display = 'none';
-  }
   document.getElementById('ck-go').textContent = 'Перейти к оплате — ' + fmtN(p.price) + ' ₽';
   document.querySelectorAll('[data-ckpay]').forEach(o => o.classList.toggle('on', o.dataset.ckpay === ckPay));
 }

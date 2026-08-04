@@ -482,6 +482,9 @@
    CTA открывает оформление: сводка заказа, смена периода (апсейл года),
    выбор способа оплаты крупными строками, кнопка с итоговой суммой. */
 const PAY_NAMES = { ru: 'Карта РФ', world: 'Карта Worldwide', crypto: 'Криптовалюта' };
+/* Валюта привязана к способу оплаты; при смене способа подставляется
+   хардкод-прайс этой валюты (не курсовой пересчёт). */
+const PAY_CUR = { ru: 'rub', world: 'usd', crypto: 'usd' };
 const PERIOD_TOTAL_WORD = { m1: 'в месяц', m3: 'за 3 месяца', y1: 'за год' };
 const TOKENS = { premium: '300 токенов / месяц', vip: '550 токенов / месяц' };
 
@@ -492,17 +495,20 @@ let curPeriod = 'm1';   // отслеживаем глобальный пери�
 const ck = document.getElementById('ck');
 
 function renderCk() {
-  const p = PRICING[ckPlan][curPeriod];
-  document.getElementById('ck-pm').textContent = fmt(p.pm) + ' ₽/мес';
-  document.getElementById('ck-total').textContent = fmt(p.total) + ' ₽ ' + PERIOD_TOTAL_WORD[curPeriod];
+  const rub = PAY_CUR[ckPay] === 'rub';
+  const p = (rub ? PRICING : PRICING_USD)[ckPlan][curPeriod];
+  const save = (rub ? SAVE : SAVE_USD)[ckPlan][curPeriod];
+  const money = v => rub ? fmt(v) + ' ₽' : fmtUsd(v);
+  document.getElementById('ck-pm').textContent = money(p.pm) + '/мес';
+  document.getElementById('ck-total').textContent = money(p.total) + ' ' + PERIOD_TOTAL_WORD[curPeriod];
   const saveRow = document.getElementById('ck-save-row');
   if (curPeriod === 'm1') saveRow.style.display = 'none';
   else {
     saveRow.style.display = 'flex';
-    document.getElementById('ck-save').textContent = 'экономия ' + fmt(SAVE[ckPlan][curPeriod]) + ' ₽';
+    document.getElementById('ck-save').textContent = 'экономия ' + money(save);
   }
   document.getElementById('ck-tok').textContent = TOKENS[ckPlan];
-  document.getElementById('ck-go').textContent = 'Перейти к оплате — ' + fmt(p.total) + ' ₽';
+  document.getElementById('ck-go').textContent = 'Перейти к оплате — ' + money(p.total);
   document.querySelectorAll('[data-ckpay]').forEach(o => o.classList.toggle('on', o.dataset.ckpay === ckPay));
 }
 

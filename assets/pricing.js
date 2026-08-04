@@ -11,6 +11,19 @@ const SAVE = {
   premium: { m3: 300, y1: 2390 },
   vip:     { m3: 480, y1: 3820 }
 };
+
+/* Мультивалютный прайс: цены НЕ пересчитываются по курсу — у каждой валюты
+   свой хардкод с маркетинговыми значениями (цифры предварительные).
+   Валюта привязана к способу оплаты: Карта РФ → RUB, Worldwide и Крипта → USD. */
+const PRICING_USD = {
+  premium: { m1: { pm: 9.99,  total: 9.99  }, m3: { pm: 8.99,  total: 26.99  }, y1: { pm: 7.92,  total: 94.99  } },
+  vip:     { m1: { pm: 15.99, total: 15.99 }, m3: { pm: 14.39, total: 42.99  }, y1: { pm: 12.75, total: 152.99 } }
+};
+const SAVE_USD = {
+  premium: { m3: 2.98, y1: 24.89 },
+  vip:     { m3: 4.98, y1: 38.89 }
+};
+const fmtUsd = n => '$' + n.toFixed(2);
 const PERIOD_WORD = { m3: 'за 3 месяца', y1: 'за год' };
 
 const fmt = n => n.toLocaleString('ru-RU');

@@ -4,23 +4,28 @@
    Правило П2: цена токена падает с размером; П3: даже мелкий пакет дороже тарифного токена. */
 
 const PACKS = {
-  p100: { tok: 100, price: 390,  hot: false },
-  p300: { tok: 300, price: 1090, hot: true  },
-  p700: { tok: 700, price: 2490, hot: false },
+  p100: { tok: 100, price: 390,  priceUsd: 4.99,  hot: false },
+  p300: { tok: 300, price: 1090, priceUsd: 13.99, hot: true  },
+  p700: { tok: 700, price: 2490, priceUsd: 29.99, hot: false },
 };
 const PAY_NAMES = { ru: 'Карта РФ', world: 'Карта Worldwide', crypto: 'Криптовалюта' };
+/* Валюта привязана к способу оплаты; при смене способа подставляется
+   хардкод-прайс этой валюты (не курсовой пересчёт). */
+const PAY_CUR = { ru: 'rub', world: 'usd', crypto: 'usd' };
 
 let ckPack = 'p300';
 let ckPay = 'ru';   // в проде: запомненный успешный способ → иначе гео-дефолт
 
 const fmtN = n => n.toLocaleString('ru-RU');
+const fmtD = n => '$' + n.toFixed(2);
 
 function renderCk() {
   const p = PACKS[ckPack];
+  const money = PAY_CUR[ckPay] === 'rub' ? fmtN(p.price) + ' ₽' : fmtD(p.priceUsd);
   document.getElementById('ck-pack-name').textContent = fmtN(p.tok) + ' токенов';
   document.getElementById('ck-pack').classList.toggle('hot', p.hot);
-  document.getElementById('ck-price').textContent = fmtN(p.price) + ' ₽';
-  document.getElementById('ck-go').textContent = 'Перейти к оплате — ' + fmtN(p.price) + ' ₽';
+  document.getElementById('ck-price').textContent = money;
+  document.getElementById('ck-go').textContent = 'Перейти к оплате — ' + money;
   document.querySelectorAll('[data-ckpay]').forEach(o => o.classList.toggle('on', o.dataset.ckpay === ckPay));
 }
 

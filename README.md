@@ -2,7 +2,7 @@
 
 Редизайны страниц [lovix.ai](https://lovix.ai) под новую бизнес-логику.
 
-**Live:** https://serjnsk.github.io/lovix-design/
+**Live:** https://serjnsk.github.io/lovix-design/ · **Передача в вёрстку:** [HANDOFF.md](HANDOFF.md)
 
 ## Структура
 

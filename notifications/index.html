@@ -163,6 +163,59 @@
   .sw.lock { opacity: .45; cursor: not-allowed; }
   .nset .hint { color: rgb(var(--muted2)); font-size: .74rem; line-height: 1.5; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
 
+  /* -------- виджет проактива компаньона (онлайн-чат, справа-снизу) -------- */
+  .lwdock { position: fixed; right: 22px; bottom: 22px; z-index: 60; }
+  @keyframes lw-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .lw { display: flex; align-items: flex-end; gap: 10px; animation: lw-in .3s ease; }
+  .lw-bubble {
+    position: relative;
+    background: rgba(18,14,20,.94);
+    border: 1px solid rgba(217,70,239,.35);
+    backdrop-filter: blur(10px);
+    border-radius: 14px 14px 4px 14px;
+    padding: 11px 14px; max-width: 260px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  }
+  .lw-name {
+    font-size: .76rem; font-weight: 800; color: #f0abfc;
+    display: flex; align-items: center; gap: 6px; padding-right: 20px;
+  }
+  .lw-name::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+  .lw-text { font-size: .87rem; font-style: italic; margin-top: 3px; line-height: 1.35; }
+  .lw-act { margin-top: 9px; }
+  .lw-act .btn { padding: .42rem .9rem; font-size: .78rem; border-radius: .5rem; }
+  .lw-x {
+    position: absolute; top: 7px; right: 7px;
+    width: 20px; height: 20px; border-radius: 6px;
+    border: 0; background: none; color: rgb(var(--muted2)); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lw-x:hover { background: rgba(255,255,255,.08); color: #fff; }
+  .lw-x .ic { width: 11px; height: 11px; }
+  .lw-ava {
+    position: relative; width: 62px; height: 62px; flex: none;
+    border-radius: 50%; cursor: pointer;
+    background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    padding: 2.5px;
+    animation: lw-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes lw-pulse {
+    0%, 100% { box-shadow: 0 8px 30px rgba(217,70,239,.45); }
+    50%      { box-shadow: 0 8px 44px rgba(217,70,239,.8); }
+  }
+  .lw-ava .ph { position: absolute; inset: 2.5px; border-radius: 50%; overflow: hidden; background: #221a28; }
+  .lw-ava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; }
+  @media (max-width: 640px) { .lwdock { right: 12px; bottom: 12px; } .lw-bubble { max-width: 210px; } }
+
+  /* бейдж непрочитанных чатов в сайдбаре */
+  .sbcnt {
+    margin-left: auto; font-style: normal;
+    background: #ef4444; color: #fff;
+    font-size: .66rem; font-weight: 800;
+    min-width: 18px; height: 18px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center; padding: 0 5px;
+  }
+
   .toast {
     position: fixed; bottom: 130px; left: 50%;
     transform: translateX(-50%) translateY(14px);
@@ -228,7 +281,7 @@
   <nav class="sb-top">
     <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
     <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты<i class="sbcnt" id="chatcnt" style="display:none">0</i></a>
     <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
     <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
   </nav>
@@ -302,16 +355,18 @@
 
     <div class="sim">
       <b>Демо юзерфлоу</b>
-      <p>Флоу в панели: чтение · hover-действия (прочитано/непрочитано, удалить с «Вернуть») · CTA-конверсия (Д2 — кнопка становится «✓ Готово») · критичное закреплённое (У4) · настройки категорий (Д7) · «Показать ещё» · пустое состояние. Симуляция:</p>
+      <p>Флоу в панели: чтение · hover-действия (прочитано/непрочитано, удалить с «Вернуть») · CTA-конверсия (Д2 — кнопка становится «✓ Готово») · критичное закреплённое (У4) · настройки категорий (Д7) · «Показать ещё» · пустое состояние. Проактив компаньона приходит виджетом онлайн-чата справа-снизу (канал 💬, мимо колокольчика — бейдж растёт на «Мои чаты»). Симуляция:</p>
       <div class="row">
         <button class="btn btn-outline" data-sim-new>⚡ Прилетело событие</button>
         <button class="btn btn-outline" data-sim-crit>🔴 Не прошло списание (grace)</button>
+        <button class="btn btn-outline" data-sim-pro>💬 Проактив компаньона</button>
         <button class="btn btn-outline" data-sim-clear>🧹 Очистить всё</button>
       </div>
     </div>
   </main>
 </div>
 
+<div class="lwdock" id="lwdock" aria-live="polite"></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script src="../assets/notifs-data.js"></script>
@@ -323,8 +378,31 @@ let crit = null;             // критичное закреплённое (У4
 let oldLoaded = false;       // «Показать ещё»
 let lastDeleted = null;      // undo удаления
 let simId = 200;
+let chatUnread = 0;          // непрочитанные проактивы — бейдж «Мои чаты», не колокольчик
+let proIdx = 0;
 const cats = { sale: true, engage: true };
 const panel = document.getElementById('npanel');
+
+/* Виджет проактива компаньона (канал 💬: У1-4 / У2-2 / У7-1) — онлайн-чат справа-снизу.
+   В колокольчик не попадает; непрочитанное отражается бейджем на «Мои чаты».
+   Одновременно один виджет (квота канала: не чаще 1 проактива в сутки). */
+function updateChatBadge() {
+  const b = document.getElementById('chatcnt');
+  b.textContent = chatUnread;
+  b.style.display = chatUnread ? 'flex' : 'none';
+}
+function showProactive(p) {
+  const dock = document.getElementById('lwdock');
+  if (!dock.querySelector('.lw')) chatUnread++;   // замена виджета не накручивает бейдж
+  dock.innerHTML =
+    '<div class="lw"><div class="lw-bubble">' +
+    '<button class="lw-x" aria-label="Скрыть"><svg class="ic"><use href="#i-x"/></svg></button>' +
+    '<div class="lw-name">' + p.name + '</div>' +
+    '<div class="lw-text">' + p.text + '</div>' +
+    '<div class="lw-act"><button class="btn btn-grad" data-answer="' + p.name + '">Ответить</button></div>' +
+    '</div><div class="lw-ava" data-answer="' + p.name + '"><div class="ph"><img src="' + p.img + '" alt="' + p.name + '"></div></div></div>';
+  updateChatBadge();
+}
 
 const CTA_ROUTE = {
   'Пополнить токены': 'чекаут пакета токенов',
@@ -423,7 +501,26 @@ document.addEventListener('click', e => {
     if (!panel.classList.contains('open')) { panel.classList.add('open'); showView('list'); }
     return;
   }
+  if (e.target.closest('[data-sim-pro]')) {
+    showProactive(PROACTIVE[proIdx % PROACTIVE.length]);
+    proIdx++;
+    return;
+  }
   if (e.target.closest('[data-sim-clear]')) { notifs = []; oldLoaded = true; crit = null; render(); return; }
+
+  /* виджет проактива: ответить → чат; скрыть → непрочитанное остаётся в «Мои чаты» */
+  const ans = e.target.closest('[data-answer]');
+  if (ans) {
+    document.getElementById('lwdock').innerHTML = '';
+    chatUnread = Math.max(0, chatUnread - 1);
+    updateChatBadge();
+    toast('Переход в чат с <b>' + ans.dataset.answer + '</b> — проактив не расходует ваши лимиты');
+    return;
+  }
+  if (e.target.closest('.lw-x')) {
+    document.getElementById('lwdock').innerHTML = '';
+    return;
+  }
 
   /* критичное: решается только целевым действием */
   if (e.target.closest('[data-crit-cta]')) {
@@ -490,6 +587,9 @@ document.addEventListener('click', e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') panel.classList.remove('open'); });
 
 render();
+
+/* демо: контекстный проактив (У7-1) прилетает через пару секунд после входа */
+setTimeout(() => { showProactive(PROACTIVE[0]); proIdx = 1; }, 3500);
 </script>
 </body>
 </html>

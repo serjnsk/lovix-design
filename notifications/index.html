@@ -164,7 +164,26 @@
   .nset .hint { color: rgb(var(--muted2)); font-size: .74rem; line-height: 1.5; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
 
   /* -------- виджет проактива компаньона (онлайн-чат, справа-снизу) -------- */
-  .lwdock { position: fixed; right: 22px; bottom: 22px; z-index: 60; }
+  .lwdock { position: fixed; right: 22px; bottom: 22px; z-index: 60; display: flex; flex-direction: column; align-items: flex-end; }
+
+  /* стопка свёрнутых проактивов от других ботов */
+  .lw-stack { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .lw-stack .sava {
+    width: 46px; height: 46px; border-radius: 50%;
+    padding: 2px; margin-left: -10px;
+    background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    position: relative; cursor: pointer; border: 0;
+    box-shadow: 0 6px 20px rgba(0,0,0,.45);
+    transition: transform .15s;
+  }
+  .lw-stack .sava:hover { transform: translateY(-3px); }
+  .lw-stack .sava .ph { position: absolute; inset: 2px; border-radius: 50%; overflow: hidden; background: #221a28; }
+  .lw-stack .sava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; }
+  .lw-stack .sava i {
+    position: absolute; top: -2px; right: -2px; z-index: 1;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: #4ade80; border: 2px solid #17131c; font-style: normal;
+  }
   @keyframes lw-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
   .lw { display: flex; align-items: flex-end; gap: 10px; animation: lw-in .3s ease; }
   .lw-bubble {
@@ -384,24 +403,45 @@ const cats = { sale: true, engage: true };
 const panel = document.getElementById('npanel');
 
 /* Виджет проактива компаньона (канал 💬: У1-4 / У2-2 / У7-1) — онлайн-чат справа-снизу.
-   В колокольчик не попадает; непрочитанное отражается бейджем на «Мои чаты».
-   Одновременно один виджет (квота канала: не чаще 1 проактива в сутки). */
+   Отправка — не чаще 1 проактива в сутки (квота канала), но непрочитанные от РАЗНЫХ
+   компаньонов накапливаются (пользователь отсутствовал): развёрнут последний,
+   остальные — стопкой аватаров. В колокольчик не попадает; бейдж — на «Мои чаты». */
+let proStack = [];        // по одному непрочитанному проактиву на компаньона
+let proExpanded = null;   // имя развёрнутого
+
 function updateChatBadge() {
+  chatUnread = proStack.length;
   const b = document.getElementById('chatcnt');
   b.textContent = chatUnread;
   b.style.display = chatUnread ? 'flex' : 'none';
 }
-function showProactive(p) {
+function renderProactive() {
   const dock = document.getElementById('lwdock');
-  if (!dock.querySelector('.lw')) chatUnread++;   // замена виджета не накручивает бейдж
-  dock.innerHTML =
-    '<div class="lw"><div class="lw-bubble">' +
-    '<button class="lw-x" aria-label="Скрыть"><svg class="ic"><use href="#i-x"/></svg></button>' +
-    '<div class="lw-name">' + p.name + '</div>' +
-    '<div class="lw-text">' + p.text + '</div>' +
-    '<div class="lw-act"><button class="btn btn-grad" data-answer="' + p.name + '">Ответить</button></div>' +
-    '</div><div class="lw-ava" data-answer="' + p.name + '"><div class="ph"><img src="' + p.img + '" alt="' + p.name + '"></div></div></div>';
+  const exp = proStack.find(p => p.name === proExpanded);
+  let html = '';
+  if (exp) {
+    html += '<div class="lw"><div class="lw-bubble">' +
+      '<button class="lw-x" aria-label="Скрыть"><svg class="ic"><use href="#i-x"/></svg></button>' +
+      '<div class="lw-name">' + exp.name + '</div>' +
+      '<div class="lw-text">' + exp.text + '</div>' +
+      '<div class="lw-act"><button class="btn btn-grad" data-answer="' + exp.name + '">Ответить</button></div>' +
+      '</div><div class="lw-ava" data-answer="' + exp.name + '"><div class="ph"><img src="' + exp.img + '" alt="' + exp.name + '"></div></div></div>';
+  }
+  const rest = proStack.filter(p => p.name !== proExpanded);
+  if (rest.length) {
+    html += '<div class="lw-stack">' + rest.map(p =>
+      '<button class="sava" data-expand="' + p.name + '" title="' + p.name + ': ' + p.text + '">' +
+      '<span class="ph"><img src="' + p.img + '" alt="' + p.name + '"></span><i></i></button>'
+    ).join('') + '</div>';
+  }
+  dock.innerHTML = html;
   updateChatBadge();
+}
+function pushProactive(p) {
+  const ex = proStack.find(x => x.name === p.name);
+  if (ex) ex.text = p.text; else proStack.push({ ...p });
+  proExpanded = p.name;   // новый проактив разворачивается, прежние сворачиваются в стопку
+  renderProactive();
 }
 
 const CTA_ROUTE = {
@@ -502,23 +542,26 @@ document.addEventListener('click', e => {
     return;
   }
   if (e.target.closest('[data-sim-pro]')) {
-    showProactive(PROACTIVE[proIdx % PROACTIVE.length]);
+    pushProactive(PROACTIVE[proIdx % PROACTIVE.length]);
     proIdx++;
     return;
   }
   if (e.target.closest('[data-sim-clear]')) { notifs = []; oldLoaded = true; crit = null; render(); return; }
 
-  /* виджет проактива: ответить → чат; скрыть → непрочитанное остаётся в «Мои чаты» */
+  /* виджет проактива: развернуть из стопки / ответить / свернуть */
+  const expBtn = e.target.closest('[data-expand]');
+  if (expBtn) { proExpanded = expBtn.dataset.expand; renderProactive(); return; }
   const ans = e.target.closest('[data-answer]');
   if (ans) {
-    document.getElementById('lwdock').innerHTML = '';
-    chatUnread = Math.max(0, chatUnread - 1);
-    updateChatBadge();
+    proStack = proStack.filter(p => p.name !== ans.dataset.answer);
+    proExpanded = null;
+    renderProactive();
     toast('Переход в чат с <b>' + ans.dataset.answer + '</b> — проактив не расходует ваши лимиты');
     return;
   }
   if (e.target.closest('.lw-x')) {
-    document.getElementById('lwdock').innerHTML = '';
+    proExpanded = null;   // сворачивается в стопку, непрочитанное остаётся
+    renderProactive();
     return;
   }
 
@@ -588,8 +631,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') panel.classL
 
 render();
 
-/* демо: контекстный проактив (У7-1) прилетает через пару секунд после входа */
-setTimeout(() => { showProactive(PROACTIVE[0]); proIdx = 1; }, 3500);
+/* демо: накопленные за отсутствие проактивы — Алиса (позавчера) и Майя (вчера);
+   последний развёрнут, прежний в стопке */
+setTimeout(() => { pushProactive(PROACTIVE[0]); proIdx = 1; }, 2500);
+setTimeout(() => { pushProactive(PROACTIVE[1]); proIdx = 2; }, 4200);
 </script>
 </body>
 </html>

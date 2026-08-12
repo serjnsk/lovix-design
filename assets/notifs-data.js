@@ -42,6 +42,42 @@ const PROACTIVE = [
     text: 'Придумала для нас кое-что интересное 😏', time: 'вчера', unread: true },
 ];
 
+/* Критичное закреплённое уведомление — окно восстановления платежа (У4-2, день 1).
+   Закреплено сверху, не удаляется и не помечается прочитанным — снимается только оплатой. */
+const NOTIF_CRIT = {
+  id: 90, type: 'pay', kind: 'Т', cat: 'trans', scenario: 'У4-2', pinned: true,
+  title: 'Платные функции приостановлены',
+  text: 'Не получилось продлить подписку. Токены и компаньоны сохранены — всё вернётся после оплаты.',
+  timer: 'До перехода на Free — 3 дня',
+  time: 'сегодня, 09:00', unread: true, cta: 'Оплатить сейчас',
+};
+
+/* Старая история — подгружается по «Показать ещё» */
+const NOTIFS_OLD = [
+  { id: 101, type: 'tokens', kind: 'Т', cat: 'trans', scenario: 'У6-5',
+    title: 'Токены разморожены',
+    text: 'С возвращением! 180 замороженных токенов снова доступны.',
+    time: '20 июля', unread: false, cta: null },
+  { id: 102, type: 'hello', kind: 'М', cat: 'engage', scenario: 'У1-2',
+    title: 'Добро пожаловать в Lovix',
+    text: 'Выберите компаньона в каталоге и начните первый диалог.',
+    time: '18 июля', unread: false, cta: null },
+  { id: 103, type: 'news', kind: 'М', cat: 'engage', scenario: 'промо',
+    title: 'Знакомьтесь: групповые чаты',
+    text: 'Общайтесь с несколькими компаньонами в одном чате на VIP.',
+    time: '15 июля', unread: false, cta: null },
+];
+
+/* Пул для симуляции прилёта в реальном времени */
+const SIM_POOL = [
+  { type: 'fail', kind: 'Т', cat: 'trans', scenario: 'У3-7',
+    title: 'Сбой аудио сообщения', text: 'Не получилось отправить аудио — 8 токенов вернулись на баланс.', cta: 'Попробовать снова' },
+  { type: 'tokens', kind: 'М', cat: 'sale', scenario: 'У2-7',
+    title: 'Токены на исходе', text: 'Осталось 24 из 300 токенов месячного транша.', cta: 'Пополнить токены' },
+  { type: 'hello', kind: 'Т', cat: 'trans', scenario: 'У3-5',
+    title: 'VIP включён', text: 'Апгрейд прошёл: 550 токенов в месяц, зачёт 340 ₽ за остаток Premium.', cta: null },
+];
+
 /* Иконка и цветовой класс по типу события */
 const NICON  = { tokens: 'i-gem',  expire: 'i-gem',  limit: 'i-chat', fail: 'i-alert', pay: 'i-card', hello: 'i-heart-o', news: 'i-mega' };
 const NCLASS = { tokens: 'nc-tok', expire: 'nc-tok', limit: 'nc-lim', fail: 'nc-fail', pay: 'nc-pay', hello: 'nc-hello',  news: 'nc-news' };

@@ -1167,11 +1167,11 @@ function renderProfile() {
   let media;
   if (!M.length) {
     media = `<div class="mempty">Фото и видео из диалога появятся здесь</div>`;
-  } else if (M.length <= 6) {
+  } else if (M.length <= 3) {
     media = `<div class="mgrid">${M.map((m, i) => miTile(m, i)).join('')}</div>`;
   } else {
-    media = `<div class="mgrid">${M.slice(0, 5).map((m, i) => miTile(m, i)).join('')}
-      <button class="mi" data-mall title="Показать все медиа"><img src="${M[5].img}" alt=""><span class="ov">+${M.length - 5}</span></button></div>`;
+    media = `<div class="mgrid">${M.slice(0, 2).map((m, i) => miTile(m, i)).join('')}
+      <button class="mi" data-mall title="Показать все медиа"><img src="${M[2].img}" alt=""><span class="ov">+${M.length - 2}</span></button></div>`;
   }
   const btns = b.own
     ? `<button class="btn btn-outline" data-act="regen"><svg class="ic" style="width:15px;height:15px"><use href="#i-refresh"/></svg> Перегенерировать профиль</button>

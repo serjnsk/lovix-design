@@ -270,7 +270,7 @@
   .payw .pw-h { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: .95rem; }
   .payw .pw-h .ic { width: 17px; height: 17px; color: #fbbf24; }
   .payw p { color: rgb(var(--muted)); font-size: .84rem; margin-top: 5px; line-height: 1.5; }
-  .payw .row { display: flex; gap: 9px; margin-top: 13px; }
+  .payw .row { display: flex; gap: 9px; margin-top: 13px; flex-wrap: wrap; }
   .payw .btn { padding: .55rem 1.1rem; font-size: .85rem; }
 
   /* печатает… */
@@ -358,6 +358,80 @@
   .send:hover { filter: brightness(1.12); }
   .send .ic { width: 19px; height: 19px; }
 
+  /* кнопка «Фото» у инпута + шеврон раскрытия остальных запросов */
+  .mediabtn {
+    height: 44px; flex: none; cursor: pointer;
+    display: flex; align-items: center; gap: 7px;
+    padding: 0 14px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.03);
+    color: #fff; font-family: inherit; font-weight: 700; font-size: .85rem;
+  }
+  .mediabtn:hover { background: rgba(217,70,239,.14); border-color: rgba(217,70,239,.4); }
+  .mediabtn .ic { width: 16px; height: 16px; color: #e879f9; }
+  .mediabtn .pr { display: flex; align-items: center; gap: 3px; font-size: .74rem; font-weight: 800; color: #f0abfc; }
+  .mediabtn .pr .ic { width: 11px; height: 11px; }
+  #morebtn .ic { transform: rotate(180deg); }
+
+  /* режим запроса медиа в инпуте */
+  .reqchip {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 7px; padding: 8px 11px;
+    border: 1px solid rgba(217,70,239,.4); border-radius: 11px;
+    background: rgba(217,70,239,.1);
+    font-size: .8rem; font-weight: 700;
+    animation: mIn .18s ease;
+  }
+  .reqchip[hidden] { display: none; }
+  .reqchip .ic { width: 15px; height: 15px; color: #e879f9; flex: none; }
+  .reqchip .pr { display: flex; align-items: center; gap: 3px; color: #f0abfc; font-weight: 800; font-size: .76rem; }
+  .reqchip .pr .ic { width: 11px; height: 11px; }
+  .reqchip small { color: rgb(var(--muted)); font-weight: 600; }
+  .reqchip .rx {
+    margin-left: auto; border: 0; background: none; cursor: pointer; color: rgb(var(--muted));
+    width: 22px; height: 22px; border-radius: 50%; flex: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .reqchip .rx:hover { color: #fff; background: rgba(255,255,255,.1); }
+  .reqchip .rx .ic { width: 12px; height: 12px; color: currentColor; }
+
+  /* сообщение-запрос медиа */
+  .reqhead {
+    display: flex; align-items: center; gap: 6px;
+    font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+    color: rgba(255,255,255,.87); margin-bottom: 5px;
+  }
+  .reqhead .ic { width: 13px; height: 13px; }
+
+  /* видео-сообщение (VIP) */
+  .bub.mvid { padding: 6px; }
+  .vidbox {
+    width: 300px; max-width: 100%; height: 190px; border-radius: 12px;
+    overflow: hidden; position: relative; cursor: pointer;
+    background: linear-gradient(165deg, #4c1d95, #1e1033);
+  }
+  .vidbox img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 10%; filter: blur(16px) brightness(.6); transform: scale(1.15); }
+  .vidbox .lockc {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+  }
+  .vidbox .plc {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: rgba(0,0,0,.45); border: 1.5px solid rgba(255,255,255,.35);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .vidbox .plc .ic { width: 18px; height: 18px; }
+  .vidbox .lockc small { font-size: .74rem; font-weight: 700; color: rgba(255,255,255,.92); }
+  .vidbox .vtag {
+    position: absolute; top: 9px; right: 9px; z-index: 2;
+    font-size: .6rem; font-weight: 800; color: #fff;
+    background: linear-gradient(90deg, #f59e0b, #f43f5e); border-radius: 999px; padding: 2.5px 8px;
+  }
+  .vidbox .vdur { position: absolute; left: 10px; bottom: 8px; z-index: 2; font-size: .72rem; font-weight: 700; color: rgba(255,255,255,.85); }
+
+  /* фото-бабл без снимка (у ботов без фото) */
+  .phbox.noimg { display: flex; align-items: center; justify-content: center; cursor: default; height: 190px; }
+  .phbox.noimg .phn { width: 44px; height: 44px; color: rgba(255,255,255,.6); }
+
   /* поповеры инпута */
   .pop {
     position: absolute; bottom: calc(100% + 10px); left: 16px; width: 292px;
@@ -409,6 +483,10 @@
     content: ""; position: absolute; inset: auto 0 0; height: 70px;
     background: linear-gradient(180deg, transparent, rgba(10,9,11,.85));
   }
+  .cp-photo.ph-init { display: flex; align-items: center; justify-content: center; cursor: default; }
+  .cp-photo.ph-init span { font-size: 4.2rem; font-weight: 800; color: #efe3ff; }
+  .cp-photo.ph-init .big { width: 78px; height: 78px; color: #fff; }
+  .cp-photo.ph-init.pinkbg { background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
   .cp-body { padding: 14px 18px 22px; display: grid; gap: 15px; }
   .cp-name { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .mybadge {
@@ -479,7 +557,7 @@
   @media (max-width: 1000px) { .cl { display: none; } }
 
   /* ============ V5 «Панель действий»: медиа-фичи на виду ============ */
-  #plusbtn { display: none; }
+  #photobtn, #morebtn, #zapbtn { display: none; }
   .quickbar {
     display: flex; gap: 8px; flex-wrap: wrap;
     padding: 10px 18px 0; position: relative; z-index: 6;
@@ -575,7 +653,7 @@
   <header class="tb">
     <a class="logo" href="../"><svg class="ic"><use href="#i-logo"/></svg><b>LOVI<span>X</span></b></a>
     <div class="tb-right">
-      <div class="balance" id="balw"><svg class="ic"><use href="#i-gem"/></svg><b id="bal">210</b></div>
+      <div class="balance" id="balw"><svg class="ic"><use href="#i-gem"/></svg><b id="bal">90</b></div>
       <button class="subact"><svg class="ic"><use href="#i-crown"/></svg> Подписка активна</button>
       <button class="bell" id="bellbtn" title="Уведомления"><svg class="ic"><use href="#i-bell"/></svg></button>
       <div class="avatar">S</div>
@@ -623,25 +701,25 @@
       </div>
 
       <div class="inbar">
-        <button class="inbtn" id="plusbtn" title="Попросить медиа"><svg class="ic"><use href="#i-plus"/></svg></button>
+        <button class="mediabtn" id="photobtn" title="Попросить фото — опишите, какое хотите">
+          <svg class="ic"><use href="#i-img"/></svg> Фото
+          <span class="pr">25 <svg class="ic"><use href="#i-gem"/></svg></span>
+        </button>
+        <button class="inbtn" id="morebtn" title="Ещё запросы: голосовое, видео"><svg class="ic"><use href="#i-chev"/></svg></button>
         <div class="infield">
           <span class="cnt" id="cnt"></span>
+          <div class="reqchip" id="reqchip" hidden></div>
           <textarea id="msg" rows="1" maxlength="1000" placeholder="Сообщение…"></textarea>
         </div>
         <button class="inbtn" id="zapbtn" title="Не знаете, о чём поговорить? Сценарии"><svg class="ic"><use href="#i-zap"/></svg></button>
         <button class="send" id="sendbtn" title="Отправить"><svg class="ic"><use href="#i-send"/></svg></button>
 
-        <!-- меню медиа-запросов -->
+        <!-- остальные медиа-запросы (раскрываются шевроном) -->
         <div class="pop" id="pop-plus">
           <div class="ph4">Попросить у компаньона</div>
-          <button class="pi" data-req="photo">
-            <svg class="ic"><use href="#i-img"/></svg>
-            <span><b>Фото</b><small>снимок по вашему запросу</small></span>
-            <span class="pr">25 <svg class="ic"><use href="#i-gem"/></svg></span>
-          </button>
           <button class="pi" data-req="voice">
             <svg class="ic"><use href="#i-mic"/></svg>
-            <span><b>Голосовое</b><small>ответит голосом</small></span>
+            <span><b>Голосовое</b><small>скажет голосом — о чём попросите</small></span>
             <span class="pr">15 <svg class="ic"><use href="#i-gem"/></svg></span>
           </button>
           <button class="pi" data-req="video">
@@ -685,7 +763,7 @@ const md  = t => esc(t).replace(/\*([^*]+)\*/g, '<i class="rp-act">$1</i>');
 const gemI = '<svg class="ic"><use href="#i-gem"/></svg>';
 
 /* ---------- баланс ---------- */
-let balance = 210;
+let balance = 90;
 function charge(n, why) {
   balance -= n;
   $('#bal').textContent = balance;
@@ -756,6 +834,12 @@ const POOL = {
 const CAPS = ['Специально для тебя 💜', 'Только между нами… 😘', 'Как тебе такой ракурс? 😏'];
 const VOICE_TR = '*лёгкий смех, шёпот в микрофон* Ммм… ты такой нетерпеливый… *тихий вздох* Хочешь услышать, как я шепчу тебе на ушко?';
 
+/* медиа-запросы: клик не отправляет сразу — включает режим описания в инпуте */
+const REQ = {
+  photo: { icon: 'i-img', label: 'Запрос фото', price: 25, ph: 'Опишите, какое фото хотите получить…', why: 'фото от компаньона' },
+  voice: { icon: 'i-mic', label: 'Запрос голосового', price: 15, ph: 'О чём рассказать голосом? Опишите…', why: 'голосовое от компаньона' },
+};
+
 const FICONS = {
   'Личность': 'i-spark', 'Отношение к тебе': 'i-heartS', 'Профессия': 'i-brief',
   'Хобби': 'i-game', 'Фетиши': 'i-heartS', 'Рост': 'i-ruler',
@@ -776,11 +860,13 @@ const BOTS = {
     msgs: [
       { dv: 'Вчера' },
       { from: 'bot', kind: 'text', text: '*Ставлю рейд на паузу — фиолетовый свет мягко обволакивает комнату* Этот тихий вечер с тобой — как раз то, что нужно на ночь глядя…', time: '21:53' },
-      { from: 'me', kind: 'text', text: 'Как прошёл твой стрим? 😏', time: '21:59' },
-      { from: 'bot', kind: 'photo', img: IMG1, cap: 'Специально для тебя 💜', time: '22:04' },
+      { from: 'me', kind: 'text', text: 'Как прошёл твой стрим? 😏', time: '21:58' },
+      { from: 'me', kind: 'req', req: 'photo', text: 'в косплее со стрима, с двумя хвостиками', time: '21:59' },
+      { from: 'bot', kind: 'photo', img: IMG1, cap: 'Специально для тебя 💜', time: '22:00' },
       { dv: 'Сегодня' },
-      { from: 'me', kind: 'text', text: 'пришли голосовое', time: '14:58' },
+      { from: 'me', kind: 'req', req: 'voice', text: 'расскажи шёпотом, что делаешь вечером', time: '14:58' },
       { from: 'bot', kind: 'voice', tr: VOICE_TR, dur: 10, time: '14:58' },
+      { from: 'bot', kind: 'video', img: IMG1, dur: '0:24', time: '15:02' },
       { from: 'me', kind: 'text', text: 'а что ты сейчас делаешь?', time: '15:41' },
       { from: 'bot', kind: 'err', time: '15:41' },
     ],
@@ -798,49 +884,78 @@ const BOTS = {
   },
 };
 
+/* остальные чаты списка — «новые»: одно приветствие + развёрнутые сценарии */
+const STUBS = [
+  ['elena', 'Елена', 24, 'Е', 'Эти огни обволакивают город… идеальный вечер, чтобы написать тебе 🌆', 'Мечтательная'],
+  ['gr', 'gr', 25, 'G', 'Привет! Рада познакомиться! Я пока учусь быть собой — задай тон нашему общению 😊', 'Загадочная', 'own'],
+  ['lara', 'Лариса', 39, 'Л', 'Привет! Меня зовут Лариса. Рада познакомиться! 👋', 'Добрая и заботливая'],
+  ['iskra', 'Искра', 22, 'И', 'Закат льётся сквозь окно, и я подумала о тебе…', 'Романтичная'],
+  ['inna', 'Инна', 27, 'И', 'Только что откинулась в кресле после пробежки. Чем занят? 🏃‍♀️', 'Энергичная'],
+  ['nika', 'Ника', 23, 'Н', 'Собиралась закрыть ноутбук, но увидела тебя онлайн 😉', 'Игривая'],
+  ['rada', 'Рада', 21, 'Р', 'Привет! Меня зовут Рада. Рада познакомиться! 💜', 'Нежная', 'isbot'],
+  ['eva', 'Ева', 26, 'Е', 'Привет! Меня зовут Ева. С чего начнём наш вечер? ✨', 'Смелая', 'isbot'],
+];
+STUBS.forEach(([id, name, age, init, greet, trait, flag]) => {
+  BOTS[id] = {
+    id, name, age, img: null, init,
+    isbot: flag === 'isbot', own: flag === 'own', catalog: flag !== 'own',
+    mode: 'chat', empty: true,
+    bio: flag === 'own'
+      ? 'Создана вами. Начните диалог — характер и стиль общения подстроятся под вас.'
+      : 'Компаньон из каталога Lovix. Начните диалог — она подстроится под ваш стиль общения и запомнит детали.',
+    facts: [['Личность', trait]],
+    media: [],
+    msgs: [{ dv: 'Вчера' }, { from: 'bot', kind: 'text', text: greet, time: '20:12' }],
+  };
+});
+
 const LIST = [
-  { id: 'alex', t: '5м', unr: 0 },
-  { id: 'elena', name: 'Елена', t: '37м', prev: 'Эти огни обволакивают город…', unr: 1, init: 'Е' },
+  { id: 'alex', t: '5м' },
+  { id: 'elena', t: '37м', unr: 1 },
   { id: 'pers', t: '21ч' },
-  { id: 'gr', name: 'gr', t: 'вчера', prev: 'Привет! Рада познакомиться!', init: 'G' },
-  { id: 'lara', name: 'Лариса', t: 'вчера', prev: 'Привет! Меня зовут Лариса…', init: 'Л' },
-  { id: 'iskra', name: 'Искра', t: 'вчера', prev: 'Закат льётся сквозь окно…', init: 'И' },
-  { id: 'inna', name: 'Инна', t: '4д', prev: 'Только что откинулась в кресле…', init: 'И' },
-  { id: 'nika', name: 'Ника', t: '5д', prev: 'Собиралась закрыть ноутбук…', init: 'Н' },
-  { id: 'rada', name: 'Рада', t: '5д', prev: 'Привет! Меня зовут Рада…', bot: true },
-  { id: 'eva', name: 'Ева', t: '5д', prev: 'Привет! Меня зовут Ева…', bot: true },
+  { id: 'gr', t: 'вчера' },
+  { id: 'lara', t: 'вчера' },
+  { id: 'iskra', t: 'вчера' },
+  { id: 'inna', t: '4д' },
+  { id: 'nika', t: '5д' },
+  { id: 'rada', t: '5д' },
+  { id: 'eva', t: '5д' },
 ];
 
 let cur = null;          // текущий бот
 let poolIdx = 0;
 
 /* ---------- список чатов ---------- */
-function avaHtml(item) {
-  if (item.img) return `<div class="ava"><div class="ph"><img src="${item.img}" alt=""></div>${item.online ? '<i class="dot"></i>' : ''}</div>`;
-  if (item.bot) return `<div class="ava pinkbot"><span class="init"><svg class="ic"><use href="#i-bot"/></svg></span></div>`;
-  return `<div class="ava"><span class="init">${item.init || '•'}</span></div>`;
+function avaHtml(b) {
+  if (b.img) return `<div class="ava"><div class="ph"><img src="${b.img}" alt=""></div><i class="dot"></i></div>`;
+  if (b.isbot) return `<div class="ava pinkbot"><span class="init"><svg class="ic"><use href="#i-bot"/></svg></span><i class="dot"></i></div>`;
+  return `<div class="ava"><span class="init">${b.init || '•'}</span><i class="dot"></i></div>`;
+}
+function prevText(b) {
+  const last = [...b.msgs].reverse().find(m => m.from);
+  if (!last) return '';
+  if (last.kind === 'text') return last.text.replace(/\*[^*]*\*\s*/g, '');
+  if (last.kind === 'photo') return '📷 Фото';
+  if (last.kind === 'voice') return '🎤 Голосовое';
+  if (last.kind === 'video') return '🎬 Видео';
+  if (last.kind === 'req') return (last.req === 'photo' ? '📷 ' : '🎤 ') + last.text;
+  return 'Сообщение';
 }
 function renderList() {
   $('#cllist').innerHTML = LIST.map(li => {
     const b = BOTS[li.id];
-    const name = b ? b.name : li.name;
-    const last = b ? [...b.msgs].reverse().find(m => m.from) : null;
-    const prev = b ? (last.kind === 'text' ? last.text.replace(/\*[^*]*\*\s*/g, '') : last.kind === 'photo' ? '📷 Фото' : last.kind === 'voice' ? '🎤 Голосовое' : 'Сообщение') : li.prev;
-    return `<div class="ci ${cur && li.id === cur.id ? 'on' : ''}" data-id="${li.id}" data-name="${name.toLowerCase()}">
-      ${avaHtml({ img: b?.img, online: !!b, bot: li.bot, init: li.init })}
+    return `<div class="ci ${cur && li.id === cur.id ? 'on' : ''}" data-id="${li.id}" data-name="${b.name.toLowerCase()}">
+      ${avaHtml(b)}
       <div class="ci-mid">
-        <div class="ci-r1"><b>${name}</b><small>${li.t}</small></div>
-        <div class="ci-r2"><p>${esc(prev)}</p>${li.unr ? `<span class="unr">${li.unr}</span>` : ''}</div>
+        <div class="ci-r1"><b>${b.name}</b><small>${li.t}</small></div>
+        <div class="ci-r2"><p>${esc(prevText(b))}</p>${li.unr ? `<span class="unr">${li.unr}</span>` : ''}</div>
       </div>
     </div>`;
   }).join('');
 }
 $('#cllist').addEventListener('click', e => {
   const ci = e.target.closest('.ci');
-  if (!ci) return;
-  const b = BOTS[ci.dataset.id];
-  if (!b) { toast('В демо кликабельны <b>Александра</b> и <b>Персональный бот</b>'); return; }
-  openChat(b.id);
+  if (ci) openChat(ci.dataset.id);
 });
 $('#clq').addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase();
@@ -860,10 +975,30 @@ function msgNode(m) {
         ? `<button class="spk" data-tip="Озвучить · 47 токенов"><svg class="ic"><use href="#i-vol"/></svg></button><span>${t}</span>`
         : `<span>${t}</span>`}</div>`;
   }
+  if (m.kind === 'req') {
+    const r = REQ[m.req];
+    el.innerHTML = `<div class="bub">
+        <div class="reqhead"><svg class="ic"><use href="#${r.icon}"/></svg> ${r.label} · ${r.price} ${gemI}</div>
+        ${md(m.text)}
+      </div><div class="meta"><span>${t}</span></div>`;
+  }
   if (m.kind === 'photo') {
+    const box = m.img
+      ? `<div class="phbox" data-lb="${m.img}"><img src="${m.img}" alt=""></div>`
+      : `<div class="phbox noimg"><svg class="phn"><use href="#i-img"/></svg></div>`;
     el.innerHTML = `<div class="bub mph">
-        <div class="phbox" data-lb="${m.img}"><img src="${m.img}" alt=""></div>
+        ${box}
         ${m.cap ? `<div class="cap">${md(m.cap)}</div>` : ''}
+      </div><div class="meta"><span>${t}</span></div>`;
+  }
+  if (m.kind === 'video') {
+    el.innerHTML = `<div class="bub mvid">
+        <div class="vidbox" data-vip>
+          ${m.img ? `<img src="${m.img}" alt="">` : ''}
+          <span class="vtag">VIP</span>
+          <div class="lockc"><span class="plc"><svg class="ic"><use href="#i-play"/></svg></span><small>Видео доступно на VIP</small></div>
+          <span class="vdur">${m.dur}</span>
+        </div>
       </div><div class="meta"><span>${t}</span></div>`;
   }
   if (m.kind === 'voice') {
@@ -945,7 +1080,12 @@ function openChat(id) {
   poolIdx = 0;
 
   // шапка
-  $('#h-ava').outerHTML = `<div class="ava" id="h-ava"><div class="ph"><img src="${cur.img}" alt=""></div><i class="dot"></i></div>`;
+  const inner = cur.img
+    ? `<div class="ph"><img src="${cur.img}" alt=""></div>`
+    : cur.isbot
+      ? `<span class="init"><svg class="ic"><use href="#i-bot"/></svg></span>`
+      : `<span class="init">${cur.init}</span>`;
+  $('#h-ava').outerHTML = `<div class="ava ${cur.isbot ? 'pinkbot' : ''}" id="h-ava">${inner}<i class="dot"></i></div>`;
   $('#h-name').textContent = cur.name;
   setMode(cur.mode, true);
 
@@ -957,7 +1097,7 @@ function openChat(id) {
 
   renderProfile();
   renderList();
-  $('#msg').value = ''; autoSize();
+  $('#msg').value = ''; autoSize(); cancelReq();
 }
 
 /* ---------- режим общения ---------- */
@@ -994,17 +1134,21 @@ function renderProfile() {
        <button class="btn btn-outline" data-act="edit"><svg class="ic" style="width:15px;height:15px"><use href="#i-edit"/></svg> Редактировать</button>`
     : `<button class="btn btn-outline" data-act="profile"><svg class="ic" style="width:15px;height:15px"><use href="#i-user"/></svg> Профиль бота</button>`;
 
+  const photo = b.img
+    ? `<div class="cp-photo" data-lb="${b.img}"><img src="${b.img}" alt=""></div>`
+    : `<div class="cp-photo ph-init ${b.isbot ? 'pinkbg' : ''}">${b.isbot ? '<svg class="big"><use href="#i-bot"/></svg>' : `<span>${b.init}</span>`}</div>`;
+
   $('#cp').innerHTML = `
-    <div class="cp-photo" data-lb="${b.img}"><img src="${b.img}" alt=""></div>
+    ${photo}
     <div class="cp-body">
       <div class="cp-name">${b.name}, ${b.age} ${b.own ? '<span class="mybadge">Мой бот</span>' : ''}</div>
+      <div class="cp-sec">Медиа чата</div>
+      ${media}
+      <div class="btns">${btns}</div>
       <p class="cp-bio clip" id="bio">${b.bio}</p>
       <button class="morelnk" id="biomore">читать далее</button>
       <div class="cp-sec">Обо мне</div>
       <div class="facts">${facts}</div>
-      <div class="cp-sec">Медиа чата</div>
-      ${media}
-      <div class="btns">${btns}</div>
     </div>`;
 
   const bio = $('#bio'), more = $('#biomore');
@@ -1039,11 +1183,66 @@ $('#sendbtn').addEventListener('click', send);
 function send() {
   const v = ta.value.trim();
   if (!v) return;
+  if (reqMode) { sendReq(reqMode, v); return; }
   ta.value = ''; autoSize(); $('#cnt').classList.remove('warn');
   startDialog();
   addMsg({ from: 'me', kind: 'text', text: v, time: nowT() });
   const pool = POOL[cur.mode];
   botReply(pool[poolIdx++ % pool.length]);
+}
+
+/* ---------- режим запроса медиа (описание в инпуте) ---------- */
+let reqMode = null;
+function startReq(kind) {
+  reqMode = kind;
+  const r = REQ[kind];
+  const chip = $('#reqchip');
+  chip.hidden = false;
+  chip.innerHTML = `<svg class="ic"><use href="#${r.icon}"/></svg> ${r.label}
+    <span class="pr">${r.price} ${gemI}</span>
+    <small>· спишется после ответа</small>
+    <button class="rx" title="Отменить (Esc)"><svg class="ic"><use href="#i-x"/></svg></button>`;
+  chip.querySelector('.rx').addEventListener('click', cancelReq);
+  ta.placeholder = r.ph;
+  ta.focus();
+}
+function cancelReq() {
+  reqMode = null;
+  $('#reqchip').hidden = true;
+  ta.placeholder = 'Сообщение…';
+}
+
+function sendReq(kind, text) {
+  const r = REQ[kind];
+  if (balance < r.price) { paywallTokens(r.price); return; }
+  ta.value = ''; autoSize(); $('#cnt').classList.remove('warn');
+  cancelReq();
+  startDialog();
+  addMsg({ from: 'me', kind: 'req', req: kind, text, time: nowT() });
+  typing(kind === 'photo' ? 1900 : 2100, () => {
+    if (kind === 'photo') addMsg({ from: 'bot', kind: 'photo', img: cur.img, cap: CAPS[poolIdx++ % CAPS.length], time: nowT() });
+    else addMsg({ from: 'bot', kind: 'voice', tr: VOICE_TR, dur: 10, time: nowT() });
+    charge(r.price, r.why);
+  });
+}
+
+/* пейволл нехватки токенов (в ленте, без увода из чата) */
+function paywallTokens(price) {
+  $('#payw')?.remove();
+  const el = document.createElement('div');
+  el.className = 'payw'; el.id = 'payw';
+  el.innerHTML = `
+    <div class="pw-h"><svg class="ic" style="color:#e879f9"><use href="#i-gem"/></svg> Не хватает ${price - balance} токенов</div>
+    <p>Действие стоит ${price} токенов, на балансе ${balance}. Пополните пакетом — купленные токены не сгорают.</p>
+    <div class="row">
+      <button class="btn btn-grad" data-pw-pack>Пакет 100 · 390 ₽</button>
+      <button class="btn btn-outline" data-pw-all>Все пакеты</button>
+      <button class="btn btn-ghost" data-pw-x>Позже</button>
+    </div>`;
+  feed.appendChild(el); scrollFeed();
+  el.querySelector('[data-pw-pack]').addEventListener('click', () => toast('Демо: чекаут пакета 100 · <b>точка входа: чат, нехватка токенов</b>'));
+  el.querySelector('[data-pw-all]').addEventListener('click', () => toast('Демо: страница пакетов — раздел <b>packages</b>'));
+  el.querySelector('[data-pw-x]').addEventListener('click', () => el.remove());
 }
 
 function startDialog() {
@@ -1081,7 +1280,8 @@ function zapItems(tab) {
 
 /* ---------- поповеры ---------- */
 function closePops() { $$('.pop').forEach(p => p.classList.remove('open')); }
-$('#plusbtn').addEventListener('click', e => {
+$('#photobtn').addEventListener('click', () => { closePops(); startReq('photo'); });
+$('#morebtn').addEventListener('click', e => {
   e.stopPropagation();
   const p = $('#pop-plus'); const was = p.classList.contains('open');
   closePops(); if (!was) p.classList.add('open');
@@ -1097,29 +1297,16 @@ $('#zapbtn').addEventListener('click', e => {
   }
 });
 document.addEventListener('click', e => { if (!e.target.closest('.pop') && !e.target.closest('.inbtn')) closePops(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePops(); $('#lb').classList.remove('open'); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePops(); $('#lb').classList.remove('open'); cancelReq(); } });
 
-/* ---------- медиа-запросы ---------- */
+/* ---------- медиа-запросы из меню шеврона ---------- */
 $('#pop-plus').addEventListener('click', e => {
   const pi = e.target.closest('[data-req]');
   if (!pi) return;
-  closePops(); startDialog();
+  closePops();
   const req = pi.dataset.req;
-  if (req === 'photo') {
-    addMsg({ from: 'me', kind: 'text', text: 'Пришлёшь фото? 📷', time: nowT() });
-    typing(1900, () => {
-      addMsg({ from: 'bot', kind: 'photo', img: cur.img, cap: CAPS[poolIdx++ % CAPS.length], time: nowT() });
-      charge(25, 'фото от компаньона');
-    });
-  }
-  if (req === 'voice') {
-    addMsg({ from: 'me', kind: 'text', text: 'Запишешь голосовое? 🎧', time: nowT() });
-    typing(2100, () => {
-      addMsg({ from: 'bot', kind: 'voice', tr: VOICE_TR, dur: 10, time: nowT() });
-      charge(15, 'голосовое от компаньона');
-    });
-  }
-  if (req === 'video') paywall('Видео от компаньона', 'Короткие видео умеют записывать только компаньоны VIP-подписчиков.');
+  if (req === 'voice') startReq('voice');
+  if (req === 'video') { startDialog(); paywall('Видео от компаньона', 'Короткие видео умеют записывать только компаньоны VIP-подписчиков.'); }
 });
 
 /* VIP-гейт */
@@ -1158,6 +1345,9 @@ feed.addEventListener('click', e => {
   // голосовое
   const pl = e.target.closest('.vc .pl');
   if (pl) { playVoice(pl); return; }
+  // видео (VIP)
+  const vd = e.target.closest('[data-vip]');
+  if (vd) { paywall('Видео от компаньона', 'Смотреть видео компаньонов можно на тарифе VIP.'); return; }
   // лайтбокс
   const lbEl = e.target.closest('[data-lb]');
   if (lbEl) openLb(lbEl.dataset.lb);
@@ -1166,7 +1356,10 @@ feed.addEventListener('click', e => {
 function speakMsg(spk) {
   if (spk.dataset.state === 'playing') return;
   const use = spk.querySelector('use');
-  if (!spk.dataset.state) charge(47, 'озвучка сообщения');
+  if (!spk.dataset.state) {
+    if (balance < 47) { paywallTokens(47); return; }
+    charge(47, 'озвучка сообщения');
+  }
   spk.dataset.state = 'playing';
   spk.classList.add('playing');
   spk.dataset.tip = 'Играет…';
@@ -1217,17 +1410,23 @@ renderList();
 openChat('alex');
 </script>
 <script>
-/* V5: чипы панели действий переиспользуют логику меню «+» и хелпера */
-(() => {
-  document.getElementById('quickbar').addEventListener('click', e => {
-    const c = e.target.closest('.qchip');
-    if (!c) return;
-    e.stopPropagation();
-    if (c.dataset.q === 'zap') { document.getElementById('zapbtn').click(); return; }
-    const item = document.querySelector(`#pop-plus [data-req="${c.dataset.q}"]`);
-    if (item) item.click();
-  });
-})();
+/* V5: чипы панели действий (кнопки у инпута скрыты, сценарии без дубля) */
+document.getElementById('quickbar').addEventListener('click', e => {
+  const c = e.target.closest('.qchip');
+  if (!c) return;
+  e.stopPropagation();
+  const q = c.dataset.q;
+  if (q === 'photo' || q === 'voice') { closePops(); startReq(q); return; }
+  if (q === 'video') { startDialog(); paywall('Видео от компаньона', 'Короткие видео умеют записывать только компаньоны VIP-подписчиков.'); return; }
+  const p = document.getElementById('pop-zap');
+  const was = p.classList.contains('open');
+  closePops();
+  if (!was) {
+    document.getElementById('zaptabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === 'usual'));
+    document.getElementById('zaplist').innerHTML = zapItems('usual');
+    p.classList.add('open');
+  }
+});
 </script>
 </body>
 </html>

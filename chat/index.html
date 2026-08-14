@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Lovix — Чат: 5 вариантов дизайна</title>
+<title>Lovix — Чат: варианты 1 и 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -60,41 +60,33 @@
 
 <div class="stage" id="stage">
   <iframe data-src="v1.html" title="V1"></iframe>
-  <iframe data-src="v2.html" title="V2"></iframe>
-  <iframe data-src="v3.html" title="V3"></iframe>
-  <iframe data-src="v4.html" title="V4"></iframe>
   <iframe data-src="v5.html" title="V5"></iframe>
 </div>
 
 <div class="vbar" id="vbar">
   <button data-v="1">1</button>
-  <button data-v="2">2</button>
-  <button data-v="3">3</button>
-  <button data-v="4">4</button>
   <button data-v="5">5</button>
   <span class="lbl" id="vlbl"></span>
-  <span class="keys">1–5 / ← →</span>
+  <span class="keys">1 / 5 / ← →</span>
 </div>
 
 <script>
+const VARS = [1, 5];
 const NAMES = {
-  1: 'Амбиент — согласованная база',
-  2: 'Фото-вайб — фон из фото',
-  3: 'Мессенджер — плотный и плоский',
-  4: 'Сцена — центр-колонка',
-  5: 'Панель действий — фичи на виду',
+  1: 'Амбиент — «Фото» + шеврон у инпута',
+  5: 'Панель действий — чипы над инпутом',
 };
 const frames = [...document.querySelectorAll('.stage iframe')];
 const btns = [...document.querySelectorAll('.vbar button')];
 let curV = 0;
 
 function show(v) {
-  v = Math.min(5, Math.max(1, v));
-  if (v === curV) return;
+  if (!VARS.includes(v) || v === curV) return;
   curV = v;
+  const idx = VARS.indexOf(v);
   frames.forEach((f, i) => {
-    if (i === v - 1 && !f.src) f.src = f.dataset.src;
-    f.classList.toggle('on', i === v - 1);
+    if (i === idx && !f.src) f.src = f.dataset.src;
+    f.classList.toggle('on', i === idx);
   });
   btns.forEach(b => b.classList.toggle('on', +b.dataset.v === v));
   document.getElementById('vlbl').textContent = NAMES[v];
@@ -106,12 +98,12 @@ document.getElementById('vbar').addEventListener('click', e => {
   if (b) show(+b.dataset.v);
 });
 window.addEventListener('keydown', e => {
-  if (e.key >= '1' && e.key <= '5') show(+e.key);
-  if (e.key === 'ArrowRight') show(curV + 1);
-  if (e.key === 'ArrowLeft') show(curV - 1);
+  if (e.key === '1' || e.key === '5') show(+e.key);
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') show(VARS[(VARS.indexOf(curV) + 1) % 2]);
 });
 
-show(+(location.hash.match(/^#v([1-5])$/)?.[1] || 1));
+const h = +(location.hash.match(/^#v([15])$/)?.[1] || 1);
+show(VARS.includes(h) ? h : 1);
 </script>
 </body>
 </html>

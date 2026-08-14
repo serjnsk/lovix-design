@@ -463,9 +463,47 @@
   .mi {
     aspect-ratio: 1; border-radius: 10px; overflow: hidden; position: relative; cursor: zoom-in;
     background: linear-gradient(160deg, #5b21b6, #1e1033);
+    border: 0; padding: 0; display: block; width: 100%;
   }
   .mi img { width: 100%; height: 340%; object-fit: cover; object-position: 50% 0; }
+  .mi .vplay {
+    position: absolute; inset: 0; margin: auto; z-index: 2;
+    width: 27px; height: 27px; border-radius: 50%;
+    background: rgba(0,0,0,.52); border: 1.5px solid rgba(255,255,255,.4);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .mi .vplay .ic { width: 11px; height: 11px; }
+  .mi .ov {
+    position: absolute; inset: 0; z-index: 2;
+    background: rgba(10,8,12,.62); backdrop-filter: blur(2px);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 800; font-size: 1.02rem;
+  }
   .mempty { color: rgb(var(--muted2)); font-size: .8rem; }
+
+  /* модалка «Все медиа» */
+  .mall {
+    position: fixed; inset: 0; z-index: 88; display: none;
+    background: rgba(8,6,10,.75); backdrop-filter: blur(7px);
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .mall.open { display: flex; }
+  .mall .mall-p {
+    width: 560px; max-width: 94vw; max-height: 82vh; overflow-y: auto;
+    background: #17131c; border: 1px solid rgba(255,255,255,.12);
+    border-radius: 18px; padding: 18px;
+    box-shadow: 0 30px 90px rgba(0,0,0,.7);
+  }
+  .mall .mall-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 13px; }
+  .mall .mall-h b { font-size: 1.05rem; font-weight: 800; }
+  .mall .mgrid { grid-template-columns: repeat(4, 1fr); }
+  .mall .mx {
+    width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.04);
+    color: rgb(var(--muted)); display: flex; align-items: center; justify-content: center;
+  }
+  .mall .mx:hover { color: #fff; background: rgba(255,255,255,.1); }
+  .mall .mx .ic { width: 14px; height: 14px; }
   .cp .btn { padding: .62rem 1rem; font-size: .88rem; width: 100%; }
   .cp .btns { display: grid; gap: 8px; }
 
@@ -490,6 +528,35 @@
     display: flex; align-items: center; justify-content: center; cursor: pointer;
   }
   .lb .lbx .ic { width: 16px; height: 16px; }
+  .lb .lbnav {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+    width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.2); background: rgba(0,0,0,.35); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lb .lbnav:hover { background: rgba(217,70,239,.35); }
+  .lb .lbnav.prev { left: 24px; }
+  .lb .lbnav.next { right: 24px; }
+  .lb .lbnav .ic { width: 18px; height: 18px; }
+  .lb .lbnav[hidden], .lb .lbcnt[hidden] { display: none; }
+  .lb .lbcnt {
+    position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+    color: #fff; font-weight: 700; font-size: .88rem;
+    background: rgba(0,0,0,.42); border-radius: 999px; padding: 6px 14px;
+  }
+  .lb .frame img.blurred { filter: blur(26px) brightness(.6); }
+  .lb .vov {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 11px;
+  }
+  .lb .vov .plc {
+    width: 60px; height: 60px; border-radius: 50%; cursor: pointer;
+    background: rgba(0,0,0,.5); border: 2px solid rgba(255,255,255,.4);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+  }
+  .lb .vov .plc .ic { width: 22px; height: 22px; }
+  .lb .vov small { font-size: .88rem; font-weight: 700; color: #fff; }
+  .lb .vov .btn { padding: .55rem 1.2rem; font-size: .85rem; }
 
   .toast {
     position: fixed; bottom: 92px; left: 50%;
@@ -677,10 +744,21 @@
   </div>
 </div>
 
-<!-- лайтбокс -->
+<!-- лайтбокс-просмотрщик медиа -->
 <div class="lb" id="lb">
-  <div class="frame"><img id="lbimg" src="" alt=""></div>
+  <span class="lbcnt" id="lbcnt" hidden></span>
+  <button class="lbnav prev" id="lbprev" hidden><svg class="ic" style="transform:rotate(180deg)"><use href="#i-chevr"/></svg></button>
+  <button class="lbnav next" id="lbnext" hidden><svg class="ic"><use href="#i-chevr"/></svg></button>
+  <div class="frame" id="lbframe"></div>
   <button class="lbx"><svg class="ic"><use href="#i-x"/></svg></button>
+</div>
+
+<!-- все медиа чата -->
+<div class="mall" id="mall">
+  <div class="mall-p">
+    <div class="mall-h"><b id="mallh">Медиа чата</b><button class="mx" id="mallx"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="mgrid" id="mallgrid"></div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -806,7 +884,11 @@ const BOTS = {
       ['Фетиши', 'Чулки, Ошейники'], ['Рост', '158 см'],
       ['Телосложение', 'Худое'], ['Этничность', 'Русская'],
     ],
-    media: [IMG1, IMG1, IMG1],
+    media: [
+      { t: 'photo', img: IMG1 }, { t: 'video', img: IMG1 }, { t: 'photo', img: IMG1 },
+      { t: 'photo', img: IMG1 }, { t: 'photo', img: IMG1 }, { t: 'video', img: IMG1 },
+      { t: 'photo', img: IMG1 }, { t: 'photo', img: IMG1 },
+    ],
     msgs: [
       { dv: 'Вчера' },
       { from: 'bot', kind: 'text', text: '*Ставлю рейд на паузу — фиолетовый свет мягко обволакивает комнату* Этот тихий вечер с тобой — как раз то, что нужно на ночь глядя…', time: '21:53' },
@@ -978,6 +1060,11 @@ function scrollFeed() { feed.scrollTop = feed.scrollHeight; }
 
 function addMsg(m, silent) {
   cur.msgs.push(m);
+  // медиа из диалога пополняют сетку «Медиа чата» в профиле
+  if (m.from === 'bot' && (m.kind === 'photo' || m.kind === 'video') && m.img) {
+    cur.media.unshift({ t: m.kind, img: m.img });
+    renderProfile();
+  }
   feed.appendChild(msgNode(m));
   if (!silent) scrollFeed();
   renderList();
@@ -1076,9 +1163,16 @@ function renderProfile() {
       <span class="fi"><svg class="ic"><use href="#${FICONS[k] || 'i-spark'}"/></svg></span>
       <span><small>${k}</small><b>${v}</b></span>
     </div>`).join('');
-  const media = b.media.length
-    ? `<div class="mgrid">${b.media.map(src => `<div class="mi" data-lb="${src}"><img src="${src}" alt=""></div>`).join('')}</div>`
-    : `<div class="mempty">Фото и голосовые из диалога появятся здесь</div>`;
+  const M = b.media;
+  let media;
+  if (!M.length) {
+    media = `<div class="mempty">Фото и видео из диалога появятся здесь</div>`;
+  } else if (M.length <= 6) {
+    media = `<div class="mgrid">${M.map((m, i) => miTile(m, i)).join('')}</div>`;
+  } else {
+    media = `<div class="mgrid">${M.slice(0, 5).map((m, i) => miTile(m, i)).join('')}
+      <button class="mi" data-mall title="Показать все медиа"><img src="${M[5].img}" alt=""><span class="ov">+${M.length - 5}</span></button></div>`;
+  }
   const btns = b.own
     ? `<button class="btn btn-outline" data-act="regen"><svg class="ic" style="width:15px;height:15px"><use href="#i-refresh"/></svg> Перегенерировать профиль</button>
        <button class="btn btn-outline" data-act="edit"><svg class="ic" style="width:15px;height:15px"><use href="#i-edit"/></svg> Редактировать</button>`
@@ -1257,7 +1351,13 @@ function zapItems(tab) {
 /* ---------- поповеры ---------- */
 function closePops() { $$('.pop').forEach(p => p.classList.remove('open')); }
 document.addEventListener('click', e => { if (!e.target.closest('.pop')) closePops(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePops(); $('#lb').classList.remove('open'); cancelReq(); } });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  closePops();
+  if ($('#lb').classList.contains('open')) { $('#lb').classList.remove('open'); return; }
+  if ($('#mall').classList.contains('open')) { $('#mall').classList.remove('open'); return; }
+  cancelReq();
+});
 
 /* пресеты видео */
 $('#pop-video').addEventListener('click', e => {
@@ -1342,15 +1442,87 @@ function playVoice(pl) {
   }, 100);
 }
 
-/* ---------- лайтбокс ---------- */
-function openLb(src) { $('#lbimg').src = src; $('#lb').classList.add('open'); }
-$('#lb').addEventListener('click', () => $('#lb').classList.remove('open'));
+/* ---------- просмотрщик медиа (галерея) ---------- */
+let gal = [], galIdx = 0;
+
+function miTile(m, i) {
+  return `<button class="mi" data-mi="${i}">${m.img ? `<img src="${m.img}" alt="">` : ''}${m.t === 'video'
+    ? `<span class="vplay"><svg class="ic"><use href="#${TIER === 'vip' ? 'i-play' : 'i-lock'}"/></svg></span>` : ''}</button>`;
+}
+
+function openViewer(list, i) {
+  gal = list; galIdx = i;
+  renderViewer();
+  $('#lb').classList.add('open');
+}
+function renderViewer() {
+  const m = gal[galIdx];
+  const multi = gal.length > 1;
+  $('#lbcnt').hidden = !multi;
+  $('#lbprev').hidden = !multi;
+  $('#lbnext').hidden = !multi;
+  if (multi) $('#lbcnt').textContent = `${galIdx + 1} / ${gal.length}`;
+  const vip = TIER === 'vip';
+  $('#lbframe').innerHTML = m.t === 'video'
+    ? `<img src="${m.img}" class="blurred" alt="">
+       <div class="vov">
+         <span class="plc" data-vplay><svg class="ic"><use href="#${vip ? 'i-play' : 'i-lock'}"/></svg></span>
+         ${vip ? '<small>0:15</small>' : '<small>Видео доступно на VIP</small><button class="btn btn-grad" data-vgo>Перейти на VIP</button>'}
+       </div>`
+    : `<img src="${m.img}" alt="">`;
+}
+function navViewer(d) {
+  if (gal.length < 2) return;
+  galIdx = (galIdx + d + gal.length) % gal.length;
+  renderViewer();
+}
+function openLb(src) { openViewer([{ t: 'photo', img: src }], 0); }
+
+$('#lb').addEventListener('click', e => {
+  if (e.target.closest('#lbprev')) { navViewer(-1); return; }
+  if (e.target.closest('#lbnext')) { navViewer(1); return; }
+  if (e.target.closest('[data-vgo]')) { toast('Демо: чекаут VIP · <b>точка входа: медиа, VIP-гейт</b>'); return; }
+  if (e.target.closest('[data-vplay]')) {
+    toast(TIER === 'vip' ? 'Демо: воспроизведение видео' : 'Смотреть видео компаньонов можно на тарифе VIP');
+    return;
+  }
+  if (e.target.closest('.frame')) return;
+  $('#lb').classList.remove('open');
+});
+window.addEventListener('keydown', e => {
+  if (!$('#lb').classList.contains('open')) return;
+  if (e.key === 'ArrowLeft') navViewer(-1);
+  if (e.key === 'ArrowRight') navViewer(1);
+});
+
+/* «Все медиа» */
+function openMall() {
+  $('#mallh').textContent = `Медиа чата · ${cur.media.length}`;
+  $('#mallgrid').innerHTML = cur.media.map((m, i) => miTile(m, i)).join('');
+  $('#mall').classList.add('open');
+}
+$('#mall').addEventListener('click', e => {
+  const t = e.target.closest('[data-mi]');
+  if (t) { openViewer(cur.media, +t.dataset.mi); return; }
+  if (e.target.closest('#mallx') || !e.target.closest('.mall-p')) $('#mall').classList.remove('open');
+});
+
+/* клики по профилю: миниатюры, «+N», фото бота */
+$('#cp').addEventListener('click', e => {
+  const mi = e.target.closest('[data-mi]');
+  if (mi) { openViewer(cur.media, +mi.dataset.mi); return; }
+  if (e.target.closest('[data-mall]')) { openMall(); return; }
+  const lbEl = e.target.closest('[data-lb]');
+  if (lbEl) openLb(lbEl.dataset.lb);
+});
 
 /* ---------- прочее ---------- */
 $('#tierbtn').addEventListener('click', () => {
   TIER = TIERS[(TIERS.indexOf(TIER) + 1) % TIERS.length];
   $('#tierlabel').textContent = TIER_LABEL[TIER];
   cancelReq();
+  $('#mall').classList.remove('open');
+  $('#lb').classList.remove('open');
   openChat(cur.id);
   toast(`Демо: тариф <b>${TIER.toUpperCase()}</b> — замки и гейты обновились`);
 });

@@ -604,6 +604,10 @@
   /* на тарифе VIP плашки «VIP» не показываются — фичи уже доступны */
   body[data-tier="vip"] .qchip .qvip,
   body[data-tier="vip"] .icbtn .viptag { display: none; }
+  /* на Free медиа-запросы под замком (генерация фото и аудио — фичи подписки), баланса нет */
+  .qchip .qlock { display: none; width: 12px; height: 12px; color: #fbbf24; }
+  body[data-tier="free"] .qchip .qlock { display: block; }
+  body[data-tier="free"] .balance { display: none; }
 </style>
 </head>
 <body>
@@ -721,8 +725,8 @@
           <span class="cnt" id="cnt"></span>
           <textarea id="msg" rows="1" maxlength="1000" placeholder="Сообщение…"></textarea>
           <div class="crow" id="quickbar">
-            <button class="qchip" data-q="photo" title="Попросить фото — опишите, какое хотите"><svg class="ic"><use href="#i-img"/></svg> Фото</button>
-            <button class="qchip" data-q="voice" title="Попросить голосовое — опишите, о чём"><svg class="ic"><use href="#i-mic"/></svg> Голосовое</button>
+            <button class="qchip" data-q="photo" title="Попросить фото — опишите, какое хотите"><svg class="ic"><use href="#i-img"/></svg> Фото <svg class="qlock"><use href="#i-lock"/></svg></button>
+            <button class="qchip" data-q="voice" title="Попросить голосовое — опишите, о чём"><svg class="ic"><use href="#i-mic"/></svg> Голосовое <svg class="qlock"><use href="#i-lock"/></svg></button>
             <button class="qchip" data-q="video" title="Видео — фича VIP"><svg class="ic"><use href="#i-video"/></svg> Видео <span class="qvip">VIP</span></button>
             <button class="qchip" data-q="zap" title="Не знаете, о чём поговорить? Сценарии"><svg class="ic"><use href="#i-zap"/></svg> Сценарии</button>
             <button class="send" id="sendbtn" title="Отправить"><svg class="ic"><use href="#i-send"/></svg></button>
@@ -1287,21 +1291,25 @@ function sendReq(kind, text) {
   });
 }
 
-/* пейволл spicy-сценариев (Free) */
-function paywallSpicy() {
+/* пейволл подписки (фичи Free-тарифу недоступны) */
+function paywallSub(title, text, entry) {
   $('#payw')?.remove();
   const el = document.createElement('div');
   el.className = 'payw'; el.id = 'payw';
   el.innerHTML = `
-    <div class="pw-h"><svg class="ic"><use href="#i-crown"/></svg> 🌶 Spicy-сценарии — в подписке</div>
-    <p>Откровенные сценарии доступны подписчикам Premium и VIP. Подписка также даёт токены каждый месяц.</p>
+    <div class="pw-h"><svg class="ic"><use href="#i-crown"/></svg> ${title}</div>
+    <p>${text}</p>
     <div class="row">
       <button class="btn btn-grad" data-pw-go>Оформить подписку</button>
       <button class="btn btn-ghost" data-pw-x>Позже</button>
     </div>`;
   feed.appendChild(el); scrollFeed();
-  el.querySelector('[data-pw-go]').addEventListener('click', () => toast('Демо: чекаут Premium · <b>точка входа: чат, spicy-гейт</b>'));
+  el.querySelector('[data-pw-go]').addEventListener('click', () => toast(`Демо: чекаут Premium · <b>точка входа: чат, ${entry}</b>`));
   el.querySelector('[data-pw-x]').addEventListener('click', () => el.remove());
+}
+function paywallSpicy() {
+  paywallSub('🌶 Spicy-сценарии — в подписке',
+    'Откровенные сценарии доступны подписчикам Premium и VIP. Подписка также даёт токены каждый месяц.', 'spicy-гейт');
 }
 
 /* пейволл нехватки токенов (в ленте, без увода из чата) */
@@ -1555,6 +1563,11 @@ document.getElementById('quickbar').addEventListener('click', e => {
   const q = c.dataset.q;
   if (q === 'photo' || q === 'voice') {
     closePops();
+    if (TIER === 'free') {
+      paywallSub(q === 'photo' ? 'Фото от компаньона — в подписке' : 'Голосовые сообщения — в подписке',
+        'Генерация фото и голосовых доступна на Premium и VIP — вместе с токенами каждый месяц.', 'медиа-гейт Free');
+      return;
+    }
     reqMode === q ? cancelReq() : startReq(q);
     return;
   }

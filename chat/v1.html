@@ -372,27 +372,16 @@
   .mediabtn .pr .ic { width: 11px; height: 11px; }
   #morebtn .ic { transform: rotate(180deg); }
 
-  /* режим запроса медиа в инпуте */
-  .reqchip {
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 7px; padding: 8px 11px;
-    border: 1px solid rgba(217,70,239,.4); border-radius: 11px;
-    background: rgba(217,70,239,.1);
-    font-size: .8rem; font-weight: 700;
-    animation: mIn .18s ease;
+  /* режим запроса медиа: активная кнопка-инициатор + цена в кнопке отправки */
+  .mediabtn.on, .inbtn.on {
+    background: linear-gradient(120deg, rgba(217,70,239,.28), rgba(244,63,94,.28));
+    border-color: rgba(217,70,239,.65); color: #fff;
+    box-shadow: 0 0 14px rgba(217,70,239,.3);
   }
-  .reqchip[hidden] { display: none; }
-  .reqchip .ic { width: 15px; height: 15px; color: #e879f9; flex: none; }
-  .reqchip .pr { display: flex; align-items: center; gap: 3px; color: #f0abfc; font-weight: 800; font-size: .76rem; }
-  .reqchip .pr .ic { width: 11px; height: 11px; }
-  .reqchip small { color: rgb(var(--muted)); font-weight: 600; }
-  .reqchip .rx {
-    margin-left: auto; border: 0; background: none; cursor: pointer; color: rgb(var(--muted));
-    width: 22px; height: 22px; border-radius: 50%; flex: none;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .reqchip .rx:hover { color: #fff; background: rgba(255,255,255,.1); }
-  .reqchip .rx .ic { width: 12px; height: 12px; color: currentColor; }
+  .mediabtn.on .ic, .inbtn.on .ic { color: #fff; }
+  .send.pricey { width: auto; padding: 0 15px; gap: 7px; }
+  .send .sp { display: flex; align-items: center; gap: 4px; font-size: .84rem; font-weight: 800; white-space: nowrap; }
+  .send .sp .ic { width: 12px; height: 12px; }
 
   /* сообщение-запрос медиа */
   .reqhead {
@@ -670,12 +659,10 @@
       <div class="inbar">
         <button class="mediabtn" id="photobtn" title="Попросить фото — опишите, какое хотите">
           <svg class="ic"><use href="#i-img"/></svg> Фото
-          <span class="pr">25 <svg class="ic"><use href="#i-gem"/></svg></span>
         </button>
         <button class="inbtn" id="morebtn" title="Ещё запросы: голосовое, видео"><svg class="ic"><use href="#i-chev"/></svg></button>
         <div class="infield">
           <span class="cnt" id="cnt"></span>
-          <div class="reqchip" id="reqchip" hidden></div>
           <textarea id="msg" rows="1" maxlength="1000" placeholder="Сообщение…"></textarea>
         </div>
         <button class="inbtn" id="zapbtn" title="Не знаете, о чём поговорить? Сценарии"><svg class="ic"><use href="#i-zap"/></svg></button>
@@ -687,7 +674,6 @@
           <button class="pi" data-req="voice">
             <svg class="ic"><use href="#i-mic"/></svg>
             <span><b>Голосовое</b><small>скажет голосом — о чём попросите</small></span>
-            <span class="pr">15 <svg class="ic"><use href="#i-gem"/></svg></span>
           </button>
           <button class="pi" data-req="video">
             <svg class="ic"><use href="#i-video"/></svg>
@@ -1158,24 +1144,30 @@ function send() {
   botReply(pool[poolIdx++ % pool.length]);
 }
 
-/* ---------- режим запроса медиа (описание в инпуте) ---------- */
+/* ---------- режим запроса медиа (описание в инпуте, цена — в кнопке отправки) ---------- */
 let reqMode = null;
+const SEND_BASE = '<svg class="ic"><use href="#i-send"/></svg>';
 function startReq(kind) {
+  cancelReq();
   reqMode = kind;
   const r = REQ[kind];
-  const chip = $('#reqchip');
-  chip.hidden = false;
-  chip.innerHTML = `<svg class="ic"><use href="#${r.icon}"/></svg> ${r.label}
-    <span class="pr">${r.price} ${gemI}</span>
-    <small>· спишется после ответа</small>
-    <button class="rx" title="Отменить (Esc)"><svg class="ic"><use href="#i-x"/></svg></button>`;
-  chip.querySelector('.rx').addEventListener('click', cancelReq);
+  const sb = $('#sendbtn');
+  sb.classList.add('pricey');
+  sb.innerHTML = `${SEND_BASE}<span class="sp">${r.price} ${gemI}</span>`;
+  sb.title = `Отправить запрос — спишется ${r.price} токенов`;
+  if (kind === 'photo') $('#photobtn')?.classList.add('on');
+  if (kind === 'voice') $('#morebtn')?.classList.add('on');
+  document.querySelector(`.qchip[data-q="${kind}"]`)?.classList.add('on');
   ta.placeholder = r.ph;
   ta.focus();
 }
 function cancelReq() {
   reqMode = null;
-  $('#reqchip').hidden = true;
+  $$('.mediabtn.on, .inbtn.on, .qchip.on').forEach(b => b.classList.remove('on'));
+  const sb = $('#sendbtn');
+  sb.classList.remove('pricey');
+  sb.innerHTML = SEND_BASE;
+  sb.title = 'Отправить';
   ta.placeholder = 'Сообщение…';
 }
 
@@ -1247,7 +1239,10 @@ function zapItems(tab) {
 
 /* ---------- поповеры ---------- */
 function closePops() { $$('.pop').forEach(p => p.classList.remove('open')); }
-$('#photobtn').addEventListener('click', () => { closePops(); startReq('photo'); });
+$('#photobtn').addEventListener('click', () => {
+  closePops();
+  reqMode === 'photo' ? cancelReq() : startReq('photo');
+});
 $('#morebtn').addEventListener('click', e => {
   e.stopPropagation();
   const p = $('#pop-plus'); const was = p.classList.contains('open');

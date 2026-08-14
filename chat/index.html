@@ -601,6 +601,9 @@
     background: linear-gradient(90deg, #f59e0b, #f43f5e);
     border-radius: 999px; padding: 1.5px 7px;
   }
+  /* на тарифе VIP плашки «VIP» не показываются — фичи уже доступны */
+  body[data-tier="vip"] .qchip .qvip,
+  body[data-tier="vip"] .icbtn .viptag { display: none; }
 </style>
 </head>
 <body>
@@ -701,7 +704,7 @@
         <div class="ava" id="h-ava"></div>
         <div class="cc-name"><b id="h-name"></b><span class="cc-onl" id="h-onl">онлайн</span></div>
         <div class="cc-acts">
-          <button class="icbtn" id="callbtn" title="Аудиозвонок — фича VIP">
+          <button class="icbtn" id="callbtn" title="Аудиозвонок">
             <svg class="ic"><use href="#i-phone"/></svg><span class="viptag">VIP</span>
           </button>
           <div class="mseg" id="mseg" title="Roleplay — общение с погружением и действиями. Чат — обычная переписка.">
@@ -780,6 +783,7 @@ const gemI = '<svg class="ic"><use href="#i-gem"/></svg>';
 const TIERS = ['free', 'premium', 'vip'];
 const TIER_LABEL = { free: 'Тариф Free', premium: 'Подписка активна', vip: 'VIP активен' };
 let TIER = 'vip';
+document.body.dataset.tier = TIER;
 
 /* ---------- баланс ---------- */
 let balance = 90;
@@ -1525,7 +1529,9 @@ $('#cp').addEventListener('click', e => {
 /* ---------- прочее ---------- */
 $('#tierbtn').addEventListener('click', () => {
   TIER = TIERS[(TIERS.indexOf(TIER) + 1) % TIERS.length];
+  document.body.dataset.tier = TIER;
   $('#tierlabel').textContent = TIER_LABEL[TIER];
+  $('#callbtn').title = TIER === 'vip' ? 'Аудиозвонок' : 'Аудиозвонок — фича VIP';
   cancelReq();
   $('#mall').classList.remove('open');
   $('#lb').classList.remove('open');

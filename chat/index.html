@@ -26,13 +26,19 @@
   @keyframes balf { 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
   .balance.flash b { color: #f0abfc; }
   .subact {
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 8px; position: relative;
     padding: 9px 18px; border-radius: 999px; border: 0; cursor: pointer;
     background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
     color: #fff; font-weight: 800; font-size: .88rem; white-space: nowrap;
     box-shadow: 0 0 26px rgba(217,70,239,.4);
   }
   .subact .ic { width: 15px; height: 15px; }
+  .subact .demotag {
+    position: absolute; top: -7px; right: -6px;
+    font-size: .52rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+    background: #3f3f4a; border: 1px solid rgba(255,255,255,.25);
+    border-radius: 999px; padding: 1.5px 6px; color: #e4e4ef;
+  }
 
   .sbcnt {
     margin-left: auto; background: #ef4444; color: #fff;
@@ -668,7 +674,7 @@
     <a class="logo" href="../"><svg class="ic"><use href="#i-logo"/></svg><b>LOVI<span>X</span></b></a>
     <div class="tb-right">
       <div class="balance" id="balw"><svg class="ic"><use href="#i-gem"/></svg><b id="bal">90</b></div>
-      <button class="subact" id="tierbtn" title="Демо: переключить тариф Free / Premium / VIP"><svg class="ic"><use href="#i-crown"/></svg> <span id="tierlabel">Подписка активна</span></button>
+      <button class="subact" id="tierbtn" title="Демо: переключить тариф Free / Premium / VIP"><svg class="ic"><use href="#i-crown"/></svg> <span id="tierlabel">VIP активен</span><span class="demotag">демо</span></button>
       <button class="bell" id="bellbtn" title="Уведомления"><svg class="ic"><use href="#i-bell"/></svg></button>
       <div class="avatar">S</div>
     </div>
@@ -773,7 +779,7 @@ const gemI = '<svg class="ic"><use href="#i-gem"/></svg>';
 /* ---------- демо-тариф пользователя (клик по кнопке подписки переключает) ---------- */
 const TIERS = ['free', 'premium', 'vip'];
 const TIER_LABEL = { free: 'Тариф Free', premium: 'Подписка активна', vip: 'VIP активен' };
-let TIER = 'premium';
+let TIER = 'vip';
 
 /* ---------- баланс ---------- */
 let balance = 90;
@@ -1532,6 +1538,7 @@ $('.cl-new').addEventListener('click', () => toast('Демо: создание �
 /* старт */
 renderList();
 openChat('alex');
+setTimeout(() => toast('Кнопка тарифа в топбаре — демо-переключатель: клик циклит <b>VIP → Free → Premium</b>, меняя замки и гейты'), 1500);
 </script>
 <script>
 /* V5: чипы панели действий (кнопки у инпута скрыты, сценарии без дубля) */

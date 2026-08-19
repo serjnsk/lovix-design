@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — Страница автора · Вариант 3 «Без подложки»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  /* ── страница автора, вариант 3. Все классы с префиксами au-/cc-, общие стили не трогаются ── */
+
+  .content { max-width: 1240px; }
+
+  .au-back { display: inline-flex; align-items: center; gap: 6px; color: rgb(var(--muted)); font-weight: 600; font-size: .92rem; margin-bottom: 40px; }
+  .au-back:hover { color: #fff; }
+  .au-back .ic { width: 18px; height: 18px; }
+
+  /* компактная строка автора, без подложки: аватар — ник и метрики — кнопка */
+  .au-hero { display: flex; flex-direction: column; gap: 14px; }
+  .au-row { display: grid; grid-template-columns: auto 1fr auto; gap: 22px; align-items: center; }
+  .au-ava {
+    width: 76px; height: 76px; border-radius: 50%;
+    background: linear-gradient(135deg, rgb(var(--card-from)), rgb(var(--card-to)));
+    border: 2px solid rgba(255,255,255,.14);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.9rem; font-weight: 800;
+    box-shadow: 0 8px 26px rgba(147,51,234,.35);
+    flex: none;
+  }
+  .au-nick { font-size: 1.6rem; font-weight: 800; line-height: 1.15; }
+  .au-stats { display: flex; align-items: baseline; flex-wrap: wrap; margin-top: 6px; color: rgb(var(--muted)); font-size: .86rem; }
+  .au-stat { display: inline-flex; align-items: baseline; gap: 6px; padding: 0 14px; border-left: 1px solid rgba(255,255,255,.16); }
+  .au-stat:first-child { padding-left: 0; border-left: 0; }
+  .au-stat b { color: #fff; font-weight: 600; font-size: .93rem; }
+  .au-acts { flex: none; }
+
+  /* описание — отдельной строкой под шапкой, во всю ширину */
+  .au-bio {
+    color: rgb(var(--muted)); font-size: .92rem; line-height: 1.55; margin: 0;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .au-bio.open { display: block; -webkit-line-clamp: unset; }
+  .au-toggle {
+    background: none; border: 0; padding: 0; margin-top: 4px; cursor: pointer;
+    color: rgb(var(--muted)); font-size: .9rem; font-weight: 600;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .au-toggle:hover { color: #fff; }
+
+  /* заголовок секции */
+  .au-sec {
+    display: flex; align-items: baseline; gap: 12px;
+    margin: 40px 0 20px;
+  }
+  .au-sec h2 { font-size: 1.3rem; font-weight: 800; }
+  .au-sec i { font-style: normal; color: rgb(var(--muted)); font-weight: 700; font-size: 1.05rem; }
+
+  /* сетка компаньонов */
+  .au-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+
+  /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12) */
+  .cc {
+    position: relative; overflow: hidden;
+    border-radius: 12px;
+    aspect-ratio: 285 / 400;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    transition: transform .18s, box-shadow .18s;
+    cursor: pointer;
+  }
+  .cc:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(217,70,239,.16); }
+  .cc-bg { position: absolute; inset: 0; }
+  .cc-img {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    height: 92%; width: auto; max-width: none;
+    filter: drop-shadow(0 12px 26px rgba(0,0,0,.45));
+  }
+  /* градиент из макета: прозрачный → rgba(16,14,16,.92), высота 110 */
+  .cc-shade {
+    position: absolute; inset: auto 0 0 0; height: 110px;
+    background: linear-gradient(180deg, rgba(16,14,16,0), rgba(16,14,16,.92));
+  }
+  .cc-meta {
+    position: relative;
+    padding: 0 16px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .cc-text { display: flex; flex-direction: column; gap: 2px; }
+  /* des/H/h3 semi — 24/28 */
+  .cc-name {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 24px; line-height: 28px; font-weight: 600; color: #fff;
+    white-space: nowrap;
+  }
+  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .cc-name span { opacity: .6; }
+  /* des/S/s1 regu — 14/16 */
+  .cc-desc {
+    font-size: 14px; line-height: 16px; font-weight: 400; color: #fff; opacity: .9;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .cc-foot { display: flex; align-items: center; gap: 12px; padding: 2px 0; }
+  .cc-m {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 14px; font-weight: 400; color: #fff; opacity: .9;
+  }
+  .cc-m.like { gap: 3px; }
+  .cc-ic { width: 14px; height: 14px; flex: none; }
+
+  /* адаптив */
+  @media (max-width: 900px) {
+    .au-row { grid-template-columns: auto 1fr; row-gap: 16px; }
+    .au-acts { grid-column: 1 / -1; }
+    .au-acts .btn { width: 100%; }
+  }
+  @media (max-width: 560px) {
+    .au-row { grid-template-columns: 1fr; }
+    .au-ava { width: 64px; height: 64px; font-size: 1.6rem; }
+    .au-nick { font-size: 1.35rem; }
+    .au-stat { padding: 0 12px; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".55"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-follow" viewBox="0 0 24 24"><path d="M15 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="8.5" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19 8v6M22 11h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-cc-chat" viewBox="0 0 12.375 11.5"><path d="M4.21875 4.4375C4.21875 4.55831 4.12081 4.65625 4 4.65625C3.87919 4.65625 3.78125 4.55831 3.78125 4.4375C3.78125 4.31669 3.87919 4.21875 4 4.21875C4.12081 4.21875 4.21875 4.31669 4.21875 4.4375ZM4.21875 4.4375H4M6.40625 4.4375C6.40625 4.55831 6.30831 4.65625 6.1875 4.65625C6.06669 4.65625 5.96875 4.55831 5.96875 4.4375C5.96875 4.31669 6.06669 4.21875 6.1875 4.21875C6.30831 4.21875 6.40625 4.31669 6.40625 4.4375ZM6.40625 4.4375H6.1875M8.59375 4.4375C8.59375 4.55831 8.49581 4.65625 8.375 4.65625C8.25419 4.65625 8.15625 4.55831 8.15625 4.4375C8.15625 4.31669 8.25419 4.21875 8.375 4.21875C8.49581 4.21875 8.59375 4.31669 8.59375 4.4375ZM8.59375 4.4375H8.375M0.5 6.19295C0.5 7.12691 1.15532 7.93986 2.07935 8.07573C2.71291 8.16888 3.35338 8.24082 4 8.29079V11L6.44037 8.55963C6.56096 8.43904 6.72378 8.37048 6.89427 8.36626C8.04668 8.33772 9.18181 8.23955 10.2956 8.0758C11.2197 7.93994 11.875 7.12699 11.875 6.19302V2.68199C11.875 1.74802 11.2197 0.935065 10.2956 0.799212C8.95485 0.602091 7.58318 0.5 6.18767 0.5C4.79203 0.5 3.42023 0.602109 2.07936 0.799265C1.15533 0.935128 0.5 1.74808 0.5 2.68204V6.19295Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-like" viewBox="0 0 11.5 10.625"><path d="M11 3.125C11 1.67525 9.77578 0.5 8.26562 0.5C7.13651 0.5 6.16725 1.157 5.75 2.09449C5.33275 1.157 4.36349 0.5 3.23438 0.5C1.72422 0.5 0.5 1.67525 0.5 3.125C0.5 7.33699 5.75 10.125 5.75 10.125C5.75 10.125 11 7.33699 11 3.125Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sb">
+  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <nav class="sb-top">
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
+    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+  </nav>
+  <nav class="sb-bottom">
+    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
+    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+  </nav>
+</aside>
+
+<div class="page">
+  <header class="tb">
+    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
+    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
+    <div class="tb-right">
+      <a class="promo">Летняя Распродажа до 75% 🔥</a>
+      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>1</i></button>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <a class="au-back"><svg class="ic"><use href="#i-back"/></svg>Назад в каталог</a>
+
+    <section class="au-hero">
+      <div class="au-row">
+        <div class="au-ava">Л</div>
+
+        <div>
+          <div class="au-nick">@lunaria</div>
+          <div class="au-stats">
+            <span class="au-stat"><b>1.24 млн</b> взаимодействий</span>
+            <span class="au-stat"><b>3 418</b> подписчиков</span>
+          </div>
+        </div>
+
+        <div class="au-acts">
+          <button class="btn btn-grad"><svg class="ic"><use href="#i-follow"/></svg>Подписаться</button>
+        </div>
+      </div>
+
+      <p class="au-bio" id="bio">Пишу компаньонов с характером: медленные разговоры, много контекста, никакой спешки. Люблю сюжеты про вторые шансы и про людей, которые давно не виделись. Если понравился кто-то из моих — напишите, придумаю продолжение.</p>
+      <button class="au-toggle" id="bioToggle">Показать больше</button>
+    </section>
+
+    <div class="au-sec">
+      <h2>Созданные компаньоны</h2><i>9</i>
+    </div>
+
+    <div class="au-grid" id="grid"></div>
+
+  </main>
+</div>
+
+<script>
+  const BOTS = [
+    ['Марго', 27, 'Я реставрирую старые фотографии и знаю о людях больше, чем говорю вслух.', '318k', '4.8'],
+    ['Ника', 22, 'Работаю в баре ночную смену. Сначала наливаю, потом слушаю — именно в таком порядке.', '244k', '4.7'],
+    ['Ева', 31, 'Я врач скорой. Броню снимаю только дома и только при тех, кому доверяю.', '191k', '4.6'],
+    ['Инга', 29, 'Я вернулась в город спустя семь лет и первым делом набрала твой номер.', '167k', '4.8'],
+    ['Стася', 24, 'Я тату-мастер. Первые полчаса молчу, а потом меня уже не остановить.', '142k', '4.5'],
+    ['Лидия', 35, 'Преподаю литературу и считаю тебя способнее, чем ты сам о себе думаешь.', '121k', '4.9'],
+    ['Ясмина', 26, 'У меня цветочная лавка на углу. Я помню, что ты любишь.', '98k', '4.4'],
+    ['Рита', 23, 'Развожу заказы на велосипеде и появляюсь без предупреждения.', '76k', '4.3'],
+    ['Ася', 30, 'Настраиваю пианино и слышу, когда ты врёшь.', '61k', '4.6']
+  ];
+
+  // палитра подложек — на токенах системы, каждой карточке свой оттенок
+  const BG = [
+    'linear-gradient(160deg, #3b2a5e, #7b2d6b)',
+    'linear-gradient(160deg, #2a3b5e, #2d6b6b)',
+    'linear-gradient(160deg, #5e2a3b, #a13a5a)',
+    'linear-gradient(160deg, #2c2a5e, #4b2d8b)',
+    'linear-gradient(160deg, #5e4a2a, #a1683a)',
+    'linear-gradient(160deg, #2a5e4a, #2d8b6b)',
+    'linear-gradient(160deg, #4a2a5e, #8b2d7b)',
+    'linear-gradient(160deg, #2a4a5e, #2d5b8b)',
+    'linear-gradient(160deg, #5e2a2a, #8b3d2d)'
+  ];
+
+  // кадрировка и тон: два исходных выреза, но разная крупность и подача — карточки не выглядят одинаковыми
+  const FRAME = [
+    { h: '92%',  b: '0',     f: 'saturate(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '126%', b: '-6%',   f: 'saturate(.94) brightness(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '104%', b: '-2%',   f: 'saturate(1.08) contrast(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '138%', b: '-14%',  f: 'saturate(.9) brightness(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '88%',  b: '0',     f: 'saturate(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '116%', b: '-5%',   f: 'saturate(.96) contrast(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '98%',  b: '-1%',   f: 'saturate(1.1) brightness(.98) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '132%', b: '-10%',  f: 'saturate(.92) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '110%', b: '-3%',   f: 'saturate(1.04) contrast(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' }
+  ];
+
+
+  // раскрытие длинного описания
+  (() => {
+    const bio = document.getElementById('bio'), btn = document.getElementById('bioToggle');
+    if (!bio || !btn) return;
+    if (bio.scrollHeight <= bio.clientHeight + 1) { btn.style.display = 'none'; return; }
+    btn.onclick = () => {
+      bio.classList.toggle('open');
+      btn.textContent = bio.classList.contains('open') ? 'Свернуть' : 'Показать больше';
+    };
+  })();
+
+  document.getElementById('grid').innerHTML = BOTS.map(([name, age, desc, talks, rate], i) => `
+    <article class="cc">
+      <div class="cc-bg" style="background:${BG[i % BG.length]}"></div>
+      <img class="cc-img" src="../assets/img/model-${(i % 2) + 1}.webp" alt="${name}"
+           style="height:${FRAME[i % FRAME.length].h}; bottom:${FRAME[i % FRAME.length].b}; filter:${FRAME[i % FRAME.length].f}">
+      <div class="cc-shade"></div>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>${name},</b><span>${age}</span></div>
+          <p class="cc-desc">${desc}</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
+          <span class="cc-m like"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${rate}</span>
+        </div>
+      </div>
+    </article>`).join('');
+</script>
+
+</body>
+</html>

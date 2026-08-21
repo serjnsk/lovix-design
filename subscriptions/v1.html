@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — Мои подписки</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  /* ── «Мои подписки». Классы su-, общие стили не трогаются ── */
+
+  .content { max-width: 1240px; }
+
+  .su-bar { margin: 28px 0 22px; }
+  .su-bar .seg button { padding: .46rem .95rem; font-size: .85rem; gap: .4rem; }
+  .seg .cnt {
+    font-size: .72rem; font-weight: 800;
+    padding: .16rem .45rem; border-radius: 999px;
+    background: rgba(217,70,239,.16); color: #f0abfc;
+  }
+  .seg button.on .cnt { background: rgba(0,0,0,.28); color: #fff; }
+
+  .su-list { display: grid; gap: 10px; }
+
+  /* строка автора — подложка та же, что на странице автора: белая 5%, радиус 20 */
+  .su-row {
+    background: rgba(255,255,255,.05);
+    border-radius: 20px;
+    padding: 12px 16px;
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+  }
+  .su-ava {
+    width: 40px; height: 40px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, rgb(var(--card-from)), rgb(var(--card-to)));
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 800;
+    box-shadow: 0 6px 18px rgba(147,51,234,.28);
+  }
+  .su-nick { display: flex; align-items: center; gap: 6px; font-size: .95rem; font-weight: 700; line-height: 1.2; }
+  .su-ver { width: 13px; height: 13px; color: rgb(var(--primary)); flex: none; }
+  .su-new {
+    font-size: .66rem; font-weight: 800; letter-spacing: .02em;
+    padding: 1px 7px; border-radius: 999px;
+    background: rgba(217,70,239,.2); color: #f0abfc;
+  }
+  .su-meta { display: flex; align-items: baseline; flex-wrap: wrap; margin-top: 2px; color: rgb(var(--muted)); font-size: .78rem; }
+  .su-meta span { padding: 0 10px; border-left: 1px solid rgba(255,255,255,.16); }
+  .su-meta span:first-child { padding-left: 0; border-left: 0; }
+  .su-meta b { color: #fff; font-weight: 600; }
+
+  .su-act { flex: none; }
+  .su-btn {
+    cursor: pointer; white-space: nowrap; font-family: inherit;
+    padding: .4rem .9rem; border-radius: 999px;
+    font-size: .8rem; font-weight: 700; color: #fff;
+    border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.04);
+    transition: border-color .15s, background .15s, color .15s;
+  }
+  .su-btn:hover { border-color: rgb(var(--primary)); background: rgba(217,70,239,.13); }
+  .su-btn.on { background: rgba(217,70,239,.18); border-color: rgba(217,70,239,.5); color: #f0abfc; }
+
+    width: 54px; height: 70px; border-radius: 10px; flex: none;
+    position: relative; overflow: hidden; cursor: pointer; transition: transform .15s;
+  }
+  .su-w:hover { transform: translateY(-2px); }
+  .su-more {
+    width: 54px; height: 70px; border-radius: 10px; flex: none;
+    background: rgba(255,255,255,.07); color: rgb(var(--muted));
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem; font-weight: 700; cursor: pointer;
+  }
+  .su-more:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+  .su-empty {
+    text-align: center; padding: 64px 40px;
+    background: rgba(255,255,255,.05); border-radius: 20px;
+  }
+  .su-empty .ibox {
+    width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 16px;
+    background: rgba(255,255,255,.08); color: rgb(var(--muted));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .su-empty .ibox .ic { width: 24px; height: 24px; }
+  .su-empty h3 { font-size: 1.15rem; font-weight: 800; }
+  .su-empty p { color: rgb(var(--muted)); font-size: .92rem; margin: 8px auto 18px; max-width: 46ch; }
+
+
+  /* тост — компонент из центра уведомлений, поднят к верху экрана */
+  .toast {
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
+    border-radius: 12px; padding: 12px 18px;
+    font-size: .9rem; font-weight: 600; color: #fff;
+    opacity: 0; pointer-events: none; transition: .25s;
+    z-index: 95; box-shadow: 0 14px 40px rgba(0,0,0,.55);
+    max-width: min(92vw, 480px); text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast b { color: #f0abfc; }
+
+  @media (max-width: 700px) {
+    .su-row { grid-template-columns: auto 1fr; }
+    .su-act { grid-column: 1 / -1; }
+    .su-btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <symbol id="i-verified" viewBox="0 0 24 24"><path d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Z" fill="currentColor"/><path d="m8.6 12.25 2.25 2.25 4.55-5.4" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".55"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-chat" viewBox="0 0 12.375 11.5"><path d="M4.21875 4.4375C4.21875 4.55831 4.12081 4.65625 4 4.65625C3.87919 4.65625 3.78125 4.55831 3.78125 4.4375C3.78125 4.31669 3.87919 4.21875 4 4.21875C4.12081 4.21875 4.21875 4.31669 4.21875 4.4375ZM4.21875 4.4375H4M6.40625 4.4375C6.40625 4.55831 6.30831 4.65625 6.1875 4.65625C6.06669 4.65625 5.96875 4.55831 5.96875 4.4375C5.96875 4.31669 6.06669 4.21875 6.1875 4.21875C6.30831 4.21875 6.40625 4.31669 6.40625 4.4375ZM6.40625 4.4375H6.1875M8.59375 4.4375C8.59375 4.55831 8.49581 4.65625 8.375 4.65625C8.25419 4.65625 8.15625 4.55831 8.15625 4.4375C8.15625 4.31669 8.25419 4.21875 8.375 4.21875C8.49581 4.21875 8.59375 4.31669 8.59375 4.4375ZM8.59375 4.4375H8.375M0.5 6.19295C0.5 7.12691 1.15532 7.93986 2.07935 8.07573C2.71291 8.16888 3.35338 8.24082 4 8.29079V11L6.44037 8.55963C6.56096 8.43904 6.72378 8.37048 6.89427 8.36626C8.04668 8.33772 9.18181 8.23955 10.2956 8.0758C11.2197 7.93994 11.875 7.12699 11.875 6.19302V2.68199C11.875 1.74802 11.2197 0.935065 10.2956 0.799212C8.95485 0.602091 7.58318 0.5 6.18767 0.5C4.79203 0.5 3.42023 0.602109 2.07936 0.799265C1.15533 0.935128 0.5 1.74808 0.5 2.68204V6.19295Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-like" viewBox="0 0 11.5 10.625"><path d="M11 3.125C11 1.67525 9.77578 0.5 8.26562 0.5C7.13651 0.5 6.16725 1.157 5.75 2.09449C5.33275 1.157 4.36349 0.5 3.23438 0.5C1.72422 0.5 0.5 1.67525 0.5 3.125C0.5 7.33699 5.75 10.125 5.75 10.125C5.75 10.125 11 7.33699 11 3.125Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sb">
+  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <nav class="sb-top">
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item on"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+  </nav>
+  <nav class="sb-bottom">
+    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
+    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+  </nav>
+</aside>
+
+<div class="page">
+  <header class="tb">
+    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
+    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
+    <div class="tb-right">
+      <a class="promo">Летняя Распродажа до 75% 🔥</a>
+      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>3</i></button>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <h1 class="h1">Мои подписки</h1>
+    <p class="sub">Авторы, за которыми вы следите. Когда кто-то из них публикует нового компаньона, вы получаете уведомление.</p>
+
+    <div class="su-bar"><div class="seg" id="seg"></div></div>
+
+    <div class="su-list" id="list"></div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+  /* Подписки — на кого подписан пользователь. Подписчики — кто подписан на него как на автора. */
+  const SUBS = [
+    { nick: 'lunaria',   ver: false, bots: 12, acts: '1.24 млн', fresh: 2 },
+    { nick: 'lovix',     ver: true,  bots: 48, acts: '18.6 млн', fresh: 0 },
+    { nick: 'nochnoy',   ver: false, bots: 7,  acts: '486k',     fresh: 1 },
+    { nick: 'kseniya_w', ver: false, bots: 4,  acts: '212k',     fresh: 0 },
+    { nick: 'mirela',    ver: false, bots: 9,  acts: '904k',     fresh: 0 },
+  ];
+
+  const FOLLOWERS = [
+    { nick: 'thebigbadwolf', ver: false, bots: 3,  acts: '96k',     back: false },
+    { nick: 'aurora_v',      ver: false, bots: 15, acts: '2.1 млн', back: true  },
+    { nick: 'some1cool',     ver: false, bots: 1,  acts: '12k',     back: false },
+    { nick: 'dreamsin',      ver: false, bots: 6,  acts: '340k',    back: false },
+  ];
+
+
+  /* всплывающее уведомление о подписке */
+  let toastT;
+  function toast(html) {
+    const t = document.getElementById('toast');
+    t.innerHTML = html;
+    t.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+  function subToast(on, nick) {
+    toast(on ? `Вы подписались на <b>@${nick}</b>` : `Вы отписались от <b>@${nick}</b>`);
+  }
+
+  const TABS = [['subs', 'Подписки', SUBS.length], ['fol', 'Подписчики', FOLLOWERS.length]];
+  let active = 'subs';
+
+  function rowHtml(a, isSub) {
+    const btn = isSub
+      ? '<button class="su-btn on">Вы подписаны</button>'
+      : `<button class="su-btn ${a.back ? 'on' : ''}">${a.back ? 'Вы подписаны' : 'Подписаться'}</button>`;
+    return `<div class="su-row">
+      <div class="su-ava">${a.nick[0].toUpperCase()}</div>
+      <div>
+        <div class="su-nick">@${a.nick}${a.ver ? '<svg class="su-ver"><use href="#i-verified"/></svg>' : ''}${a.fresh ? `<span class="su-new">${a.fresh} новых</span>` : ''}</div>
+        <div class="su-meta">
+          <span><b>${a.bots}</b> компаньонов</span>
+          <span><b>${a.acts}</b> взаимодействий</span>
+        </div>
+      </div>
+      <div class="su-act">${btn}</div>
+    </div>`;
+  }
+
+  function drawSeg() {
+    document.getElementById('seg').innerHTML = TABS.map(([k, label, n]) =>
+      `<button data-k="${k}" class="${k === active ? 'on' : ''}">${label}<span class="cnt">${n}</span></button>`).join('');
+  }
+
+  function render() {
+    const list = active === 'subs' ? SUBS : FOLLOWERS;
+    document.getElementById('list').innerHTML = list.length
+      ? list.map(a => rowHtml(a, active === 'subs')).join('')
+      : `<div class="su-empty">
+           <div class="ibox"><svg class="ic"><use href="#i-heart-o"/></svg></div>
+           <h3>Пока никого нет</h3>
+           <p>Подпишитесь на авторов в каталоге — и не пропустите их новых компаньонов.</p>
+           <button class="btn btn-grad">Перейти в каталог</button>
+         </div>`;
+  }
+
+  document.getElementById('seg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-k]'); if (!b) return;
+    active = b.dataset.k; drawSeg(); render();
+  });
+
+  document.getElementById('list').addEventListener('click', e => {
+    const b = e.target.closest('.su-btn'); if (!b) return;
+    const on = b.classList.toggle('on');
+    b.textContent = on ? 'Вы подписаны' : 'Подписаться';
+    const nick = b.closest('.su-row').querySelector('.su-nick').textContent.trim().replace(/^@/, '').split(/\s/)[0];
+    subToast(on, nick);
+  });
+
+  drawSeg(); render();
+</script>
+
+</body>
+</html>

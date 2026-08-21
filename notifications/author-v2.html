@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<!-- Уведомления фичи «автор компаньона» -->
+<title>Lovix — Уведомления</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  /* подложка «Обзор» */
+  .content { max-width: 1180px; }
+  .feed { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 28px; }
+  .tile {
+    aspect-ratio: 3 / 4.1; border-radius: 1rem;
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,.09);
+  }
+  .tile::after { content: ""; position: absolute; inset: 0; background: radial-gradient(140px 100px at 30% 18%, rgba(255,255,255,.16), transparent 60%), linear-gradient(180deg, transparent 55%, rgba(10,8,12,.65)); }
+  .tile span { position: absolute; left: 13px; bottom: 11px; font-weight: 700; font-size: .95rem; z-index: 1; }
+  @media (max-width: 940px) { .feed { grid-template-columns: repeat(2, 1fr); } }
+
+  /* демо-панель флоу */
+  .sim {
+    margin-top: 30px; padding: 16px 18px;
+    background: rgba(16,14,16,.55);
+    border: 1px dashed rgba(217,70,239,.4);
+    border-radius: 1rem;
+  }
+  .sim b { font-size: .92rem; }
+  .sim p { color: rgb(var(--muted2)); font-size: .8rem; margin: 4px 0 10px; }
+  .sim .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sim .btn { padding: .5rem .9rem; font-size: .8rem; }
+
+  /* -------- центр уведомлений: дропдаун -------- */
+  .bell-wrap { position: relative; }
+  @keyframes bpop { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
+  .bell i.pop { animation: bpop .5s ease; }
+  .npanel {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    width: 400px; max-height: min(74vh, 660px);
+    display: none; flex-direction: column;
+    background: #17131c;
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 16px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.65), 0 0 40px rgba(217,70,239,.1);
+    overflow: hidden; z-index: 70; text-align: left;
+  }
+  .npanel.open { display: flex; }
+  .nhead { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; flex: none; }
+  .nhead b { font-size: 1.05rem; font-weight: 800; }
+  .nhead .cnt { color: rgb(var(--muted)); font-weight: 600; font-size: .85rem; margin-left: 6px; }
+  .nacts { display: flex; gap: 4px; }
+  .iconbtn {
+    width: 30px; height: 30px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: none; border: 0; cursor: pointer; color: rgb(var(--muted));
+  }
+  .iconbtn:hover { background: rgba(255,255,255,.07); color: #fff; }
+  .iconbtn .ic { width: 16px; height: 16px; }
+  .nlist { overflow-y: auto; padding: 0 8px 10px; }
+  .ngroup { font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: rgb(var(--muted2)); padding: 10px 10px 6px; }
+
+  /* критичное закреплённое (окно восстановления, У4) */
+  .ncrit {
+    margin: 4px 2px 8px; border-radius: 12px; padding: 13px 13px 14px;
+    border: 1.5px solid transparent;
+    background:
+      linear-gradient(rgba(36,17,22,.96), rgba(36,17,22,.96)) padding-box,
+      linear-gradient(135deg, #f43f5e, #f59e0b) border-box;
+  }
+  .ncrit .crow { display: flex; gap: 11px; align-items: flex-start; }
+  .ncrit .ntext { color: #e8d9dd; }
+  .ncrit .timer {
+    display: inline-flex; gap: 6px; align-items: center;
+    font-size: .74rem; font-weight: 800; color: #fcd34d;
+    background: rgba(245,158,11,.14); border: 1px solid rgba(245,158,11,.3);
+    border-radius: 999px; padding: 3px 10px; margin-top: 9px;
+  }
+  .ncrit .timer .ic { width: 12px; height: 12px; }
+  .ncrit .ncta { margin-top: 10px; }
+
+  /* уведомление */
+  .nitem {
+    display: flex; gap: 11px; align-items: flex-start;
+    padding: 11px 10px; border-radius: 12px; cursor: pointer; position: relative;
+  }
+  .nitem:hover { background: rgba(255,255,255,.05); }
+  .nitem.unread { background: rgba(217,70,239,.07); }
+  .nitem.unread:hover { background: rgba(217,70,239,.11); }
+  .nitem + .nitem { margin-top: 4px; }
+  @keyframes flashin { from { background: rgba(217,70,239,.3); } }
+  .nitem.fresh { animation: flashin 1.4s ease; }
+  .nicon { width: 38px; height: 38px; border-radius: 11px; flex: none; display: flex; align-items: center; justify-content: center; }
+  .nicon .ic { width: 18px; height: 18px; }
+  .nc-tok  { background: rgba(147,51,234,.28); color: #e879f9; }
+  .nc-lim  { background: rgba(37,99,235,.26);  color: #93c5fd; }
+  .nc-fail { background: rgba(239,68,68,.2);   color: #fca5a5; }
+  .nc-pay  { background: rgba(244,63,94,.2);   color: #fda4af; }
+  .nc-hello{ background: rgba(217,70,239,.22); color: #f0abfc; }
+  .nc-news { background: rgba(59,130,246,.2);  color: #93c5fd; }
+  /* типы уведомлений, добавленные фичей авторства */
+  .nc-ok   { background: rgba(34,197,94,.2);   color: #86efac; }
+  .nc-rej  { background: rgba(245,158,11,.2);  color: #fcd34d; }
+  .nc-auth { background: rgba(124,58,237,.26); color: #c4b5fd; }
+  /* мини-карточка вышедшего компаньона под текстом уведомления */
+  .ncard {
+    display: flex; flex-direction: column; gap: 9px;
+    margin-top: 9px; padding: 10px; border-radius: 12px;
+    background: rgba(255,255,255,.05);
+  }
+  .ncard-row { display: flex; align-items: center; gap: 10px; }
+  .ncard-ph { width: 40px; height: 52px; border-radius: 8px; flex: none; position: relative; overflow: hidden; }
+  .ncard-ph img { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); height: 122%; width: auto; max-width: none; }
+  .ncard-t { min-width: 0; }
+  .ncard-t b { display: block; font-size: .88rem; font-weight: 700; }
+  .ncard-t span {
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    font-size: .78rem; line-height: 1.35; color: rgb(var(--muted));
+  }
+  .ncard .ncta { margin: 0; }
+  .nbody { min-width: 0; flex: 1; }
+  .ntitle { font-size: .9rem; font-weight: 700; line-height: 1.3; padding-right: 8px; }
+  .ntext { font-size: .82rem; color: rgb(var(--muted)); margin-top: 2px; line-height: 1.4; }
+  .ntime { font-size: .72rem; color: rgb(var(--muted2)); margin-top: 4px; }
+  .ncta { margin-top: 8px; }
+  .ncta .btn { padding: .42rem .9rem; font-size: .78rem; border-radius: .5rem; }
+  .donechip {
+    display: inline-flex; gap: 5px; align-items: center;
+    font-size: .76rem; font-weight: 800; color: #4ade80;
+    background: rgba(74,222,128,.12); border-radius: 999px; padding: 4px 11px;
+  }
+  .donechip .ic { width: 12px; height: 12px; }
+  .ndot { width: 8px; height: 8px; border-radius: 50%; background: #e879f9; flex: none; margin-top: 6px; box-shadow: 0 0 8px rgba(217,70,239,.8); }
+  .nitem:not(.unread) .ndot { visibility: hidden; }
+
+  /* hover-действия */
+  .hacts {
+    position: absolute; top: 8px; right: 8px;
+    display: none; gap: 3px;
+    background: rgba(23,19,28,.92); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 9px; padding: 2px;
+  }
+  .nitem:hover .hacts { display: flex; }
+  .hacts .iconbtn { width: 26px; height: 26px; }
+  .hacts .iconbtn .ic { width: 13px; height: 13px; }
+
+  .nmore {
+    display: block; width: calc(100% - 4px); margin: 6px 2px 2px;
+    padding: 9px; border-radius: 10px;
+    border: 1px dashed rgba(255,255,255,.18); background: none;
+    color: rgb(var(--muted)); font-family: inherit; font-size: .8rem; font-weight: 700;
+    cursor: pointer; transition: .15s;
+  }
+  .nmore:hover { color: #fff; border-color: rgba(217,70,239,.5); }
+  .nempty { padding: 38px 20px; text-align: center; color: rgb(var(--muted2)); font-size: .88rem; }
+  .nempty .ic { width: 30px; height: 30px; margin: 0 auto 10px; color: rgb(var(--muted2)); }
+
+  /* настройки (подэкран, Д7) */
+  .nset { padding: 4px 16px 16px; overflow-y: auto; }
+  .nset .backrow {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0 12px; color: rgb(var(--muted)); font-size: .86rem; font-weight: 700;
+    cursor: pointer; background: none; border: 0; font-family: inherit;
+  }
+  .nset .backrow:hover { color: #fff; }
+  .nset .backrow .ic { width: 15px; height: 15px; }
+  .nrow-set { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; font-size: .88rem; font-weight: 600; }
+  .nrow-set small { display: block; color: rgb(var(--muted2)); font-size: .72rem; font-weight: 400; margin-top: 1px; }
+  .sw {
+    width: 40px; height: 22px; border-radius: 999px;
+    background: rgba(255,255,255,.15);
+    position: relative; cursor: pointer; border: 0; flex: none; transition: background .2s;
+  }
+  .sw::after {
+    content: ""; position: absolute; top: 3px; left: 3px;
+    width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .2s;
+  }
+  .sw.on { background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+  .sw.on::after { left: 21px; }
+  .sw.lock { opacity: .45; cursor: not-allowed; }
+  .nset .hint { color: rgb(var(--muted2)); font-size: .74rem; line-height: 1.5; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
+
+  /* -------- виджет проактива компаньона (онлайн-чат, справа-снизу) -------- */
+  .lwdock { position: fixed; right: 22px; bottom: 22px; z-index: 60; display: flex; flex-direction: column; align-items: flex-end; }
+
+  /* стопка свёрнутых проактивов от других ботов */
+  .lw-stack { display: flex; justify-content: flex-end; margin-top: 10px; }
+  .lw-stack .sava {
+    width: 46px; height: 46px; border-radius: 50%;
+    padding: 2px; margin-left: -10px;
+    background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    position: relative; cursor: pointer; border: 0;
+    box-shadow: 0 6px 20px rgba(0,0,0,.45);
+    transition: transform .15s;
+  }
+  .lw-stack .sava:hover { transform: translateY(-3px); }
+  .lw-stack .sava .ph { position: absolute; inset: 2px; border-radius: 50%; overflow: hidden; background: #221a28; }
+  .lw-stack .sava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; }
+  .lw-stack .sava i {
+    position: absolute; top: -2px; right: -2px; z-index: 1;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: #4ade80; border: 2px solid #17131c; font-style: normal;
+  }
+  @keyframes lw-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .lw { display: flex; align-items: flex-end; gap: 10px; animation: lw-in .3s ease; }
+  .lw-bubble {
+    position: relative;
+    background: rgba(18,14,20,.94);
+    border: 1px solid rgba(217,70,239,.35);
+    backdrop-filter: blur(10px);
+    border-radius: 14px 14px 4px 14px;
+    padding: 11px 14px; max-width: 260px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  }
+  .lw-name {
+    font-size: .76rem; font-weight: 800; color: #f0abfc;
+    display: flex; align-items: center; gap: 6px; padding-right: 20px;
+  }
+  .lw-name::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+  .lw-text { font-size: .87rem; font-style: italic; margin-top: 3px; line-height: 1.35; }
+  .lw-act { margin-top: 9px; }
+  .lw-act .btn { padding: .42rem .9rem; font-size: .78rem; border-radius: .5rem; }
+  .lw-x {
+    position: absolute; top: 7px; right: 7px;
+    width: 20px; height: 20px; border-radius: 6px;
+    border: 0; background: none; color: rgb(var(--muted2)); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lw-x:hover { background: rgba(255,255,255,.08); color: #fff; }
+  .lw-x .ic { width: 11px; height: 11px; }
+  .lw-ava {
+    position: relative; width: 62px; height: 62px; flex: none;
+    border-radius: 50%; cursor: pointer;
+    background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    padding: 2.5px;
+    animation: lw-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes lw-pulse {
+    0%, 100% { box-shadow: 0 8px 30px rgba(217,70,239,.45); }
+    50%      { box-shadow: 0 8px 44px rgba(217,70,239,.8); }
+  }
+  .lw-ava .ph { position: absolute; inset: 2.5px; border-radius: 50%; overflow: hidden; background: #221a28; }
+  .lw-ava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; }
+  @media (max-width: 640px) { .lwdock { right: 12px; bottom: 12px; } .lw-bubble { max-width: 210px; } }
+
+  /* бейдж непрочитанных чатов в сайдбаре */
+  .sbcnt {
+    margin-left: auto; font-style: normal;
+    background: #ef4444; color: #fff;
+    font-size: .66rem; font-weight: 800;
+    min-width: 18px; height: 18px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center; padding: 0 5px;
+  }
+
+  .toast {
+    position: fixed; bottom: 130px; left: 50%;
+    transform: translateX(-50%) translateY(14px);
+    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
+    border-radius: 12px; padding: 12px 18px;
+    font-size: .9rem; font-weight: 600;
+    opacity: 0; pointer-events: none; transition: .25s;
+    z-index: 90; box-shadow: 0 14px 40px rgba(0,0,0,.55);
+    max-width: min(92vw, 480px); text-align: center;
+  }
+  .toast.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  .toast b { color: #f0abfc; }
+  .tundo {
+    margin-left: 10px; color: #f0abfc; background: none;
+    border: 1px solid rgba(217,70,239,.45); border-radius: 8px;
+    padding: 3px 10px; cursor: pointer; font-family: inherit; font-size: .8rem; font-weight: 700;
+  }
+  .tundo:hover { background: rgba(217,70,239,.15); }
+
+  @media (max-width: 640px) {
+    .npanel { position: fixed; top: 64px; left: 10px; right: 10px; width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="g-gem" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f0abfc"/><stop offset="1" stop-color="#c026d3"/>
+    </linearGradient>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".55"/></symbol>
+    <symbol id="i-gem-f" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="url(#g-gem)"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-checks" viewBox="0 0 24 24"><path d="M18 6 7 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="m22 10-7.5 7.5L13 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M1 10h22" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 9v4M12 17h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-mega" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sb">
+  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <nav class="sb-top">
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
+    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты<i class="sbcnt" id="chatcnt" style="display:none">0</i></a>
+    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+  </nav>
+  <nav class="sb-bottom">
+    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
+    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+  </nav>
+</aside>
+
+<div class="page">
+  <header class="tb">
+    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
+    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
+    <div class="tb-right">
+      <a class="promo">Летняя Распродажа до 75% 🔥</a>
+      <div class="bell-wrap">
+        <button class="bell" id="bell" aria-label="Уведомления"><svg class="ic"><use href="#i-bell"/></svg><i id="bb">3</i></button>
+
+        <div class="npanel" id="npanel" role="dialog" aria-label="Уведомления">
+          <div id="vlist" style="display:flex;flex-direction:column;min-height:0">
+            <div class="nhead">
+              <div><b>Уведомления</b><span class="cnt" id="ncnt"></span></div>
+              <div class="nacts">
+                <button class="iconbtn" id="nreadall" title="Прочитать все"><svg class="ic"><use href="#i-checks"/></svg></button>
+                <button class="iconbtn" id="nsettings" title="Настройки уведомлений"><svg class="ic"><use href="#i-gear"/></svg></button>
+              </div>
+            </div>
+            <div class="nlist" id="nlist"></div>
+          </div>
+
+          <div id="vset" style="display:none">
+            <div class="nset">
+              <button class="backrow" id="nback"><svg class="ic"><use href="#i-back"/></svg>Настройки уведомлений</button>
+              <div class="nrow-set">
+                <div>Транзакционные<small>платежи, доступ, токены — всегда включены</small></div>
+                <button class="sw on lock" title="Неотключаемы (Д7)"></button>
+              </div>
+              <div class="nrow-set">
+                <div>Продажи и предложения<small>лимиты, пакеты, апгрейды</small></div>
+                <button class="sw on" id="sw-sale"></button>
+              </div>
+              <div class="nrow-set">
+                <div>Новости и вовлечение<small>обновления продукта</small></div>
+                <button class="sw on" id="sw-engage"></button>
+              </div>
+              <p class="hint">Выключенная категория перестаёт приходить в колокольчик. Изменение действует сразу и не влияет на email-рассылки — у них своя отписка.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <main class="content">
+    <div style="text-align:left">
+      <h1 class="h1">Обзор</h1>
+      <p class="sub">Продолжай общение со своими компаньонами.</p>
+    </div>
+    <div class="feed">
+      <div class="tile" style="background:linear-gradient(160deg,#2563eb,#9333ea)"><span>Алиса</span></div>
+      <div class="tile" style="background:linear-gradient(160deg,#7c3aed,#db2777)"><span>Майя</span></div>
+      <div class="tile" style="background:linear-gradient(160deg,#0ea5e9,#6366f1)"><span>Кира</span></div>
+      <div class="tile" style="background:linear-gradient(160deg,#d946ef,#f43f5e)"><span>Ева</span></div>
+      <div class="tile" style="background:linear-gradient(160deg,#4f46e5,#a21caf)"><span>Лола</span></div>
+      <div class="tile" style="background:linear-gradient(160deg,#9333ea,#e11d48)"><span>Юки</span></div>
+      <div class="tile" style="background:linear-gradient(160deg,#1d4ed8,#7e22ce)"><span>Дана</span></div>
+      <div class="tile" style="background:linear-gradient(160deg,#c026d3,#fb7185)"><span>Ника</span></div>
+    </div>
+
+    <div class="sim">
+      <b>Демо юзерфлоу</b>
+      <p>Флоу в панели: чтение · hover-действия (прочитано/непрочитано, удалить с «Вернуть») · CTA-конверсия (Д2 — кнопка становится «✓ Готово») · критичное закреплённое (У4) · настройки категорий (Д7) · «Показать ещё» · пустое состояние. Проактив компаньона приходит виджетом онлайн-чата справа-снизу (канал 💬, мимо колокольчика — бейдж растёт на «Мои чаты»). Симуляция:</p>
+      <div class="row">
+        <button class="btn btn-outline" data-sim-new>⚡ Прилетело событие</button>
+        <button class="btn btn-outline" data-sim-crit>🔴 Не прошло списание (grace)</button>
+        <button class="btn btn-outline" data-sim-pro>💬 Проактив компаньона</button>
+        <button class="btn btn-outline" data-sim-clear>🧹 Очистить всё</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="lwdock" id="lwdock" aria-live="polite"></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="../assets/notifs-data.js"></script>
+<script>
+/* ── уведомления фичи «автор компаньона» ──
+   Собраны по утверждённым правилам центра уведомлений:
+   Т — транзакционные (неотключаемы), М — маркетинговые (категория «Новости и вовлечение»).
+   Иконка и плашка задаются через те же NICON / NCLASS. */
+NICON.pub    = 'i-check';  NCLASS.pub    = 'nc-ok';
+NICON.rej    = 'i-alert';  NCLASS.rej    = 'nc-rej';
+NICON.author = 'i-users';  NCLASS.author = 'nc-auth';
+
+NOTIFS.unshift(
+  { id: 11, type: 'pub', kind: 'Т', cat: 'trans', scenario: 'А1-1',
+    title: 'Компаньон опубликован',
+    text: 'Марго прошла модерацию и появилась в каталоге — теперь её видят все.',
+    time: '10 минут назад', unread: true, cta: 'Посмотреть в каталоге' },
+
+  { id: 12, type: 'rej', kind: 'Т', cat: 'trans', scenario: 'А1-2',
+    title: 'Публикация отклонена',
+    text: 'Ника не прошла модерацию: в описании указаны ссылки и контакты. Исправьте и отправьте снова.',
+    time: '1 час назад', unread: true, cta: 'Исправить' },
+
+  { id: 13, type: 'author', kind: 'М', cat: 'engage', scenario: 'А2-1',
+    title: '@lunaria опубликовала компаньона',
+    text: 'Вы подписаны на автора — вот кто у неё вышел.',
+    card: { name: 'Ева, 26', desc: 'У меня цветочная лавка на углу. Я помню, что ты любишь.',
+            img: '../assets/img/model-2.webp', bg: 'linear-gradient(160deg, #4a2a5e, #8b2d7b)' },
+    time: '2 часа назад', unread: true, cta: 'Открыть' },
+);
+</script>
+<script>
+/* Центр уведомлений Lovix — финальный вариант «Дропдаун» со всеми юзерфлоу.
+   Полные флоу и правила — notifications/FLOWS.md */
+let notifs = NOTIFS.map(n => ({ ...n }));
+let crit = null;             // критичное закреплённое (У4), появляется при grace
+let oldLoaded = false;       // «Показать ещё»
+let lastDeleted = null;      // undo удаления
+let simId = 200;
+let chatUnread = 0;          // непрочитанные проактивы — бейдж «Мои чаты», не колокольчик
+let proIdx = 0;
+const cats = { sale: true, engage: true };
+const panel = document.getElementById('npanel');
+
+/* Виджет проактива компаньона (канал 💬: У1-4 / У2-2 / У7-1) — онлайн-чат справа-снизу.
+   Отправка — не чаще 1 проактива в сутки (квота канала), но непрочитанные от РАЗНЫХ
+   компаньонов накапливаются (пользователь отсутствовал): развёрнут последний,
+   остальные — стопкой аватаров. В колокольчик не попадает; бейдж — на «Мои чаты». */
+let proStack = [];        // по одному непрочитанному проактиву на компаньона
+let proExpanded = null;   // имя развёрнутого
+
+function updateChatBadge() {
+  chatUnread = proStack.length;
+  const b = document.getElementById('chatcnt');
+  b.textContent = chatUnread;
+  b.style.display = chatUnread ? 'flex' : 'none';
+}
+function renderProactive() {
+  const dock = document.getElementById('lwdock');
+  const exp = proStack.find(p => p.name === proExpanded);
+  let html = '';
+  if (exp) {
+    html += '<div class="lw"><div class="lw-bubble">' +
+      '<button class="lw-x" aria-label="Скрыть"><svg class="ic"><use href="#i-x"/></svg></button>' +
+      '<div class="lw-name">' + exp.name + '</div>' +
+      '<div class="lw-text">' + exp.text + '</div>' +
+      '<div class="lw-act"><button class="btn btn-grad" data-answer="' + exp.name + '">Ответить</button></div>' +
+      '</div><div class="lw-ava" data-answer="' + exp.name + '"><div class="ph"><img src="' + exp.img + '" alt="' + exp.name + '"></div></div></div>';
+  }
+  const rest = proStack.filter(p => p.name !== proExpanded);
+  if (rest.length) {
+    html += '<div class="lw-stack">' + rest.map(p =>
+      '<button class="sava" data-expand="' + p.name + '" title="' + p.name + ': ' + p.text + '">' +
+      '<span class="ph"><img src="' + p.img + '" alt="' + p.name + '"></span><i></i></button>'
+    ).join('') + '</div>';
+  }
+  dock.innerHTML = html;
+  updateChatBadge();
+}
+function pushProactive(p) {
+  const ex = proStack.find(x => x.name === p.name);
+  if (ex) ex.text = p.text; else proStack.push({ ...p });
+  proExpanded = p.name;   // новый проактив разворачивается, прежние сворачиваются в стопку
+  renderProactive();
+}
+
+const CTA_ROUTE = {
+  'Пополнить токены': 'чекаут пакета токенов',
+  'Перейти на VIP': 'чекаут VIP с зачётом остатка',
+  'Повторить оплату': 'чекаут со сменой способа (recovery)',
+  'Попробовать снова': 'повтор операции',
+  'Оплатить сейчас': 'чекаут оплаты подписки (recovery)',
+};
+
+function visible() {
+  return notifs.filter(n => n.kind === 'Т' || cats[n.cat] !== false);
+}
+function unreadCount() {
+  return visible().filter(n => n.unread).length + (crit ? 1 : 0);
+}
+function updateBadge(pulse) {
+  const c = unreadCount();
+  const b = document.getElementById('bb');
+  b.textContent = c > 9 ? '9+' : c;
+  b.style.display = c ? 'flex' : 'none';
+  document.getElementById('ncnt').textContent = c ? '· ' + c + ' новых' : '';
+  if (pulse && c) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+}
+
+function ctaHtml(n) {
+  if (n.done) return '<div class="ncta"><span class="donechip"><svg class="ic"><use href="#i-check"/></svg>Готово</span></div>';
+  if (n.cta) return '<div class="ncta"><button class="btn btn-grad" data-cta="' + n.id + '">' + n.cta + '</button></div>';
+  return '';
+}
+function itemHtml(n) {
+  return '<div class="nitem' + (n.unread ? ' unread' : '') + (n.fresh ? ' fresh' : '') + '" data-id="' + n.id + '">' +
+    '<div class="nicon ' + NCLASS[n.type] + '"><svg class="ic"><use href="#' + NICON[n.type] + '"/></svg></div>' +
+    '<div class="nbody"><div class="ntitle">' + n.title + '</div>' +
+    '<div class="ntext">' + n.text + '</div>' +
+    (n.card ? '<div class="ncard">' +
+                '<div class="ncard-row">' +
+                  '<div class="ncard-ph" style="background:' + n.card.bg + '"><img src="' + n.card.img + '" alt=""></div>' +
+                  '<div class="ncard-t"><b>' + n.card.name + '</b><span>' + n.card.desc + '</span></div>' +
+                '</div>' + ctaHtml(n) +
+              '</div>' : '') +
+    (n.card ? '' : ctaHtml(n)) +
+    '<div class="ntime">' + n.time + '</div></div>' +
+    '<div class="ndot"></div>' +
+    '<div class="hacts">' +
+      '<button class="iconbtn" data-tr="' + n.id + '" title="' + (n.unread ? 'Прочитано' : 'Вернуть в непрочитанные') + '"><svg class="ic"><use href="#' + (n.unread ? 'i-check' : 'i-dot') + '"/></svg></button>' +
+      '<button class="iconbtn" data-del="' + n.id + '" title="Удалить"><svg class="ic"><use href="#i-trash"/></svg></button>' +
+    '</div></div>';
+}
+function critHtml() {
+  return '<div class="ncrit"><div class="crow">' +
+    '<div class="nicon nc-pay"><svg class="ic"><use href="#i-alert"/></svg></div>' +
+    '<div class="nbody"><div class="ntitle">' + crit.title + '</div>' +
+    '<div class="ntext">' + crit.text + '</div>' +
+    '<div class="timer"><svg class="ic"><use href="#i-clock"/></svg>' + crit.timer + '</div>' +
+    '<div class="ncta"><button class="btn btn-grad" data-crit-cta>' + crit.cta + '</button></div>' +
+    '<div class="ntime">' + crit.time + ' · не скрывается до решения</div></div>' +
+    '</div></div>';
+}
+
+function render() {
+  const list = visible();
+  const fresh = list.filter(n => n.unread);
+  const older = list.filter(n => !n.unread);
+  let html = '';
+  if (crit) html += critHtml();
+  if (fresh.length) html += '<div class="ngroup">Новые</div>' + fresh.map(itemHtml).join('');
+  if (older.length) html += '<div class="ngroup">Ранее</div>' + older.map(itemHtml).join('');
+  if (!oldLoaded) html += '<button class="nmore" id="nmore">Показать ещё</button>';
+  if (!html) html = '<div class="nempty"><svg class="ic"><use href="#i-bell"/></svg>Пока тихо — уведомлений нет</div>';
+  document.getElementById('nlist').innerHTML = html;
+  notifs.forEach(n => n.fresh = false);
+  updateBadge(false);
+}
+
+function showView(v) {
+  document.getElementById('vlist').style.display = v === 'list' ? 'flex' : 'none';
+  document.getElementById('vset').style.display = v === 'set' ? 'block' : 'none';
+}
+
+let toastTimer;
+function toast(html, sticky) {
+  const t = document.getElementById('toast');
+  t.innerHTML = html;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), sticky ? 5000 : 2400);
+}
+
+document.addEventListener('click', e => {
+  if (e.target.closest('#bell')) { panel.classList.toggle('open'); showView('list'); return; }
+
+  /* демо-симуляция */
+  if (e.target.closest('[data-sim-new]')) {
+    const src = SIM_POOL[Math.floor(Math.random() * SIM_POOL.length)];
+    notifs.unshift({ ...src, id: simId++, time: 'только что', unread: true, fresh: true });
+    render(); updateBadge(true);
+    return;
+  }
+  if (e.target.closest('[data-sim-crit]')) {
+    if (crit) { toast('Окно восстановления уже активно'); return; }
+    crit = { ...NOTIF_CRIT };
+    render(); updateBadge(true);
+    if (!panel.classList.contains('open')) { panel.classList.add('open'); showView('list'); }
+    return;
+  }
+  if (e.target.closest('[data-sim-pro]')) {
+    pushProactive(PROACTIVE[proIdx % PROACTIVE.length]);
+    proIdx++;
+    return;
+  }
+  if (e.target.closest('[data-sim-clear]')) { notifs = []; oldLoaded = true; crit = null; render(); return; }
+
+  /* виджет проактива: развернуть из стопки / ответить / свернуть */
+  const expBtn = e.target.closest('[data-expand]');
+  if (expBtn) { proExpanded = expBtn.dataset.expand; renderProactive(); return; }
+  const ans = e.target.closest('[data-answer]');
+  if (ans) {
+    proStack = proStack.filter(p => p.name !== ans.dataset.answer);
+    proExpanded = null;
+    renderProactive();
+    toast('Переход в чат с <b>' + ans.dataset.answer + '</b> — проактив не расходует ваши лимиты');
+    return;
+  }
+  if (e.target.closest('.lw-x')) {
+    proExpanded = null;   // сворачивается в стопку, непрочитанное остаётся
+    renderProactive();
+    return;
+  }
+
+  /* критичное: решается только целевым действием */
+  if (e.target.closest('[data-crit-cta]')) {
+    toast('Переход: <b>' + CTA_ROUTE[crit.cta] + '</b> — после оплаты блок снимается (Д2)');
+    crit = null; render();
+    return;
+  }
+
+  /* CTA-конверсия (Д2): кнопка превращается в «Готово» */
+  const cta = e.target.closest('[data-cta]');
+  if (cta) {
+    const n = notifs.find(x => x.id == cta.dataset.cta);
+    n.done = true; n.unread = false; render();
+    toast('Переход: <b>' + (CTA_ROUTE[n.cta] || n.cta) + '</b> (сценарий ' + n.scenario + ')');
+    return;
+  }
+
+  /* hover-действия */
+  const tr = e.target.closest('[data-tr]');
+  if (tr) {
+    const n = notifs.find(x => x.id == tr.dataset.tr);
+    n.unread = !n.unread; render();
+    return;
+  }
+  const del = e.target.closest('[data-del]');
+  if (del) {
+    const idx = notifs.findIndex(x => x.id == del.dataset.del);
+    lastDeleted = { item: notifs[idx], idx };
+    notifs.splice(idx, 1); render();
+    toast('Уведомление удалено<button class="tundo" id="undo">Вернуть</button>', true);
+    return;
+  }
+  if (e.target.closest('#undo')) {
+    if (lastDeleted) {
+      notifs.splice(Math.min(lastDeleted.idx, notifs.length), 0, lastDeleted.item);
+      lastDeleted = null; render();
+    }
+    document.getElementById('toast').classList.remove('show');
+    return;
+  }
+
+  /* чтение кликом по уведомлению */
+  const item = e.target.closest('.nitem');
+  if (item) {
+    const n = notifs.find(x => x.id == item.dataset.id);
+    if (n.unread) { n.unread = false; render(); }
+    return;
+  }
+
+  if (e.target.closest('#nreadall')) { notifs.forEach(n => n.unread = false); render(); return; }
+  if (e.target.closest('#nsettings')) { showView('set'); return; }
+  if (e.target.closest('#nback')) { showView('list'); return; }
+  if (e.target.closest('#sw-sale')) { cats.sale = !cats.sale; e.target.closest('.sw').classList.toggle('on', cats.sale); render(); return; }
+  if (e.target.closest('#sw-engage')) { cats.engage = !cats.engage; e.target.closest('.sw').classList.toggle('on', cats.engage); render(); return; }
+  if (e.target.closest('#nmore')) {
+    oldLoaded = true;
+    notifs = notifs.concat(NOTIFS_OLD.map(n => ({ ...n })));
+    render();
+    return;
+  }
+
+  if (!e.target.closest('.npanel')) panel.classList.remove('open');
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') panel.classList.remove('open'); });
+
+render();
+
+/* демо: накопленные за отсутствие проактивы — Алиса (позавчера) и Майя (вчера);
+   последний развёрнут, прежний в стопке */
+setTimeout(() => { pushProactive(PROACTIVE[0]); proIdx = 1; }, 2500);
+setTimeout(() => { pushProactive(PROACTIVE[1]); proIdx = 2; }, 4200);
+</script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — Профиль · описание автора</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  /* ── Профиль (ЛК), макет 4930:2332. Классы lk-, общие стили не трогаются ── */
+
+  .content { max-width: 1240px; }
+
+  .lk-back { display: inline-flex; align-items: center; gap: 6px; color: rgb(var(--muted)); font-weight: 600; font-size: .92rem; margin-bottom: 20px; }
+  .lk-back:hover { color: #fff; }
+  .lk-back .ic { width: 18px; height: 18px; }
+
+  .lk-layout { display: grid; grid-template-columns: 276px 1fr; gap: 40px; align-items: start; }
+
+  /* ── левая навигация ── */
+  .lk-nav { background: rgba(255,255,255,.06); border-radius: 16px; padding: 16px; display: grid; gap: 8px; }
+  .lk-nav a {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px; border-radius: 12px; cursor: pointer;
+    font-size: 1rem; color: #fff;
+  }
+  .lk-nav a:hover { background: rgba(255,255,255,.06); }
+  .lk-nav a.on { background: rgba(220,70,228,.25); }
+  .lk-nav .ic { width: 20px; height: 20px; flex: none; }
+  .lk-div { height: 1px; background: rgba(255,255,255,.12); margin: 4px 0; }
+
+  /* ── карточки контента ── */
+  .lk-col { display: grid; gap: 16px; }
+  .lk-card { background: rgba(255,255,255,.06); border-radius: 16px; padding: 24px 28px; }
+  .lk-lbl { font-size: .75rem; line-height: 14px; letter-spacing: .02em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+
+  /* кнопка-контур из макета: обводка фуксии, радиус 8 */
+  .lk-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1px solid #d946ef; background: none; cursor: pointer; font-family: inherit;
+    padding: 8px 12px; border-radius: 8px; font-size: .875rem; color: #fff;
+    transition: background .15s;
+  }
+  .lk-btn:hover { background: rgba(217,70,239,.14); }
+  .lk-btn.grad { border-color: transparent; background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+  .lk-btn.grad:hover { filter: brightness(1.1); }
+  .lk-btn.ghost { border-color: rgba(255,255,255,.22); }
+  .lk-btn.ghost:hover { background: rgba(255,255,255,.06); }
+
+  /* ── карточка профиля ── */
+  .lk-user { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .lk-ava {
+    width: 52px; height: 52px; border-radius: 30px; flex: none;
+    background: rgba(220,70,228,.1); border: 1px solid rgba(220,70,228,.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.125rem;
+  }
+  .lk-name { display: flex; align-items: center; gap: 12px; }
+  .lk-name b { font-size: 1.25rem; line-height: 24px; font-weight: 600; }
+  .lk-chip {
+    background: rgba(65,221,104,.15); color: #41dd68;
+    font-size: .75rem; line-height: 14px; padding: 4px 10px; border-radius: 8px;
+  }
+  .lk-mail { font-size: .875rem; line-height: 16px; opacity: .6; margin-top: 6px; }
+
+  /* ── публичный профиль автора: описание с редактированием ── */
+  .lk-au-top { display: flex; align-items: center; gap: 12px; }
+  .lk-au-ava {
+    width: 40px; height: 40px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, rgb(var(--card-from)), rgb(var(--card-to)));
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem; font-weight: 800;
+  }
+  .lk-au-nick { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .lk-au-sub { font-size: .8rem; opacity: .55; margin-top: 2px; }
+  .lk-au-link { color: #f0abfc; font-size: .86rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .lk-au-link:hover { text-decoration: underline; }
+
+  .lk-bio { margin-top: 16px; display: grid; gap: 10px; justify-items: start; }
+  .lk-bio-text { color: rgb(var(--muted)); font-size: .875rem; line-height: 1.5; }
+  .lk-bio-text.empty { opacity: .5; font-style: italic; }
+  .lk-bio-row { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  .lk-bio-edit {
+    background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit;
+    color: #f0abfc; font-size: .88rem; font-weight: 600;
+  }
+  .lk-bio-edit:hover { text-decoration: underline; }
+
+  .lk-ta {
+    width: 100%; min-height: 96px; resize: vertical;
+    background: rgba(16,14,16,.55); color: #fff;
+    border: 1px solid rgba(220,70,228,.5); border-radius: 12px;
+    padding: 12px 16px; font-family: inherit; font-size: .95rem; line-height: 1.55;
+    outline: none;
+  }
+  .lk-ta:focus { border-color: rgb(var(--primary)); }
+  .lk-ta::placeholder { color: rgba(255,255,255,.4); }
+  .lk-cnt { margin-left: auto; font-size: .8rem; color: rgb(var(--muted2)); }
+  .lk-cnt.over { color: #f95c5c; }
+  .lk-hint { font-size: .8rem; opacity: .5; margin-top: 10px; }
+
+  /* ── подписка ── */
+  .lk-sub { display: flex; gap: 24px; align-items: stretch; }
+  .lk-plan { width: 260px; flex: none; display: grid; gap: 16px; align-content: start; }
+  .lk-plan b { font-size: 1.5rem; line-height: 28px; font-weight: 600; display: block; }
+  .lk-plan small { font-size: .75rem; line-height: 14px; opacity: .5; display: block; margin-top: 4px; }
+  .lk-vdiv { width: 1px; background: rgba(220,70,228,.25); flex: none; }
+  .lk-feat { flex: 1; display: grid; gap: 16px; align-content: start; }
+  .lk-feat-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .lk-feat-cols div { display: grid; gap: 12px; }
+  .lk-feat-cols p { display: flex; align-items: center; gap: 8px; font-size: .75rem; line-height: 14px; opacity: .85; }
+  .lk-feat-cols p span { font-size: .875rem; }
+
+  /* ── баланс ── */
+  .lk-bal-head { display: flex; align-items: flex-start; gap: 16px; }
+  .lk-bal-head .lk-btn { margin-left: auto; }
+  .lk-bal-row { display: flex; align-items: flex-end; gap: 8px; margin-top: 20px; }
+  .lk-bal-row b { font-size: 2.5rem; line-height: 50px; font-weight: 700; }
+  .lk-bal-row span { font-size: .875rem; line-height: 16px; opacity: .6; padding-bottom: 9px; }
+  .lk-bal-row .of { margin-left: auto; }
+  .lk-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,.1); overflow: hidden; margin-top: 8px; }
+  .lk-track i { display: block; height: 6px; border-radius: 3px; background: linear-gradient(165deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+  .lk-upd { display: flex; align-items: center; gap: 6px; margin-top: 14px; font-size: .75rem; line-height: 14px; opacity: .5; }
+  .lk-upd .ic { width: 16px; height: 16px; }
+
+  /* ── нижний ряд ── */
+  .lk-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .lk-danger { display: grid; gap: 12px; margin-top: 4px; }
+  .lk-danger button {
+    background: none; border: 0; padding: 0; cursor: pointer; text-align: left;
+    font-family: inherit; font-size: .875rem; line-height: 16px; color: #f95c5c;
+  }
+  .lk-danger button:hover { text-decoration: underline; }
+  .lk-ref { display: grid; gap: 10px; margin-top: 4px; }
+  .lk-ref-line { display: flex; align-items: center; gap: 10px; font-size: .875rem; }
+  .lk-ref-line .ic { width: 16px; height: 16px; opacity: .75; }
+  .lk-ref-line em { flex: 1; font-style: normal; opacity: .75; }
+  .lk-ref-link { display: flex; align-items: center; gap: 8px; color: #dc46e4; font-size: .75rem; }
+  .lk-ref-link .ic { width: 14px; height: 14px; }
+
+
+  /* ── модалка редактирования профиля, макет 5035:4574 ── */
+  .lk-ov {
+    position: fixed; inset: 0; z-index: 80;
+    background: rgba(8,6,10,.72);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .lk-ov.open { display: flex; }
+  .lk-modal {
+    width: 560px; max-width: 100%; max-height: 90vh; overflow: auto;
+    background: #221f22; border: 1px solid rgba(220,70,228,.15);
+    border-radius: 20px; box-shadow: 0 24px 48px rgba(0,0,0,.5);
+  }
+  .lk-mh {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 20px 20px 28px;
+  }
+  .lk-mh b { font-size: 1.5rem; line-height: 28px; font-weight: 600; }
+  .lk-mx {
+    width: 40px; height: 40px; border-radius: 20px; border: 0; cursor: pointer;
+    background: rgba(255,255,255,.06); color: #fff; opacity: .7;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lk-mx:hover { opacity: 1; background: rgba(255,255,255,.12); }
+  .lk-mx .ic { width: 20px; height: 20px; }
+  .lk-msep { height: 1px; background: rgba(255,255,255,.1); }
+  .lk-mb { display: grid; gap: 20px; padding: 24px 28px; }
+  .lk-f { display: grid; gap: 8px; }
+  .lk-f > label { font-size: .875rem; line-height: 16px; opacity: .75; }
+  .lk-f label em { font-style: normal; font-size: .78rem; opacity: .6; margin-left: 6px; }
+  .lk-f input, .lk-f textarea {
+    width: 100%; font-family: inherit; color: #fff;
+    background: rgba(220,70,228,.15); border: 1px solid rgba(220,70,228,.1);
+    border-radius: 10px; padding: 8px 16px; font-size: 1rem; outline: none;
+  }
+  .lk-f input { height: 40px; }
+  .lk-f textarea { min-height: 104px; resize: vertical; padding: 12px 16px; line-height: 1.5; }
+  .lk-f input:focus, .lk-f textarea:focus { border-color: rgba(220,70,228,.6); }
+  .lk-f small { font-size: .75rem; line-height: 14px; opacity: .45; }
+  .lk-f .row { display: flex; align-items: baseline; gap: 10px; }
+  .lk-f .row small { margin-left: auto; }
+  .lk-f .row small.over { color: #f95c5c; opacity: 1; }
+  .lk-mf { display: flex; gap: 16px; padding: 0 28px 28px; }
+  .lk-mf button {
+    flex: 1; height: 52px; border-radius: 12px; cursor: pointer; font-family: inherit;
+    font-size: 1.125rem; font-weight: 600; color: #fff;
+  }
+  .lk-mf .cancel { border: 1px solid #d946ef; background: none; }
+  .lk-mf .cancel:hover { background: rgba(217,70,239,.12); }
+  .lk-mf .save { border: 0; background: linear-gradient(102deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+  .lk-mf .save:hover { filter: brightness(1.1); }
+  .lk-mf .save:disabled { opacity: .5; cursor: default; filter: none; }
+
+  @media (max-width: 1080px) {
+    .lk-layout { grid-template-columns: 1fr; gap: 20px; }
+    .lk-row2 { grid-template-columns: 1fr; }
+    .lk-sub { flex-direction: column; }
+    .lk-plan { width: auto; }
+    .lk-vdiv { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <symbol id="i-verified" viewBox="0 0 24 24"><path d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Z" fill="currentColor"/><path d="m8.6 12.25 2.25 2.25 4.55-5.4" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M23 4v6h-6M1 20v-6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M1 10h22" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20 15.3 15.3 0 0 1 0-20z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="m2 17 2-9 5 4 3-7 3 7 5-4 2 9H2zM3.5 21h17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".55"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-chat" viewBox="0 0 12.375 11.5"><path d="M4.21875 4.4375C4.21875 4.55831 4.12081 4.65625 4 4.65625C3.87919 4.65625 3.78125 4.55831 3.78125 4.4375C3.78125 4.31669 3.87919 4.21875 4 4.21875C4.12081 4.21875 4.21875 4.31669 4.21875 4.4375ZM4.21875 4.4375H4M6.40625 4.4375C6.40625 4.55831 6.30831 4.65625 6.1875 4.65625C6.06669 4.65625 5.96875 4.55831 5.96875 4.4375C5.96875 4.31669 6.06669 4.21875 6.1875 4.21875C6.30831 4.21875 6.40625 4.31669 6.40625 4.4375ZM6.40625 4.4375H6.1875M8.59375 4.4375C8.59375 4.55831 8.49581 4.65625 8.375 4.65625C8.25419 4.65625 8.15625 4.55831 8.15625 4.4375C8.15625 4.31669 8.25419 4.21875 8.375 4.21875C8.49581 4.21875 8.59375 4.31669 8.59375 4.4375ZM8.59375 4.4375H8.375M0.5 6.19295C0.5 7.12691 1.15532 7.93986 2.07935 8.07573C2.71291 8.16888 3.35338 8.24082 4 8.29079V11L6.44037 8.55963C6.56096 8.43904 6.72378 8.37048 6.89427 8.36626C8.04668 8.33772 9.18181 8.23955 10.2956 8.0758C11.2197 7.93994 11.875 7.12699 11.875 6.19302V2.68199C11.875 1.74802 11.2197 0.935065 10.2956 0.799212C8.95485 0.602091 7.58318 0.5 6.18767 0.5C4.79203 0.5 3.42023 0.602109 2.07936 0.799265C1.15533 0.935128 0.5 1.74808 0.5 2.68204V6.19295Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-like" viewBox="0 0 11.5 10.625"><path d="M11 3.125C11 1.67525 9.77578 0.5 8.26562 0.5C7.13651 0.5 6.16725 1.157 5.75 2.09449C5.33275 1.157 4.36349 0.5 3.23438 0.5C1.72422 0.5 0.5 1.67525 0.5 3.125C0.5 7.33699 5.75 10.125 5.75 10.125C5.75 10.125 11 7.33699 11 3.125Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sb">
+  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <nav class="sb-top">
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+  </nav>
+  <nav class="sb-bottom">
+    <a class="sb-item on"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
+    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+  </nav>
+</aside>
+
+<div class="page">
+  <header class="tb">
+    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
+    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
+    <div class="tb-right">
+      <a class="promo">Летняя Распродажа до 75% 🔥</a>
+      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>3</i></button>
+      <div class="avatar">К</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <a class="lk-back"><svg class="ic"><use href="#i-back"/></svg>Назад</a>
+
+    <div class="lk-layout">
+
+      <nav class="lk-nav">
+        <a class="on"><svg class="ic"><use href="#i-user"/></svg>Профиль</a>
+        <a><svg class="ic"><use href="#i-gem"/></svg>Тарифы</a>
+        <a><svg class="ic"><use href="#i-clock"/></svg>История токенов</a>
+        <a><svg class="ic"><use href="#i-users"/></svg>Партнёрская программа</a>
+        <div class="lk-div"></div>
+        <a><svg class="ic"><use href="#i-x"/></svg>Выход</a>
+      </nav>
+
+      <div class="lk-col">
+
+        <!-- профиль + публичный профиль автора -->
+        <section class="lk-card">
+          <div class="lk-user">
+            <div class="lk-ava">Л</div>
+            <div style="flex:1;min-width:0">
+              <div class="lk-name"><b>@lunaria</b><span class="lk-chip">Активен</span></div>
+              <div class="lk-mail">example@example.com</div>
+            </div>
+            <button class="lk-btn" id="openEdit">Редактировать</button>
+          </div>
+
+          <div class="lk-bio">
+            <p class="lk-bio-text" id="bioText"></p>
+            <a class="lk-au-link" href="../author/v1.html" target="_blank" rel="noopener">Посмотреть, как мой профиль видят другие</a>
+          </div>
+        </section>
+
+        <!-- подписка -->
+        <section class="lk-card lk-sub">
+          <div class="lk-plan">
+            <div class="lk-lbl">Подписка</div>
+            <div>
+              <b>Premium</b>
+              <small>активна до 05.03.2026</small>
+            </div>
+            <button class="lk-btn" style="width:100%">Сменить тариф</button>
+          </div>
+          <div class="lk-vdiv"></div>
+          <div class="lk-feat">
+            <div class="lk-lbl">Что входит</div>
+            <div class="lk-feat-cols">
+              <div>
+                <p><span>💬</span>500 сообщений в день</p>
+                <p><span>🎙️</span>Голосовые ответы</p>
+                <p><span>🖼️</span>Генерация фото</p>
+              </div>
+              <div>
+                <p><span>🌶️</span>Spicy-сценарии</p>
+                <p><span>💎</span>300 токенов в месяц</p>
+                <p><span>✨</span>Создание компаньонов</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- баланс токенов -->
+        <section class="lk-card">
+          <div class="lk-bal-head">
+            <div class="lk-lbl">Баланс токенов</div>
+            <button class="lk-btn grad">Купить токены</button>
+          </div>
+          <div class="lk-bal-row">
+            <b>247</b><span>осталось</span><span class="of">из 300</span>
+          </div>
+          <div class="lk-track"><i style="width:82%"></i></div>
+          <div class="lk-upd"><svg class="ic"><use href="#i-refresh"/></svg>Транш обновится 01.08.2026</div>
+        </section>
+
+        <!-- нижний ряд -->
+        <div class="lk-row2">
+          <section class="lk-card">
+            <div class="lk-lbl">Управление данными</div>
+            <p class="lk-hint" style="margin-top:12px">Необратимые действия. Будьте внимательны.</p>
+            <div class="lk-danger">
+              <button>Удалить всех AI-компаньонов</button>
+              <button>Удалить все чаты</button>
+            </div>
+          </section>
+
+          <section class="lk-card">
+            <div class="lk-lbl">Рефералы</div>
+            <div class="lk-ref">
+              <div class="lk-ref-line"><svg class="ic"><use href="#i-gem"/></svg><em>Партнёрские токены</em><b>0</b></div>
+              <div class="lk-ref-line"><svg class="ic"><use href="#i-card"/></svg><em>Сумма продаж</em><b>~ 0 $</b></div>
+            </div>
+            <p class="lk-hint" style="margin-top:14px">Отправляйте реферальную ссылку друзьям и знакомым и получайте прибыль с LOVIX</p>
+            <div class="lk-ref-link" style="margin-top:12px"><svg class="ic"><use href="#i-globe"/></svg>lovix.ai/welcome/ibzlahbb</div>
+          </section>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="lk-ov" id="ov">
+  <div class="lk-modal" role="dialog" aria-modal="true">
+    <div class="lk-mh">
+      <b>Редактирование профиля</b>
+      <button class="lk-mx" id="mx" aria-label="Закрыть"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="lk-msep"></div>
+    <div class="lk-mb">
+      <div class="lk-f">
+        <label for="fName">Имя</label>
+        <input id="fName" type="text" value="@lunaria">
+        <small>Если не указано, будет использована часть email</small>
+      </div>
+      <div class="lk-f">
+        <label for="fMail">Email</label>
+        <input id="fMail" type="email" value="example@example.com">
+      </div>
+      <div class="lk-f">
+        <div class="row"><label for="fBio">Описание автора <em>необязательно</em></label><small id="cnt"></small></div>
+        <textarea id="fBio" placeholder="Расскажите, каких компаньонов вы создаёте"></textarea>
+        <small>Видно всем на вашей странице автора</small>
+      </div>
+    </div>
+    <div class="lk-mf">
+      <button class="cancel" id="mCancel">Отмена</button>
+      <button class="save" id="mSave">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const MAX = 280;
+  let bio = 'Пишу компаньонов с характером: медленные разговоры, много контекста, никакой спешки. Люблю сюжеты про вторые шансы и про людей, которые давно не виделись.';
+
+  const bioText = document.getElementById('bioText');
+  const ov = document.getElementById('ov');
+  const ta = document.getElementById('fBio');
+  const cnt = document.getElementById('cnt');
+  const save = document.getElementById('mSave');
+
+  function drawBio() {
+    bioText.textContent = bio || 'Описание пока не заполнено';
+    bioText.classList.toggle('empty', !bio);
+  }
+
+  function count() {
+    const n = ta.value.length;
+    cnt.textContent = n + ' / ' + MAX;
+    cnt.classList.toggle('over', n > MAX);
+    save.disabled = n > MAX;
+  }
+
+  function open() { ta.value = bio; count(); ov.classList.add('open'); ta.focus(); }
+  function close() { ov.classList.remove('open'); }
+
+  document.getElementById('openEdit').onclick = open;
+  document.getElementById('mx').onclick = close;
+  document.getElementById('mCancel').onclick = close;
+  ov.addEventListener('click', e => { if (e.target === ov) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  ta.oninput = count;
+  save.onclick = () => { if (ta.value.length <= MAX) { bio = ta.value.trim(); drawBio(); close(); } };
+
+  drawBio();
+</script>
+
+</body>
+</html>

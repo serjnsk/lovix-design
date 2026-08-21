@@ -104,7 +104,7 @@
   .cc-name span { opacity: .6; }
   /* des/S/s1 regu — 14/16 */
   .cc-desc {
-    font-size: 14px; line-height: 16px; font-weight: 400; color: #fff; opacity: .9;
+    font-size: 14px; line-height: 16px; font-weight: 400; color: #fff; opacity: .62;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .cc-foot { display: flex; align-items: center; gap: 12px; padding: 2px 0; }
@@ -114,6 +114,21 @@
   }
   .cc-m.like { gap: 3px; }
   .cc-ic { width: 14px; height: 14px; flex: none; }
+
+
+  /* тост — компонент из центра уведомлений, поднят к верху экрана */
+  .toast {
+    position: fixed; top: 24px; left: 50%;
+    transform: translateX(-50%) translateY(-14px);
+    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
+    border-radius: 12px; padding: 12px 18px;
+    font-size: .9rem; font-weight: 600; color: #fff;
+    opacity: 0; pointer-events: none; transition: .25s;
+    z-index: 95; box-shadow: 0 14px 40px rgba(0,0,0,.55);
+    max-width: min(92vw, 480px); text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast b { color: #f0abfc; }
 
   /* адаптив */
   @media (max-width: 900px) {
@@ -201,7 +216,7 @@
         </div>
 
         <div class="au-acts">
-          <button class="btn btn-grad">Подписаться</button>
+          <button class="btn btn-grad" id="subBtn">Подписаться</button>
         </div>
       </div>
 
@@ -217,6 +232,8 @@
 
   </main>
 </div>
+
+<div class="toast" id="toast" role="status"></div>
 
 <script>
   const BOTS = [
@@ -258,6 +275,20 @@
   ];
 
 
+
+  /* всплывающее уведомление о подписке */
+  let toastT;
+  function toast(html) {
+    const t = document.getElementById('toast');
+    t.innerHTML = html;
+    t.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+  function subToast(on, nick) {
+    toast(on ? `Вы подписались на <b>@${nick}</b>` : `Вы отписались от <b>@${nick}</b>`);
+  }
+
   // раскрытие длинного описания
   (() => {
     const bio = document.getElementById('bio'), btn = document.getElementById('bioToggle');
@@ -286,6 +317,17 @@
         </div>
       </div>
     </article>`).join('');
+
+  (() => {
+    const b = document.getElementById('subBtn');
+    if (!b) return;
+    b.addEventListener('click', () => {
+      const on = !b.classList.contains('subbed');
+      b.classList.toggle('subbed', on);
+      b.textContent = on ? '✓ Вы подписаны' : 'Подписаться';
+      subToast(on, 'lunaria');
+    });
+  })();
 </script>
 
 </body>

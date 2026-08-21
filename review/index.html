@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — Авторы компаньонов · обзор изменений</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  body { background: rgb(var(--page)); }
+  .wrap {
+    max-width: 1000px; margin: 0 auto; padding: 60px 24px 100px;
+    background: radial-gradient(900px 380px at 55% -160px, rgba(var(--page-from), .7), transparent 70%);
+    min-height: 100vh;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.5rem; letter-spacing: .04em; margin-bottom: 40px; }
+  .brand .ic { width: 30px; height: 30px; }
+  .brand em { font-style: normal; color: rgb(var(--muted)); font-weight: 600; font-size: 1rem; letter-spacing: 0; margin-left: 4px; }
+
+  .lead { color: rgb(var(--muted)); font-size: 1.02rem; line-height: 1.6; margin-top: 12px; max-width: 78ch; }
+  .lead b { color: #fff; }
+
+  .note {
+    margin-top: 26px; padding: 18px 22px; border-radius: 14px;
+    background: rgba(217,70,239,.1); border: 1px solid rgba(217,70,239,.3);
+    font-size: .94rem; line-height: 1.6; color: #f3d7fb;
+  }
+
+  h2.sec { font-size: 1.15rem; font-weight: 800; margin: 46px 0 6px; }
+  .sec-sub { color: rgb(var(--muted2)); font-size: .88rem; margin-bottom: 18px; }
+
+  .card {
+    background: rgba(16,14,16,.55);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 1.1rem; padding: 24px 26px; margin-bottom: 16px;
+  }
+  .card h3 { font-size: 1.12rem; font-weight: 800; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tag {
+    font-size: .7rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+  }
+  .tag.new { background: rgba(34,197,94,.16); color: #86efac; }
+  .tag.edit { background: rgba(59,130,246,.16); color: #93c5fd; }
+  .tag.pick { background: rgba(217,70,239,.16); color: #f0abfc; border: 1px solid rgba(217,70,239,.4); }
+
+  .card ul { list-style: none; margin-top: 14px; display: grid; gap: 9px; }
+  .card li { position: relative; padding-left: 18px; color: rgb(var(--muted)); font-size: .94rem; line-height: 1.55; }
+  .card li::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: rgba(217,70,239,.7); }
+  .card li b { color: #fff; font-weight: 600; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .links a {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 16px; border-radius: .6rem;
+    border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.04);
+    font-size: .9rem; font-weight: 700; color: #fff;
+  }
+  .links a:hover { border-color: rgb(var(--primary)); background: rgba(217,70,239,.13); }
+  .links a.main { border-color: transparent; background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+  .links a.main:hover { filter: brightness(1.1); }
+
+  .q { display: grid; gap: 10px; margin-top: 14px; }
+  .q div { position: relative; padding-left: 26px; color: rgb(var(--muted)); font-size: .94rem; line-height: 1.55; }
+  .q div::before {
+    content: "?"; position: absolute; left: 0; top: 0;
+    width: 18px; height: 18px; border-radius: 50%; text-align: center;
+    background: rgba(255,255,255,.1); color: #f0abfc; font-size: .72rem; font-weight: 800; line-height: 18px;
+  }
+  .q b { color: #fff; font-weight: 600; }
+
+  .foot { margin-top: 50px; color: rgb(var(--muted2)); font-size: .86rem; line-height: 1.7; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <div class="brand">
+    <svg class="ic"><use href="#i-heart"/></svg>
+    <b>LOVI<span style="color:#d946ef">X</span></b><em>· Design</em>
+  </div>
+
+  <h1 class="h1">Авторы компаньонов</h1>
+  <p class="lead">Пользователь может опубликовать созданного компаньона в общий каталог. У опубликованного компаньона появляется <b>автор</b> — со своей страницей, подписчиками и упоминанием везде, где встречается компаньон. Ниже — все экраны, которых это касается: что новое, что правится и какие решения приняты.</p>
+
+  <div class="note">
+    Это черновики для обсуждения. Ни одна из существующих страниц проекта не изменена — всё лежит отдельными файлами рядом с финалами. В хаб проекта тоже ничего не добавлено. После утверждения правки переедут в основные версии страниц, а черновики удалятся.
+  </div>
+
+  <h2 class="sec">1. Страница автора</h2>
+  <p class="sec-sub">Новый экран. Три варианта компоновки — нужно выбрать один</p>
+
+  <div class="card">
+    <h3>Страница автора <span class="tag new">новый экран</span></h3>
+    <ul>
+      <li>Наполнение во всех трёх вариантах одинаковое: <b>ник, описание, взаимодействия, подписчики, кнопка подписки и сетка компаньонов</b>. Отличается только подача шапки.</li>
+      <li><b>Сортировки пока нет</b> — договорились добавить её одновременно с сортировкой в основном каталоге.</li>
+      <li>Метрика — <b>взаимодействия</b>, а не лайки: её дорого накрутить и она связана с выручкой. Так же считают ourdream, crushon и joyland.</li>
+      <li>Список подписчиков не раскрывается — только счётчик. Приватность важнее социального доказательства.</li>
+    </ul>
+    <div class="links">
+      <a class="main" href="../author/">Смотреть три варианта</a>
+      <a href="../author/v1.html">Шапка-баннер</a>
+      <a href="../author/v2.html">Боковая колонка</a>
+      <a href="../author/v3.html">Без подложки</a>
+    </div>
+  </div>
+
+  <h2 class="sec">2. Где появляется автор</h2>
+  <p class="sec-sub">Правки существующих экранов</p>
+
+  <div class="card">
+    <h3>Каталог <span class="tag edit">правка</span></h3>
+    <ul>
+      <li>В нижнюю строку карточки добавлен <b>ник автора справа</b>, метрики сдвинуты влево. Высота карточки не изменилась.</li>
+      <li>Компаньоны от сервиса подписаны <b>@lovix с галочкой верификации</b> — карточка одна на всех, каталог не делится визуально на «наших» и «чужих».</li>
+      <li>Карточка целиком ведёт на компаньона, ник внутри перехватывает клик и ведёт на автора.</li>
+      <li>Сама страница собрана по макету лендинга: баннер, заголовок, сетка, блок «Что такое Lovix», FAQ. Поиск, сортировки и теги не выводим — их пока нет в продукте.</li>
+    </ul>
+    <div class="links"><a class="main" href="../catalog/v1.html">Открыть каталог</a></div>
+  </div>
+
+  <div class="card">
+    <h3>Страница компаньона <span class="tag edit">правка</span></h3>
+    <ul>
+      <li>Блок автора внизу правой колонки: <b>аватар, ник и метрики автора</b> — взаимодействия и подписчики, — плюс кнопка подписки.</li>
+      <li>Кнопка подписки намеренно <b>неакцентная</b>: единственный акцент на экране — «Начать общение».</li>
+      <li>Дату публикации из макета заменили метриками автора: она ничего не даёт пользователю, а метрики отвечают на вопрос «стоит ли доверять».</li>
+      <li>Внизу добавлен блок <b>«Другие компаньоны автора»</b> — этого в макете нет, это наше предложение: удержание плюс перелинковка.</li>
+    </ul>
+    <div class="links"><a class="main" href="../bot/v1.html">Открыть страницу компаньона</a></div>
+  </div>
+
+  <div class="card">
+    <h3>Профиль компаньона в чате <span class="tag edit">правка</span> <span class="tag pick">выбрать вариант</span></h3>
+    <ul>
+      <li><b>Вариант 1 — минимальный:</b> строка под именем, слева метрики компаньона, справа «от @ник». Не отнимает внимания у диалога.</li>
+      <li><b>Вариант 2 — с подпиской:</b> блок на подложке с аватаром, подписью «автор» и кнопкой. Подписаться можно прямо из чата, но блок заметнее.</li>
+      <li>У своих ботов автор не показывается — там уже есть метка «Мой бот».</li>
+      <li>Панель профиля скрывается при ширине окна 1280 и меньше — так сделано в утверждённом макете чата. Для просмотра нужно широкое окно.</li>
+    </ul>
+    <div class="links">
+      <a class="main" href="../chat/author-v1.html">Вариант 1 · строка</a>
+      <a href="../chat/author-v2.html">Вариант 2 · с подпиской</a>
+    </div>
+  </div>
+
+  <h2 class="sec">3. Что появляется у автора</h2>
+  <p class="sec-sub">Новые экраны и разделы</p>
+
+  <div class="card">
+    <h3>Мои компаньоны · статусы публикации <span class="tag new">новый экран</span></h3>
+    <ul>
+      <li>Четыре состояния: <b>приватный, на модерации, опубликован, отклонён</b>. Приватный — состояние по умолчанию: большинство пользователей ничего не публикует.</li>
+      <li>Действия спрятаны в меню и <b>различаются по статусу</b>: приватному — опубликовать, опубликованному — снять с публикации, отклонённому — исправить и отправить снова. «Удалить навсегда» есть везде.</li>
+      <li>Причина отказа — в подсказке при наведении на статус, чтобы не растить карточку и не ломать сетку.</li>
+    </ul>
+    <div class="links"><a class="main" href="../models/v1.html">Открыть «Мои компаньоны»</a></div>
+  </div>
+
+  <div class="card">
+    <h3>Мои подписки <span class="tag new">новый экран</span></h3>
+    <ul>
+      <li>Следствие кнопки подписки: должно быть место, где эти подписки живут. Пункт в левом меню.</li>
+      <li>Две вкладки — <b>подписки и подписчики</b>. У подписчиков видно взаимность.</li>
+      <li>Метка «2 новых» у автора, который что-то опубликовал с последнего захода — страховка на случай пропущенного уведомления.</li>
+    </ul>
+    <div class="links"><a class="main" href="../subscriptions/v1.html">Открыть «Мои подписки»</a></div>
+  </div>
+
+  <div class="card">
+    <h3>Профиль · публичный профиль автора <span class="tag edit">правка</span></h3>
+    <ul>
+      <li>Описание автора живёт в карточке аккаунта, рядом с ником и почтой — отдельного блока не заводим.</li>
+      <li>Редактирование — в существующей модалке «Редактирование профиля», третьим полем после имени и почты. Помечено как <b>необязательное</b>, есть счётчик символов.</li>
+      <li>Ссылка «Посмотреть, как мой профиль видят другие» открывает страницу автора.</li>
+      <li><b>Важно:</b> в макете профиля везде «кредиты», мы привели к токенам и к актуальным цифрам тарифа.</li>
+    </ul>
+    <div class="links"><a class="main" href="../profile/v1.html">Открыть профиль</a></div>
+  </div>
+
+  <div class="card">
+    <h3>Уведомления <span class="tag edit">правка</span></h3>
+    <ul>
+      <li>Три сценария: <b>компаньон опубликован</b>, <b>публикация отклонена</b> (с причиной), <b>автор опубликовал нового компаньона</b>.</li>
+      <li>Первые два транзакционные и не отключаются, третье — маркетинговое и подчиняется настройкам категорий.</li>
+      <li>У уведомления от автора — мини-карточка вышедшего компаньона с фото, именем и кнопкой внутри.</li>
+      <li>Открывается кликом по колокольчику. Всё утверждённое поведение сохранено: прочтение, удаление с возвратом, конверсия CTA в «Готово».</li>
+    </ul>
+    <div class="links"><a class="main" href="../notifications/author-v2.html">Открыть уведомления</a></div>
+  </div>
+
+  <h2 class="sec">4. Что нужно решить</h2>
+  <p class="sec-sub">Вопросы, без которых нельзя доводить до финала</p>
+
+  <div class="card">
+    <div class="q">
+      <div><b>Какой вариант страницы автора берём</b> и какой вариант авторства в чате.</div>
+      <div><b>Оставляем ли «Другие компаньоны автора»</b> на странице компаньона — в макете этого блока нет.</div>
+      <div><b>Нужна ли отдельная категория уведомлений</b> «Авторы, на которых вы подписаны». Сейчас они попадают в «Новости и вовлечение», и при отключении новостей пользователь перестанет получать и обновления авторов, на которых сам подписался.</div>
+      <div><b>Есть ли у компаньонов черновики</b> — от этого зависит, четыре у нас статуса или три.</div>
+      <div><b>Что канон в противоречащих макетах карточки</b> — в одном метрики стоят вплотную, в другом разнесены по краям и лайк оформлен плашкой.</div>
+      <div><b>Чинить ли кнопку в дизайн-системе:</b> компонент в коде отстал от макета по радиусу, кеглю и высоте. Правка заденет все страницы сразу.</div>
+      <div><b>Как называем раздел</b> — «Мои персонажи» как в макетах или «Мои ИИ-компаньоны» как на проде.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    Все страницы — черновики на дизайн-токенах текущего сайта. Фотографии компаньонов и данные демонстрационные.<br>
+    Существующие страницы проекта не изменены: тарифы, пакеты, уведомления и чат в исходном виде.
+  </div>
+
+</div>
+</body>
+</html>

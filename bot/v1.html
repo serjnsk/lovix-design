@@ -89,23 +89,18 @@
   .bp-au-stats b { color: #fff; font-weight: 600; font-size: .93rem; }
   .bp-ver { width: 15px; height: 15px; color: rgb(var(--primary)); flex: none; }
   .bp-vd { width: 1px; height: 44px; background: rgba(255,255,255,.15); flex: none; }
+  /* неброская: единственный акцент на странице — «Начать общение» */
   .bp-follow {
-    height: 32px; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-family: inherit;
-    border: 1px solid #d946ef; background: none; color: #fff;
-    font-size: 1rem; font-weight: 600; white-space: nowrap;
+    padding: .45rem 1.1rem; border-radius: 999px; cursor: pointer; font-family: inherit;
+    border: 1px solid rgba(255,255,255,.25); background: none; color: #fff;
+    font-size: .9rem; font-weight: 600; white-space: nowrap; line-height: 1.25;
+    transition: border-color .15s, background .15s, color .15s;
   }
-  .bp-follow:hover { background: rgba(217,70,239,.14); }
-  .bp-follow.on { border-color: rgba(255,255,255,.22); color: rgb(var(--muted)); }
+  .bp-follow:hover { border-color: rgba(255,255,255,.45); background: rgba(255,255,255,.07); }
+  .bp-follow.on { border-color: transparent; background: rgba(255,255,255,.08); color: rgb(var(--muted)); }
 
-  .bp-start {
-    flex: none;
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    height: 52px; width: 220px; border-radius: 12px; border: 0; cursor: pointer; font-family: inherit;
-    background: linear-gradient(101deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
-    color: #fff; font-size: 1.125rem; font-weight: 600;
-  }
-  .bp-start:hover { filter: brightness(1.1); }
-  .bp-start .ic { width: 24px; height: 24px; }
+  /* кнопка — компонент .btn.btn-grad из assets/lovix.css, размеры не переопределяем */
+  .bp-start { flex: none; min-width: 220px; }
 
   /* блок по фиче: другие компаньоны автора */
   .bp-more { margin-top: 56px; }
@@ -192,6 +187,13 @@
     .bp-vd { display: none; }
     .bp-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
   }
+
+  /* Кнопки — по боевому lovix.ai: высота 52, радиус 12, кегль 18/600, без свечения.
+     Компонент .btn в assets/lovix.css отстал от прода; сам файл не трогаем,
+     переопределяем локально в черновиках. */
+  .btn { border-radius: 12px; font-size: 1.125rem; font-weight: 600; padding: .9rem 2rem; }
+  .btn-grad { box-shadow: none; }
+  .btn-grad:hover { box-shadow: none; filter: brightness(1.1); }
 </style>
 </head>
 <body>
@@ -271,7 +273,7 @@
               <span class="bp-num"><svg class="ic"><use href="#i-cc-chat"/></svg>318k</span>
               <span class="bp-num"><svg class="ic"><use href="#i-cc-like"/></svg>4.8</span>
             </div>
-            <button class="bp-start"><svg class="ic"><use href="#i-chat"/></svg>Начать общение</button>
+            <button class="btn btn-grad bp-start"><svg class="ic"><use href="#i-chat"/></svg>Начать общение</button>
           </div>
 
           <div class="bp-chips">

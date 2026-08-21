@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Lovix — Мои компаньоны · статусы публикации</title>
+<title>Lovix — Мои персонажи · статусы публикации</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -156,6 +156,13 @@
 
   @media (max-width: 900px) { .my-head .btn { margin-left: 0; width: 100%; } }
   @media (max-width: 560px) { .my-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+
+  /* Кнопки — по боевому lovix.ai: высота 52, радиус 12, кегль 18/600, без свечения.
+     Компонент .btn в assets/lovix.css отстал от прода; сам файл не трогаем,
+     переопределяем локально в черновиках. */
+  .btn { border-radius: 12px; font-size: 1.125rem; font-weight: 600; padding: .9rem 2rem; }
+  .btn-grad { box-shadow: none; }
+  .btn-grad:hover { box-shadow: none; filter: brightness(1.1); }
 </style>
 </head>
 <body>
@@ -224,8 +231,8 @@
 
     <div class="my-head">
       <div>
-        <h1 class="h1">Мои компаньоны</h1>
-        <p class="sub">Созданные вами компаньоны. Опубликованные видны всем в каталоге, остальные — только вам.</p>
+        <h1 class="h1">Мои персонажи</h1>
+        <p class="sub">Созданные вами персонажи. Опубликованные видны всем в каталоге, остальные — только вам.</p>
       </div>
       <button class="btn btn-grad"><svg class="ic"><use href="#i-plus"/></svg>Создать компаньона</button>
     </div>

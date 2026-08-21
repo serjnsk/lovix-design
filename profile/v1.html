@@ -201,6 +201,13 @@
     .lk-plan { width: auto; }
     .lk-vdiv { display: none; }
   }
+
+  /* Кнопки — по боевому lovix.ai: высота 52, радиус 12, кегль 18/600, без свечения.
+     Компонент .btn в assets/lovix.css отстал от прода; сам файл не трогаем,
+     переопределяем локально в черновиках. */
+  .btn { border-radius: 12px; font-size: 1.125rem; font-weight: 600; padding: .9rem 2rem; }
+  .btn-grad { box-shadow: none; }
+  .btn-grad:hover { box-shadow: none; filter: brightness(1.1); }
 </style>
 </head>
 <body>

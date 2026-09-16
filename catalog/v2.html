@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — Каталог (главная) · Hero-слайдер баннеров</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  /* ── Каталог (главная). Правка по фиче: автор в карточке. Классы cat-/cc-, общие стили не трогаются ── */
+
+  .content { max-width: 1240px; }
+
+  /* ── Hero-слайдер баннеров. Перенос дизайн-референса из Claude Design
+       (design_handoff_hero_slider). Рантайм референса не переносился:
+       разметка, стили и логика переписаны на обычные HTML/CSS/JS.
+       Шрифты заменены на проектные — вместо Unbounded / Manrope /
+       JetBrains Mono везде var(--font) из assets/lovix.css.
+       Все классы с префиксом hs-, чтобы не столкнуться с общими стилями. ── */
+
+  @keyframes hs-blobA { 0% { transform: translate3d(0,0,0) scale(1); } 33% { transform: translate3d(12%, -8%, 0) scale(1.18); } 66% { transform: translate3d(-8%, 10%, 0) scale(.92); } 100% { transform: translate3d(0,0,0) scale(1); } }
+  @keyframes hs-blobB { 0% { transform: translate3d(0,0,0) scale(1.1); } 50% { transform: translate3d(-14%, 12%, 0) scale(.9); } 100% { transform: translate3d(0,0,0) scale(1.1); } }
+  @keyframes hs-bokeh { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(18px,-24px,0) scale(1.22); } }
+  @keyframes hs-silk { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(-3%, 2%, 0) scale(1.08); } }
+  @keyframes hs-satin { 0%,100% { transform: translateX(-30%) skewX(-8deg); } 50% { transform: translateX(120%) skewX(-8deg); } }
+  @keyframes hs-spinSlow { to { transform: rotate(360deg); } }
+  @keyframes hs-maskUp { from { clip-path: inset(112% 0 -12% 0); transform: translateY(18px); } to { clip-path: inset(-12% 0 -12% 0); transform: translateY(0); } }
+  @keyframes hs-fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes hs-popIn { 0% { opacity: 0; transform: scale(.8); } 65% { opacity: 1; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes hs-cardIn { from { opacity: 0; transform: translateY(60px) scale(.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes hs-floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+  @keyframes hs-floatB { 0%,100% { transform: translateY(-10px); } 50% { transform: translateY(12px); } }
+  @keyframes hs-sheen { 0% { transform: translateX(-160%) skewX(-16deg); } 55%,100% { transform: translateX(300%) skewX(-16deg); } }
+  @keyframes hs-bar { 0%,100% { transform: scaleY(.22); } 50% { transform: scaleY(1); } }
+  @keyframes hs-caret { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+  @keyframes hs-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+  @keyframes hs-glow { 0%,100% { opacity: .35; transform: scale(1); } 50% { opacity: .85; transform: scale(1.14); } }
+  @keyframes hs-glitch { 0%,92%,100% { transform: translate(0,0); } 93% { transform: translate(-3px,1px); } 95% { transform: translate(4px,-2px); } 97% { transform: translate(-2px,2px); } }
+  @keyframes hs-sway { 0% { opacity: 0; transform: translate3d(0,0,0) scale(.7); } 12% { opacity: .9; } 50% { transform: translate3d(26px,-130px,0) scale(1); } 88% { opacity: .5; } 100% { opacity: 0; transform: translate3d(-14px,-280px,0) scale(1.15); } }
+
+  /* ── каркас ── */
+  .hs { position: relative; width: 100%; }
+  .hs-halo {
+    position: absolute; inset: -22px -10px; border-radius: 46px; pointer-events: none;
+    background:
+      radial-gradient(55% 65% at 28% 45%, rgba(214,59,214,.3), rgba(214,59,214,0) 72%),
+      radial-gradient(55% 70% at 74% 60%, rgba(255,79,163,.26), rgba(255,79,163,0) 72%);
+    filter: blur(60px); opacity: .5;
+  }
+  .hs-frame {
+    position: relative; border-radius: 30px; padding: 1.5px; overflow: hidden;
+    background: linear-gradient(120deg, rgba(255,122,194,.9), rgba(140,90,255,.5) 30%, rgba(255,255,255,.14) 52%, rgba(255,200,107,.8) 88%);
+  }
+  .hs-scene {
+    position: relative; display: grid; grid-template-columns: 1fr;
+    min-height: 460px; border-radius: 29px; overflow: hidden; background: #120e26;
+  }
+  .hs-slide {
+    position: relative; grid-area: 1 / 1; min-height: 460px;
+    opacity: 0; transform: scale(1.07) translateY(3%); filter: blur(14px); pointer-events: none;
+    transition: opacity 760ms ease, transform 900ms cubic-bezier(.66,0,.24,1), filter 760ms ease;
+    transform-origin: 50% 50%;
+  }
+  .hs-slide.past { transform: scale(.94) translateY(-3%); }
+  .hs-slide.on   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); pointer-events: auto; }
+
+  /* фоны слайдов */
+  .hs-bg { position: absolute; inset: 0; overflow: hidden; }
+  .hs-s1 .hs-bg { background: linear-gradient(115deg, #1b1038 0%, #34124a 55%, #52124d 100%); }
+  .hs-s2 .hs-bg { background: radial-gradient(70% 120% at 72% 50%, #5c1636 0%, #2a0c2e 55%, #150a24 100%); }
+  .hs-s3 .hs-bg { background: radial-gradient(75% 130% at 26% 40%, #2b1c6b 0%, #1a1246 50%, #100b2a 100%); }
+
+  .hs-blob { position: absolute; border-radius: 50%; }
+  .hs-b1a { width: 780px; height: 780px; left: -14%; top: -60%; background: radial-gradient(circle, rgba(255,60,150,.3), rgba(255,60,150,0) 66%); filter: blur(70px); animation: hs-blobA 34s ease-in-out infinite; }
+  .hs-b1b { width: 900px; height: 900px; right: -18%; bottom: -70%; background: radial-gradient(circle, rgba(120,60,255,.28), rgba(120,60,255,0) 66%); filter: blur(72px); animation: hs-blobB 40s ease-in-out infinite; }
+  .hs-b2a { width: 700px; height: 700px; left: -12%; bottom: -55%; background: radial-gradient(circle, rgba(255,79,163,.26), rgba(255,79,163,0) 66%); filter: blur(70px); animation: hs-blobA 36s ease-in-out infinite; }
+  .hs-b3a { width: 820px; height: 820px; right: -14%; top: -55%; background: radial-gradient(circle, rgba(154,123,255,.28), rgba(154,123,255,0) 66%); filter: blur(72px); animation: hs-blobB 40s ease-in-out infinite; }
+
+  .hs-silk { position: absolute; inset: -12%; filter: blur(48px); animation: hs-silk 44s ease-in-out infinite;
+    background: radial-gradient(38% 52% at 74% 32%, rgba(255,200,107,.2), rgba(255,200,107,0) 70%), radial-gradient(42% 58% at 58% 82%, rgba(255,120,175,.2), rgba(255,120,175,0) 72%); }
+  .hs-satin { position: absolute; top: -20%; bottom: -20%; left: 30%; width: 34%; filter: blur(40px); animation: hs-satin 22s ease-in-out infinite;
+    background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,240,220,.16), rgba(255,255,255,0)); }
+
+  .hs-bok { position: absolute; border-radius: 50%; filter: blur(22px); opacity: .28; animation: hs-bokeh 40s ease-in-out infinite; }
+  .hs-s2 .hs-bok, .hs-s3 .hs-bok { opacity: .26; }
+  .hs-spark { position: absolute; bottom: -18px; border-radius: 50%; filter: blur(1px); box-shadow: 0 0 14px currentColor; animation: hs-sway 14s ease-in-out infinite; }
+
+  /* ── общий контент ── */
+  .hs-wrap { position: relative; height: 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 34px 44px; }
+  .hs-s2 .hs-wrap, .hs-s3 .hs-wrap { gap: 18px; }
+  .hs-s2 .hs-wrap { z-index: 3; pointer-events: none; }
+  .hs-col { flex: 1 1 360px; min-width: 260px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .hs-s2 .hs-col { flex: 1 1 380px; min-width: 270px; gap: 16px; }
+  .hs-s3 .hs-col { flex: 1 1 370px; min-width: 270px; }
+  .hs-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .hs-s3 .hs-stack { gap: 20px; }
+
+  /* Заголовки: вместо Unbounded — проектный шрифт в тяжёлых начертаниях */
+  /* В референсе Unbounded 700–800 — узкий дисплейный шрифт. Проектный
+     заметно плотнее и шире, поэтому вес 800 и кегль ниже оригинала. */
+  .hs-h { margin: 0; font-weight: 800; font-size: clamp(25px, 2.4vw, 36px); line-height: 1.08; letter-spacing: -.02em; color: #fff; }
+  .hs-s1 .hs-h { margin: 26px 0 0; font-size: clamp(26px, 2.5vw, 38px); }
+  .hs-h span.hs-line { display: block; overflow: hidden; }
+  .hs-h span.hs-line > span { display: block; }
+  .hs-grad {
+    background: linear-gradient(90deg, #ff7ac2, #ffd9a0 35%, #9a7bff 65%, #ff7ac2);
+    background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hs-sub { margin: 0; max-width: 380px; font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.66); text-wrap: pretty; }
+
+  /* Лейблы: вместо JetBrains Mono — проектный шрифт, разрядка и капс держат «технический» вид */
+  .hs-mono { font-weight: 700; letter-spacing: .2em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+
+  .hs-badge { position: absolute; z-index: 5; left: 44px; top: 30px; pointer-events: none; display: flex; align-items: center; gap: 12px; font-size: 11px; white-space: nowrap; }
+  .hs-badge.pill { gap: 10px; padding: 8px 16px; border-radius: 999px; }
+  .hs-s1 .hs-badge { color: #ff9ed1; }
+  .hs-s2 .hs-badge { background: rgba(255,200,107,.14); border: 1px solid rgba(255,200,107,.45); color: #ffd79a; }
+  .hs-s3 .hs-badge { background: rgba(154,123,255,.16); border: 1px solid rgba(170,140,255,.45); color: #cbb0ff; letter-spacing: .14em; }
+  .hs-dot-live { position: relative; width: 8px; height: 8px; flex: none; }
+  .hs-dot-live i { position: absolute; inset: 0; border-radius: 50%; background: #ff4fa3; }
+  .hs-dot-live u { position: absolute; inset: -6px; border-radius: 50%; background: rgba(255,79,163,.4); animation: hs-glow 2s ease-in-out infinite; }
+
+  /* облачко «она печатает» */
+  .hs-chat {
+    display: flex; align-items: center; gap: 14px; margin-top: 6px; padding: 14px 18px;
+    border-radius: 18px 18px 18px 6px; background: rgba(9,6,20,.6); border: 1px solid rgba(255,255,255,.12);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 20px 50px rgba(0,0,0,.4);
+  }
+  .hs-eq { display: flex; align-items: flex-end; gap: 3px; height: 26px; flex: none; }
+  .hs-eq i { width: 3px; height: 26px; border-radius: 2px; background: linear-gradient(180deg, #ff7ac2, #9a7bff); transform-origin: 50% 100%; animation: hs-bar 1.1s ease-in-out infinite; }
+  .hs-typed { font-size: 16px; font-weight: 600; color: #fff; min-height: 22px; }
+  .hs-caret { display: inline-block; width: 2px; height: 17px; margin-left: 2px; vertical-align: -2px; background: #ff7ac2; animation: hs-caret 1s step-end infinite; }
+
+  /* CTA */
+  .hs-cta {
+    position: relative; display: inline-flex; align-items: center; gap: 12px;
+    padding: 16px 32px; border-radius: 999px; overflow: hidden; border: 0; cursor: pointer;
+    font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -.01em; color: #fff;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .hs-cta:hover { transform: translateY(-3px) scale(1.02); }
+  .hs-cta span { position: relative; z-index: 2; }
+  .hs-cta i.hs-sheen { position: absolute; top: 0; bottom: 0; width: 45%; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.5), rgba(255,255,255,0)); }
+  .hs-cta1 { margin-top: 10px; background: linear-gradient(95deg, #d63bd6, #ff4fa3 55%, #ff8a4c); box-shadow: 0 18px 46px rgba(255,79,163,.45); }
+  .hs-cta1:hover { box-shadow: 0 26px 60px rgba(255,79,163,.6); }
+  .hs-cta2 { margin-top: 12px; gap: 10px; pointer-events: auto; color: #2b0f24; background: linear-gradient(95deg, #fff0cf, #ffc86b 45%, #ff9ed1); box-shadow: 0 18px 46px rgba(255,200,107,.4); }
+  .hs-cta2:hover { box-shadow: 0 26px 60px rgba(255,200,107,.55); }
+  .hs-cta2 i.hs-sheen { background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.8), rgba(255,255,255,0)); }
+  .hs-cta3 { margin-top: 8px; gap: 10px; background: linear-gradient(95deg, #7c4dff, #d63bd6 60%, #ff4fa3); box-shadow: 0 18px 46px rgba(124,77,255,.45); }
+  .hs-cta3:hover { box-shadow: 0 26px 60px rgba(124,77,255,.6); }
+
+  /* ── слайд 1: портреты ── */
+  .hs-art { position: relative; flex: 1 1 380px; min-width: 260px; align-self: stretch; }
+  .hs-art-in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .hs-fig img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
+  .hs-f1 { position: absolute; left: -6%; bottom: -32%; width: 60%; height: 136%; }
+  .hs-f2 { position: absolute; right: -18%; bottom: -18%; width: 66%; height: 148%; }
+  .hs-f3 { position: relative; width: 66%; height: 130%; margin-bottom: -14%; }
+  .hs-f1 img, .hs-f2 img { filter: drop-shadow(0 26px 34px rgba(0,0,0,.55)); }
+  .hs-f3 img { position: relative; filter: drop-shadow(0 34px 44px rgba(0,0,0,.6)); }
+  .hs-f3 .hs-aura { position: absolute; left: 50%; top: 8%; width: 230px; height: 230px; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(255,140,200,.4), rgba(255,140,200,0) 68%); filter: blur(12px); animation: hs-glow 7s ease-in-out infinite; }
+
+  .hs-name {
+    position: absolute; display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px;
+    background: rgba(9,6,20,.55); border: 1px solid rgba(255,255,255,.14);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    font-size: 11px; font-weight: 600; color: rgba(255,255,255,.88); white-space: nowrap;
+  }
+  .hs-name i { width: 5px; height: 5px; flex: none; border-radius: 50%; background: #5ce0a0; }
+  .hs-name.main { z-index: 3; left: 50%; top: 58%; translate: -50% 0; padding: 6px 12px; background: rgba(9,6,20,.6); border-color: rgba(255,255,255,.18); font-size: 12px; font-weight: 700; color: #fff; }
+  .hs-name.main i { box-shadow: 0 0 10px #5ce0a0; }
+  .hs-name.a { left: 8%; top: 34%; }
+  .hs-name.b { right: 26%; top: 52%; }
+
+  /* ── слайд 2 ── */
+  .hs-s2 .hs-fig { position: absolute; }
+  .hs-g1 { right: 27%; bottom: -4%; width: 31%; height: 124%; max-width: 360px; z-index: 1; animation: hs-floatB 15s ease-in-out infinite 1.1s; }
+  .hs-g2 { right: 0; bottom: -16%; width: 34%; height: 146%; max-width: 420px; z-index: 2; animation: hs-floatA 13s ease-in-out infinite; }
+  .hs-g1 img { filter: drop-shadow(0 28px 38px rgba(0,0,0,.5)); }
+  .hs-g2 img { object-position: bottom right; filter: drop-shadow(0 30px 40px rgba(0,0,0,.55)); }
+
+  .hs-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin-top: 2px; }
+  .hs-price b { white-space: nowrap; font-size: 29px; font-weight: 800; letter-spacing: -.02em; color: #ffc86b; font-variant-numeric: tabular-nums; }
+  .hs-price s { white-space: nowrap; font-size: 17px; color: rgba(255,255,255,.45); }
+  .hs-price em { white-space: nowrap; font-style: normal; color: rgba(255,255,255,.55); font-size: 14px; }
+
+  .hs-disc-wrap { position: relative; flex: 1 1 260px; min-width: 240px; align-self: stretch; }
+  .hs-disc-in { position: absolute; top: 0; right: -44px; bottom: 0; left: -10px; }
+  /* Позиционирование без transform: на круге висит анимация парения, она пишет
+     в transform и затёрла бы его. Наклона нет по решению дизайнера. */
+  .hs-disc {
+    position: absolute; right: calc(42% + 18px); top: 68%; width: 162px; height: 162px;
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 26px 50px rgba(0,0,0,.55));
+  }
+  .hs-disc .ring { position: absolute; inset: -12px; border-radius: 50%; background: conic-gradient(from 0deg, #ffc86b, #ff4fa3, rgba(255,200,107,0) 62%, #ffc86b); filter: blur(3px); animation: hs-spinSlow 7s linear infinite; }
+  .hs-disc .body { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 34% 26%, #5a1440, #1c0a26 80%); border: 1px solid rgba(255,255,255,.18); box-shadow: inset 0 0 60px rgba(255,200,107,.22); }
+  .hs-disc .txt { position: relative; text-align: center; animation: hs-glitch 7s steps(1) infinite; }
+  .hs-disc .num { font-size: 44px; font-weight: 800; line-height: .9; letter-spacing: -.04em; color: #fff; text-shadow: 2px 0 rgba(255,79,163,.7), -2px 0 rgba(120,200,255,.5); }
+  .hs-disc .num span { font-size: 26px; }
+  .hs-disc .cap { margin-top: 8px; font-size: 10px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: #ffc86b; }
+
+  .hs-timer { position: absolute; z-index: 4; left: 44px; bottom: 26px; display: flex; align-items: center; gap: 12px; pointer-events: none; }
+  .hs-timer .lbl { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+  .hs-timer .lbl span.pt { position: relative; width: 6px; height: 6px; flex: none; }
+  .hs-timer .lbl span.pt i { position: absolute; inset: 0; border-radius: 50%; background: #ffc86b; }
+  .hs-timer .lbl span.pt u { position: absolute; inset: -4px; border-radius: 50%; background: rgba(255,200,107,.35); animation: hs-glow 2s ease-in-out infinite; }
+  .hs-clock { display: flex; align-items: center; gap: 5px; }
+  .hs-clock div { display: flex; align-items: baseline; gap: 3px; padding: 6px 10px; border-radius: 9px; background: rgba(12,6,20,.55); border: 1px solid rgba(255,200,107,.22); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
+  .hs-clock b { font-size: 15px; font-weight: 700; line-height: 1; letter-spacing: .04em; color: #fff; font-variant-numeric: tabular-nums; }
+  .hs-clock i { font-style: normal; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,200,107,.7); }
+
+  /* ── слайд 3 ── */
+  .hs-trait { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .35em; max-width: 100%; font-size: clamp(16px, 1.35vw, 20px); font-weight: 500; line-height: 1.45; letter-spacing: -.01em; color: rgba(255,255,255,.5); }
+  .hs-trait > span.st { white-space: nowrap; }
+  .hs-trait .slot { display: inline-block; overflow: hidden; padding: .16em 0 .18em; }
+  .hs-word {
+    display: inline-block; white-space: nowrap; font-weight: 700;
+    background: linear-gradient(95deg, #cbb0ff, #ff9ed1); -webkit-background-clip: text; background-clip: text; color: transparent;
+    transition: opacity 520ms ease, transform 520ms cubic-bezier(.16,1,.3,1), filter 520ms ease;
+  }
+  .hs-word.out { opacity: 0; transform: translateY(14px); filter: blur(4px); }
+  .hs-params { position: absolute; z-index: 5; left: 44px; bottom: 26px; pointer-events: none; font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.34); white-space: nowrap; }
+  .hs-duo { position: absolute; top: 0; right: 0; bottom: 0; left: 44%; display: flex; align-items: center; justify-content: center; }
+  .hs-duo-in { position: relative; width: 74%; height: 112%; margin-bottom: -14%; }
+  .hs-duo-in img { position: absolute; bottom: 0; object-fit: contain; object-position: bottom center; }
+  .hs-duo-in img.l { left: -16%; width: 78%; height: 102%; z-index: 1; filter: drop-shadow(0 30px 40px rgba(0,0,0,.6)); animation: hs-floatB 12s ease-in-out infinite 1.2s; }
+  .hs-duo-in img.r { right: -22%; width: 80%; height: 116%; z-index: 2; filter: drop-shadow(0 32px 42px rgba(0,0,0,.6)); }
+
+  /* ── навигация ── */
+  .hs-dots { position: absolute; z-index: 5; left: 0; right: 0; bottom: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .hs-dot {
+    position: relative; height: 7px; width: 7px; border: 0; border-radius: 999px; cursor: pointer; padding: 0; overflow: hidden;
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    background: rgba(255,255,255,.35); transition: width 450ms ease, background 450ms ease, opacity 300ms ease;
+  }
+  .hs-dot:hover { opacity: .85; }
+  .hs-dot.on { width: 30px; background: rgba(255,255,255,.28); }
+  .hs-dot i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: rgba(255,255,255,.85); }
+  .hs-arr {
+    position: absolute; z-index: 6; top: 50%; width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.22); background: rgba(12,8,26,.34);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: rgba(255,255,255,.9); font-size: 22px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transform: translateY(-50%);
+    opacity: 0; pointer-events: none; transition: opacity 320ms ease, background 320ms ease, border-color 320ms ease;
+  }
+  .hs-arr.prev { left: 18px; }
+  .hs-arr.next { right: 18px; }
+  .hs:hover .hs-arr, .hs-arr:focus-visible { opacity: 1; pointer-events: auto; }
+  .hs-arr:hover { background: rgba(255,79,163,.6); border-color: rgba(255,255,255,.5); }
+  .hs-dot:focus-visible, .hs-arr:focus-visible, .hs-cta:focus-visible { outline: 2px solid #ff9ed1; outline-offset: 3px; }
+
+  /* ── входные анимации: живут только у активного слайда,
+       поэтому при каждом возврате на слайд проигрываются заново ── */
+  .hs-slide.on .hs-badge { animation: hs-fadeUp 640ms cubic-bezier(.2,.8,.2,1) both; }
+  .hs-s2.on .hs-badge, .hs-s3.on .hs-badge { animation-duration: 620ms; }
+  .hs-slide.on .hs-h span.hs-line > span { animation: hs-maskUp 900ms cubic-bezier(.16,1,.3,1) both; }
+  .hs-s1.on .hs-h span.hs-line:nth-child(1) > span { animation-delay: 80ms; }
+  .hs-s1.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 220ms; animation-name: hs-maskUp, hs-shimmer; animation-duration: 900ms, 5s; animation-timing-function: cubic-bezier(.16,1,.3,1), linear; animation-iteration-count: 1, infinite; animation-fill-mode: both, none; }
+  .hs-s2.on .hs-h span.hs-line:nth-child(1) > span, .hs-s3.on .hs-h span.hs-line:nth-child(1) > span { animation-delay: 60ms; }
+  .hs-s2.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 180ms; }
+  .hs-s3.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 190ms; }
+  .hs-s1.on .hs-sub { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 360ms both; }
+  .hs-s1.on .hs-chat { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 420ms both; }
+  .hs-s2.on .hs-price { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 300ms both; }
+  .hs-s3.on .hs-trait { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 280ms both; }
+  .hs-s1.on .hs-cta1 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 560ms both; }
+  .hs-s2.on .hs-cta2 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 480ms both; }
+  .hs-s3.on .hs-cta3 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 420ms both; }
+  .hs-slide.on .hs-cta i.hs-sheen { animation: hs-sheen 3.2s ease-in-out infinite 1.1s; }
+  .hs-s2.on .hs-cta i.hs-sheen { animation-duration: 2.8s; animation-delay: .9s; }
+  .hs-s3.on .hs-cta i.hs-sheen { animation-duration: 3.4s; animation-delay: 1.2s; }
+  .hs-s1.on .hs-f1 { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 120ms both, hs-floatA 12s ease-in-out infinite 1.1s; }
+  .hs-s1.on .hs-f2 { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 240ms both, hs-floatA 14s ease-in-out infinite 1.2s; }
+  .hs-s1.on .hs-f3 { animation: hs-cardIn 950ms cubic-bezier(.16,1,.3,1) both, hs-floatA 10s ease-in-out infinite .95s; }
+  .hs-s1.on .hs-name.main { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 640ms both; }
+  .hs-s1.on .hs-name.a { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 760ms both; }
+  .hs-s1.on .hs-name.b { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 880ms both; }
+  .hs-s2.on .hs-disc { animation: hs-popIn 820ms cubic-bezier(.2,.9,.2,1) 160ms both, hs-floatA 11s ease-in-out infinite 1s; }
+  .hs-s2.on .hs-timer .lbl { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 520ms both; }
+  .hs-s2.on .hs-clock { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 600ms both; }
+  .hs-s3.on .hs-duo-in { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) both, hs-floatA 10s ease-in-out infinite 1s; }
+  .hs-s3.on .hs-params { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 520ms both; }
+
+  /* ── адаптив ── */
+  @media (max-width: 1080px) {
+    .hs-scene, .hs-slide { min-height: 420px; }
+    .hs-wrap { padding: 28px 30px; }
+    .hs-badge, .hs-timer, .hs-params { left: 30px; }
+    .hs-disc { width: 132px; height: 132px; right: calc(40% + 10px); }
+    .hs-disc .num { font-size: 40px; }
+  }
+  /* ── мобильная раскладка.
+       В хендоффе её не проектировали («нужно решить отдельно, согласовать
+       с дизайнером») — это наш вариант. Слайд становится колонкой без пустот,
+       фотографии прижаты к нижней кромке, индикатора слайдера нет.
+       display: contents распускает .hs-wrap, чтобы таймер и строка параметров
+       (они лежат вне wrap) вставали сразу под кнопкой. ── */
+  @media (max-width: 860px) {
+    .hs-scene, .hs-slide { min-height: 0; }
+    .hs-slide { display: flex; flex-direction: column; }
+    .hs-wrap { display: contents; }
+    .hs-badge { position: static; align-self: flex-start; order: 1; margin: 22px 20px 0; }
+    .hs-col { order: 2; flex: none; min-width: 0; padding: 16px 20px 0; gap: 14px; }
+    .hs-s2 .hs-col, .hs-s3 .hs-col { flex: none; min-width: 0; }
+    .hs-s1 .hs-h { margin-top: 0; }
+    .hs-sub { max-width: none; }
+    .hs-halo { inset: -10px 0; }
+    .hs-dots { display: none; }
+
+    /* слайд 1 — облачко компактное, портреты стоят на нижней кромке */
+    .hs-chat { margin-top: 0; padding: 9px 13px; gap: 9px; border-radius: 14px 14px 14px 5px; max-width: 100%; }
+    .hs-eq { height: 16px; gap: 2px; }
+    .hs-eq i { width: 2px; height: 16px; }
+    .hs-typed { font-size: 13px; min-height: 16px; }
+    .hs-caret { height: 13px; }
+    .hs-art { order: 3; flex: none; align-self: auto; height: 257px; margin-top: 2px; }
+    .hs-art-in { align-items: flex-end; }
+    /* фигуры уходят ниже кромки баннера: floatA поднимает их на 16px,
+       и при bottom: 0 в верхней точке становится видна линия обреза кадра */
+    .hs-f1 { left: -4%; bottom: -38px; width: 50%; height: 104%; }
+    .hs-f2 { right: -8%; bottom: -38px; width: 54%; height: 110%; }
+    .hs-f3 { width: 56%; height: 116%; margin-bottom: -38px; }
+    .hs-f3 .hs-aura { width: 140px; height: 140px; top: 2%; }
+    /* фигуры выходят за кромку баннера, поэтому проценты отсчитываются
+       с запасом — иначе плашки с именами вылетают за рамку */
+    .hs-name { font-size: 10px; padding: 4px 9px; gap: 5px; }
+    .hs-name.main { font-size: 11px; padding: 5px 10px; }
+    .hs-name.a { left: 17%; top: 22%; }
+    .hs-name.b { right: 23%; top: 36%; }
+    .hs-name.main { top: 44%; }
+
+    /* слайд 2 — таймер под кнопкой, круг скидки маленький и между девушками */
+    /* left/bottom от десктопной абсолютной раскладки надо погасить,
+       иначе relative сдвигает таймер вверх и вправо прямо на кнопку */
+    .hs-timer { order: 3; position: relative; left: auto; bottom: auto; z-index: 4; margin: 14px 20px 0; }
+    /* Высоты фотозон подобраны так, чтобы собственная высота всех трёх слайдов
+       совпадала: слайды лежат в одной ячейке грида и растягиваются по самому
+       высокому, а разница вылезала пустотой над фотографиями. */
+    .hs-disc-wrap { order: 4; position: relative; flex: none; min-width: 0; height: 240px; margin-top: 2px; }
+    .hs-disc-in { position: absolute; inset: 0; }
+    /* круг ложится в просвет между двумя фигурами, а не над ними */
+    .hs-disc {
+      right: auto; left: 51%; top: auto; bottom: 16px; width: 86px; height: 86px; z-index: 3;
+      translate: -50% 0;
+    }
+    .hs-disc .ring { inset: -7px; }
+    .hs-disc .num { font-size: 26px; }
+    .hs-disc .num span { font-size: 14px; }
+    .hs-disc .cap { margin-top: 4px; font-size: 7px; letter-spacing: .22em; }
+    .hs-s2 .hs-fig { bottom: -38px; height: 240px; max-width: none; }
+    .hs-g1 { right: 50%; width: 50%; }
+    .hs-g2 { right: 0; width: 50%; }
+
+    /* слайд 3 — строка параметров под кнопкой, пара прижата к низу */
+    .hs-params { order: 3; position: relative; left: auto; bottom: auto; z-index: 4; margin: 12px 20px 0; font-size: 9px; letter-spacing: .12em; line-height: 1.7; white-space: normal; }
+    .hs-duo { order: 4; position: relative; left: 0; height: 262px; margin-top: 4px; }
+    .hs-duo-in { width: 84%; height: 100%; margin-bottom: 0; }
+    /* на десктопе фигуры выше контейнера (102% и 116%) и торчат вверх —
+       на мобильной это наезжало на строку параметров.
+       Сдвиг вниз больше суммарной амплитуды парения: блок .hs-duo-in
+       поднимается на 16px (floatA) и левая картинка ещё на 10px (floatB) —
+       при меньшем сдвиге в верхней точке открывается линия обреза кадра. */
+    .hs-duo-in img.l, .hs-duo-in img.r { height: 100%; bottom: -48px; }
+  }
+  @media (max-width: 560px) {
+    .hs-frame { border-radius: 22px; }
+    .hs-scene { border-radius: 21px; }
+    .hs-badge { margin: 18px 16px 0; font-size: 10px; }
+    .hs-col { padding: 14px 16px 0; }
+    .hs-h, .hs-s1 .hs-h { font-size: 23px; }
+    .hs-sub { font-size: 13.5px; }
+    .hs-cta { padding: 13px 22px; font-size: 14px; }
+    .hs-price b { font-size: 24px; }
+    .hs-arr { display: none; }
+    .hs-art { height: 233px; }
+    .hs-duo { height: 238px; }
+    .hs-s2 .hs-fig { height: 222px; bottom: -34px; }
+    .hs-disc-wrap { height: 222px; }
+    .hs-disc { width: 76px; height: 76px; bottom: 14px; }
+    .hs-disc .num { font-size: 24px; }
+    .hs-timer { margin: 12px 16px 0; gap: 8px; }
+    .hs-timer .lbl { display: none; }
+    .hs-params { margin: 10px 16px 0; }
+  }
+
+  /* ── спокойный режим ── */
+  @media (prefers-reduced-motion: reduce) {
+    .hs-slide, .hs-slide * { animation: none !important; }
+    .hs-slide { transition: opacity 260ms ease !important; transform: none !important; filter: none !important; }
+    .hs-word { transition: none !important; }
+  }
+
+  /* ── заголовок, поиск, сортировки: макет 461:6683 ── */
+  .cat-h1 { font-size: 2rem; font-weight: 800; margin: 44px 0 24px; }
+  /* ── сетка ── */
+  .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+
+  /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12) */
+  .cc {
+    position: relative; overflow: hidden;
+    border-radius: 12px;
+    aspect-ratio: 285 / 400;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    transition: transform .18s, box-shadow .18s;
+    cursor: pointer;
+  }
+  .cc:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(217,70,239,.16); }
+  .cc-bg { position: absolute; inset: 0; }
+  .cc-img {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    height: 92%; width: auto; max-width: none;
+    filter: drop-shadow(0 12px 26px rgba(0,0,0,.45));
+  }
+  /* градиент из макета: прозрачный → rgba(16,14,16,.92), высота 110 */
+  .cc-shade {
+    position: absolute; inset: auto 0 0 0; height: 110px;
+    background: linear-gradient(180deg, rgba(16,14,16,0), rgba(16,14,16,.92));
+  }
+  .cc-meta {
+    position: relative;
+    padding: 0 16px 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .cc-text { display: flex; flex-direction: column; gap: 2px; }
+  /* des/H/h3 semi — 24/28 */
+  .cc-name {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 24px; line-height: 28px; font-weight: 600; color: #fff;
+    white-space: nowrap;
+  }
+  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .cc-name span { opacity: .6; }
+  /* des/S/s1 regu — 14/16 */
+  .cc-desc {
+    font-size: 14px; line-height: 16px; font-weight: 400; color: #fff; opacity: .62;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .cc-foot { display: flex; align-items: center; gap: 12px; padding: 2px 0; }
+  .cc-m {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 14px; font-weight: 400; color: #fff; opacity: .9;
+  }
+  .cc-m.like { gap: 3px; }
+  .cc-ic { width: 14px; height: 14px; flex: none; }
+
+
+  /* автор в карточке: метрики слева, «от @ник» справа — как в профиле чата */
+  .cc-by { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; flex: none; min-width: 0;
+           font-size: 14px; font-weight: 400; }
+  .cc-by a {
+    color: #fff; font-weight: 400; opacity: .9;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .cc-by a:hover { color: #f0abfc; opacity: 1; }
+  .cc-ver { width: 12px; height: 12px; color: rgb(var(--primary)); flex: none; }
+
+  /* плитка «создать компаньона», макет 461:6709 */
+  .cc.newcard { display: flex; align-items: center; justify-content: center; }
+  .cc.newcard .blur { position: absolute; inset: 0; filter: blur(9px) saturate(1.1); }
+  .cc.newcard .veil { position: absolute; inset: 0; background: rgba(220,70,228,.25); backdrop-filter: blur(6px); }
+  .cc.newcard .lbl {
+    position: relative; z-index: 2; display: flex; align-items: center; gap: 10px;
+    font-size: 1.6rem; font-weight: 800; color: #fff;
+  }
+  .cc.newcard .lbl .ic { width: 30px; height: 30px; }
+
+  /* ── SEO-текст и FAQ ── */
+  .cat-about { margin-top: 56px; }
+  .cat-about h2 { font-size: 1.6rem; font-weight: 800; text-align: center; }
+  .cat-about p { color: rgb(var(--muted)); font-size: .95rem; line-height: 1.65; margin-top: 16px; }
+
+  /* FAQ — компонент лендинга «quest / des» (426:5063).
+     Отличается от FAQ на странице тарифов: сплошной фон, без обводки, крупный заголовок, шеврон. */
+  .faq { margin-top: 56px; }
+  .faq h2 { font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 22px; }
+  .faq details { background: #131013; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+  .faq summary {
+    list-style: none; cursor: pointer; padding: 24px 28px; gap: 12px;
+    font-size: 1.5rem; line-height: 28px; font-weight: 600;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary .ic { width: 24px; height: 24px; flex: none; transform: rotate(90deg); transition: transform .2s; }
+  .faq details[open] summary .ic { transform: rotate(-90deg); }
+  .faq details p { padding: 0 28px 24px; color: rgb(var(--muted)); font-size: 1rem; line-height: 1.6; }
+
+  @media (max-width: 560px) {
+    .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  }
+
+  /* Кнопки — по боевому lovix.ai: высота 52, радиус 12, кегль 18/600, без свечения.
+     Компонент .btn в assets/lovix.css отстал от прода; сам файл не трогаем,
+     переопределяем локально в черновиках. */
+  .btn { border-radius: 12px; font-size: 1.125rem; font-weight: 600; padding: .9rem 2rem; }
+  .btn-grad { box-shadow: none; }
+  .btn-grad:hover { box-shadow: none; filter: brightness(1.1); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <symbol id="i-chevr" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-verified" viewBox="0 0 24 24"><path d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Z" fill="currentColor"/><path d="m8.6 12.25 2.25 2.25 4.55-5.4" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".55"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-chat" viewBox="0 0 12.375 11.5"><path d="M4.21875 4.4375C4.21875 4.55831 4.12081 4.65625 4 4.65625C3.87919 4.65625 3.78125 4.55831 3.78125 4.4375C3.78125 4.31669 3.87919 4.21875 4 4.21875C4.12081 4.21875 4.21875 4.31669 4.21875 4.4375ZM4.21875 4.4375H4M6.40625 4.4375C6.40625 4.55831 6.30831 4.65625 6.1875 4.65625C6.06669 4.65625 5.96875 4.55831 5.96875 4.4375C5.96875 4.31669 6.06669 4.21875 6.1875 4.21875C6.30831 4.21875 6.40625 4.31669 6.40625 4.4375ZM6.40625 4.4375H6.1875M8.59375 4.4375C8.59375 4.55831 8.49581 4.65625 8.375 4.65625C8.25419 4.65625 8.15625 4.55831 8.15625 4.4375C8.15625 4.31669 8.25419 4.21875 8.375 4.21875C8.49581 4.21875 8.59375 4.31669 8.59375 4.4375ZM8.59375 4.4375H8.375M0.5 6.19295C0.5 7.12691 1.15532 7.93986 2.07935 8.07573C2.71291 8.16888 3.35338 8.24082 4 8.29079V11L6.44037 8.55963C6.56096 8.43904 6.72378 8.37048 6.89427 8.36626C8.04668 8.33772 9.18181 8.23955 10.2956 8.0758C11.2197 7.93994 11.875 7.12699 11.875 6.19302V2.68199C11.875 1.74802 11.2197 0.935065 10.2956 0.799212C8.95485 0.602091 7.58318 0.5 6.18767 0.5C4.79203 0.5 3.42023 0.602109 2.07936 0.799265C1.15533 0.935128 0.5 1.74808 0.5 2.68204V6.19295Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-like" viewBox="0 0 11.5 10.625"><path d="M11 3.125C11 1.67525 9.77578 0.5 8.26562 0.5C7.13651 0.5 6.16725 1.157 5.75 2.09449C5.33275 1.157 4.36349 0.5 3.23438 0.5C1.72422 0.5 0.5 1.67525 0.5 3.125C0.5 7.33699 5.75 10.125 5.75 10.125C5.75 10.125 11 7.33699 11 3.125Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 2.4 6.9L21 11l-6.6 2.1L12 20l-2.4-6.9L3 11l6.6-2.1z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sb">
+  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <nav class="sb-top">
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
+    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+  </nav>
+  <nav class="sb-bottom">
+    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
+    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+  </nav>
+</aside>
+
+<div class="page">
+  <header class="tb">
+    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
+    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
+    <div class="tb-right">
+      <a class="promo">Летняя Распродажа до 75% 🔥</a>
+      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>3</i></button>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <section class="hs" data-hero role="region" aria-label="Промо-баннеры">
+      <div class="hs-halo" aria-hidden="true"></div>
+      <div class="hs-frame">
+        <div class="hs-scene">
+
+          <!-- ── слайд 1 · живой диалог ── -->
+          <article class="hs-slide hs-s1 on" aria-label="Она уже набирает тебе сообщение">
+            <div class="hs-bg" aria-hidden="true">
+              <div class="hs-blob hs-b1a"></div>
+              <div class="hs-blob hs-b1b"></div>
+              <div data-bokeh></div>
+            </div>
+
+            <div class="hs-badge hs-mono">
+              <span class="hs-dot-live"><i></i><u></u></span>
+              <span>live · <b data-online>2 481</b> онлайн</span>
+            </div>
+
+            <div class="hs-wrap">
+              <div class="hs-col">
+                <div class="hs-stack">
+                  <h2 class="hs-h">
+                    <span class="hs-line"><span>Она уже набирает</span></span>
+                    <span class="hs-line"><span class="hs-grad">тебе сообщение</span></span>
+                  </h2>
+                  <p class="hs-sub">Выбери характер, голос и внешность — она запомнит всё, о чём вы говорили, и напишет первой.</p>
+                  <div class="hs-chat">
+                    <span class="hs-eq" data-eq aria-hidden="true"></span>
+                    <span class="hs-typed"><span data-typed></span><span class="hs-caret"></span></span>
+                  </div>
+                  <button type="button" class="hs-cta hs-cta1">
+                    <span>Ответить ей</span><span style="font-size:19px">→</span>
+                    <i class="hs-sheen"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="hs-art">
+                <div class="hs-art-in">
+                  <div class="hs-fig hs-f1">
+                    <img src="../assets/img/hero/school.webp" alt="" fetchpriority="high">
+                    <span class="hs-name a"><i></i>Аня, 19</span>
+                  </div>
+                  <div class="hs-fig hs-f2">
+                    <img src="../assets/img/hero/beach.webp" alt="" fetchpriority="high">
+                    <span class="hs-name b"><i></i>Лея, 23</span>
+                  </div>
+                  <div class="hs-fig hs-f3">
+                    <span class="hs-aura" aria-hidden="true"></span>
+                    <img src="../assets/img/hero/pink.webp" alt="" fetchpriority="high">
+                    <span class="hs-name main"><i></i>Мия, 21</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── слайд 2 · акция ── -->
+          <article class="hs-slide hs-s2" aria-label="VIP на год выгоднее">
+            <div class="hs-bg" aria-hidden="true">
+              <div class="hs-silk"></div>
+              <div class="hs-satin"></div>
+              <div data-bokeh></div>
+              <div class="hs-blob hs-b2a"></div>
+              <div class="hs-fig hs-g1"><img src="../assets/img/hero/glasses.webp" alt=""></div>
+              <div class="hs-fig hs-g2"><img src="../assets/img/hero/red.webp" alt=""></div>
+              <div data-sparks></div>
+            </div>
+
+            <div class="hs-badge pill hs-mono">выгода <b data-save>8 586</b> ₽</div>
+
+            <div class="hs-wrap">
+              <div class="hs-col">
+                <div class="hs-stack">
+                  <h2 class="hs-h">
+                    <span class="hs-line"><span>VIP на год</span></span>
+                    <span class="hs-line"><span>выгоднее на <b data-disc>45</b>%</span></span>
+                  </h2>
+                  <div class="hs-price">
+                    <b data-price>1 590 ₽</b>
+                    <s data-price-old>1 590 ₽</s>
+                    <em>/ мес при оплате за год</em>
+                  </div>
+                  <button type="button" class="hs-cta hs-cta2">
+                    <span>Оформить на год</span>
+                    <i class="hs-sheen"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="hs-disc-wrap">
+                <div class="hs-disc-in">
+                  <div class="hs-disc">
+                    <div class="ring" aria-hidden="true"></div>
+                    <div class="body" aria-hidden="true"></div>
+                    <div class="txt">
+                      <div class="num">−<b data-disc>45</b><span>%</span></div>
+                      <div class="cap">vip · год</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hs-timer">
+              <div class="lbl">
+                <span class="pt"><i></i><u></u></span>
+                <span>до конца акции</span>
+              </div>
+              <div class="hs-clock">
+                <div><b data-cl-h>00</b><i>ч</i></div>
+                <div><b data-cl-m>00</b><i>м</i></div>
+                <div><b data-cl-s>00</b><i>с</i></div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ── слайд 3 · конструктор ── -->
+          <article class="hs-slide hs-s3" aria-label="Собери компаньона по своему вкусу">
+            <div class="hs-bg" aria-hidden="true">
+              <div class="hs-blob hs-b3a"></div>
+              <div data-bokeh></div>
+            </div>
+
+            <div class="hs-badge pill hs-mono">конструктор · твои правила</div>
+
+            <div class="hs-wrap">
+              <div class="hs-col">
+                <div class="hs-stack">
+                  <h2 class="hs-h">
+                    <span class="hs-line"><span>Собери её</span></span>
+                    <span class="hs-line"><span>по своему вкусу</span></span>
+                  </h2>
+                  <div class="hs-trait">
+                    <span class="st">сегодня она</span>
+                    <span class="slot"><span class="hs-word" data-word>будет нежной</span></span>
+                  </div>
+                  <button type="button" class="hs-cta hs-cta3">
+                    <span>Создать компаньона</span>
+                    <i class="hs-sheen"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="hs-duo">
+                <div class="hs-duo-in">
+                  <img class="l" src="../assets/img/hero/brown2.webp" alt="">
+                  <img class="r" src="../assets/img/hero/blonde2.webp" alt="">
+                </div>
+              </div>
+            </div>
+
+            <div class="hs-params hs-mono" style="letter-spacing:.18em;font-weight:500">внешность · характер · голос · сценарий · имя</div>
+          </article>
+
+          <div class="hs-dots" data-dots></div>
+        </div>
+      </div>
+
+      <button type="button" class="hs-arr prev" data-step="-1" aria-label="Предыдущий баннер">‹</button>
+      <button type="button" class="hs-arr next" data-step="1" aria-label="Следующий баннер">›</button>
+    </section>
+
+    <h1 class="cat-h1">ИИ девушка: онлайн-чат с виртуальной подругой</h1>
+
+    <div class="cat-grid" id="grid"></div>
+
+    <section class="cat-about">
+      <h2>Что такое Lovix?</h2>
+      <p>Это платформа, где можно создать собственного виртуального компаньона на основе искусственного интеллекта. Компаньон может быть кем угодно: понимающим другом, с которым делятся секретами, смелым и притягательным собеседником для флирта или, скажем, преподавателем испанского. Пошаговый конструктор не требует никаких навыков — просто представьте идеального собеседника и следуйте подсказкам, как при создании персонажа в любимой игре.</p>
+      <p>Не хотите тратить время на создание? Загляните в каталог готовых компаньонов и выберите того, кто подходит под настроение. А ещё в каталог попадают компаньоны, созданные другими пользователями: под каждой карточкой указан автор, и по клику можно посмотреть все его работы.</p>
+    </section>
+
+    <div class="faq">
+      <h2>Частые вопросы</h2>
+      <details>
+        <summary>Кто такие авторы компаньонов?<svg class="ic"><use href="#i-chevr"/></svg></summary>
+        <p>Это пользователи Lovix, которые создали компаньона и опубликовали его в каталоге. Компаньоны, сделанные командой сервиса, подписаны официальным аккаунтом Lovix с галочкой.</p>
+      </details>
+      <details>
+        <summary>Как опубликовать своего компаньона?<svg class="ic"><use href="#i-chevr"/></svg></summary>
+        <p>Создайте компаньона в конструкторе и выберите «Опубликовать в каталоге». После проверки он появится в общем каталоге, а вы станете автором — с собственной страницей и подписчиками.</p>
+      </details>
+      <details>
+        <summary>Компаньон обязательно будет виден всем?<svg class="ic"><use href="#i-chevr"/></svg></summary>
+        <p>Нет. По умолчанию созданный компаньон приватный и доступен только вам. Публикация — отдельное действие, которое всегда можно отменить.</p>
+      </details>
+      <details>
+        <summary>Что даёт подписка на автора?<svg class="ic"><use href="#i-chevr"/></svg></summary>
+        <p>Вы получите уведомление, когда автор опубликует нового компаньона, и не пропустите его работы в общем потоке каталога.</p>
+      </details>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const BOTS = [
+    ['Марго', 27, 'Я реставрирую старые фотографии и знаю о людях больше, чем говорю вслух.', '318k', '4.8', 'lunaria', false],
+    ['Александра', 20, 'Я кам-модель, которая стримит гейминг и косплей нон-стоп. Мой флирт бьёт точнее хедшотов.', '828.7k', '4.8', 'lovix', true],
+    ['Ника', 22, 'Работаю в баре ночную смену. Сначала наливаю, потом слушаю — именно в таком порядке.', '244k', '4.7', 'nochnoy', false],
+    ['Олеся', 24, 'Я инструктор по йоге, для которой сила и баланс важны не только на коврике.', '799.1k', '4.5', 'lovix', true],
+    ['Ева', 31, 'Я врач скорой. Броню снимаю только дома и только при тех, кому доверяю.', '191k', '4.6', 'lunaria', false],
+    ['Дина', 24, 'Я инструктор по сёрфингу, которая оттачивает баланс йогой на пляже.', '795.2k', '4.2', 'lovix', true],
+    ['Инга', 29, 'Я вернулась в город спустя семь лет и первым делом набрала твой номер.', '167k', '4.8', 'kseniya_w', false],
+    ['Стася', 24, 'Я тату-мастер. Первые полчаса молчу, а потом меня уже не остановить.', '142k', '4.5', 'lunaria', false],
+    ['Эмма', 28, 'Я профессиональная ценительница книг и медленной йоги.', '791.4k', '4.7', 'lovix', true],
+    ['Лидия', 35, 'Преподаю литературу и считаю тебя способнее, чем ты сам о себе думаешь.', '121k', '4.9', 'nochnoy', false],
+    ['Ясмина', 26, 'У меня цветочная лавка на углу. Я помню, что ты любишь.', '98k', '4.4', 'lunaria', false],
+  ];
+
+  // кадрировка и тон: два исходных выреза, но разная крупность и подача — карточки не выглядят одинаковыми
+  const FRAME = [
+    { h: '92%',  b: '0',     f: 'saturate(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '126%', b: '-6%',   f: 'saturate(.94) brightness(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '104%', b: '-2%',   f: 'saturate(1.08) contrast(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '138%', b: '-14%',  f: 'saturate(.9) brightness(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '88%',  b: '0',     f: 'saturate(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '116%', b: '-5%',   f: 'saturate(.96) contrast(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '98%',  b: '-1%',   f: 'saturate(1.1) brightness(.98) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '132%', b: '-10%',  f: 'saturate(.92) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
+    { h: '110%', b: '-3%',   f: 'saturate(1.04) contrast(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' }
+  ];
+
+  const BG = [
+    'linear-gradient(160deg, #3b2a5e, #7b2d6b)',
+    'linear-gradient(160deg, #2a3b5e, #2d6b6b)',
+    'linear-gradient(160deg, #5e2a3b, #a13a5a)',
+    'linear-gradient(160deg, #2c2a5e, #4b2d8b)',
+    'linear-gradient(160deg, #5e4a2a, #a1683a)',
+    'linear-gradient(160deg, #2a5e4a, #2d8b6b)',
+    'linear-gradient(160deg, #4a2a5e, #8b2d7b)',
+    'linear-gradient(160deg, #2a4a5e, #2d5b8b)',
+    'linear-gradient(160deg, #5e2a2a, #8b3d2d)'
+  ];
+
+  const cards = BOTS.map(([name, age, desc, talks, rate, nick, ver], i) => `
+    <article class="cc">
+      <div class="cc-bg" style="background:${BG[i % BG.length]}"></div>
+      <img class="cc-img" src="../assets/img/model-${(i % 2) + 1}.webp" alt="${name}"
+           style="height:${FRAME[i % FRAME.length].h}; bottom:${FRAME[i % FRAME.length].b}; filter:${FRAME[i % FRAME.length].f}">
+      <div class="cc-shade"></div>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>${name},</b><span>${age}</span></div>
+          <p class="cc-desc">${desc}</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
+          <span class="cc-m like"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${rate}</span>
+          <span class="cc-by"><a>@${nick}</a>${ver ? '<svg class="cc-ver"><use href="#i-verified"/></svg>' : ''}</span>
+        </div>
+      </div>
+    </article>`).join('');
+
+  const newCard = `
+    <article class="cc newcard">
+      <div class="blur"><div class="cc-bg" style="background:linear-gradient(160deg,#4a2a5e,#8b2d7b)"></div>
+        <img class="cc-img" src="../assets/img/model-1.webp" alt="" style="height:110%">
+      </div>
+      <div class="veil"></div>
+      <div class="lbl"><svg class="ic"><use href="#i-plus"/></svg>Создать</div>
+    </article>`;
+
+  document.getElementById('grid').innerHTML = newCard + cards;
+</script>
+
+<script>
+/* Hero-слайдер баннеров. Логика перенесена из дизайн-референса Claude Design
+   (класс Component в .dc.html) на обычный JS без рантайма.
+   Параметры вынесены в CFG — в проде цену, скидку и дедлайн акции отдаёт бэкенд. */
+(function () {
+  var CFG = { autoplayMs: 7500, discount: 45, priceOld: 1590, saleHours: 11, months: 12 };
+  var root = document.querySelector('[data-hero]');
+  if (!root) return;
+
+  var calm   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var slides = Array.prototype.slice.call(root.querySelectorAll('.hs-slide'));
+  var dotsBox = root.querySelector('[data-dots]');
+  var ru = function (n) { return Number(n).toLocaleString('ru-RU'); };
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+
+  /* ── декор: боке, искры, эквалайзер ── */
+  var BOKEH = [
+    ['8%','18%','120px','rgba(255,180,215,.5)','0ms'],   ['26%','62%','80px','rgba(255,215,160,.45)','2600ms'],
+    ['48%','12%','64px','rgba(255,255,255,.35)','5200ms'], ['62%','70%','140px','rgba(255,140,190,.4)','1400ms'],
+    ['80%','24%','96px','rgba(255,215,160,.38)','7600ms'], ['90%','64%','70px','rgba(255,180,215,.42)','3800ms'],
+    ['38%','40%','54px','rgba(255,255,255,.3)','9200ms']
+  ];
+  root.querySelectorAll('[data-bokeh]').forEach(function (box) {
+    BOKEH.forEach(function (k) {
+      var s = document.createElement('span');
+      s.className = 'hs-bok';
+      s.style.cssText = 'left:' + k[0] + ';top:' + k[1] + ';width:' + k[2] + ';height:' + k[2] +
+        ';background:radial-gradient(circle,' + k[3] + ', transparent 70%);animation-delay:' + k[4];
+      box.appendChild(s);
+    });
+  });
+  root.querySelectorAll('[data-sparks]').forEach(function (box) {
+    for (var n = 0; n < 9; n++) {
+      var c = n % 3 === 0 ? '#ffc86b' : n % 3 === 1 ? '#ff8fc6' : 'rgba(255,255,255,.75)';
+      var d = (4 + (n % 3) * 3) + 'px';
+      var s = document.createElement('span');
+      s.className = 'hs-spark';
+      s.style.cssText = 'left:' + (6 + n * 10.5) + '%;width:' + d + ';height:' + d +
+        ';background:' + c + ';color:' + c + ';animation-delay:' + ((n * 780) % 7000) + 'ms';
+      box.appendChild(s);
+    }
+  });
+  root.querySelectorAll('[data-eq]').forEach(function (box) {
+    for (var n = 0; n < 14; n++) {
+      var i = document.createElement('i');
+      i.style.animationDelay = ((n * 90) % 1100) + 'ms';
+      box.appendChild(i);
+    }
+  });
+
+  /* ── подстановка чисел акции ── */
+  var target = Math.round(CFG.priceOld * (1 - CFG.discount / 100));
+  root.querySelectorAll('[data-disc]').forEach(function (e) { e.textContent = CFG.discount; });
+  root.querySelectorAll('[data-price-old]').forEach(function (e) { e.textContent = ru(CFG.priceOld) + ' ₽'; });
+  root.querySelectorAll('[data-save]').forEach(function (e) { e.textContent = ru((CFG.priceOld - target) * CFG.months); });
+
+  /* ── точки ── */
+  var dots = slides.map(function (_, n) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'hs-dot'; b.setAttribute('aria-label', 'Баннер ' + (n + 1));
+    b.appendChild(document.createElement('i'));
+    b.addEventListener('click', function () { go(n); });
+    dotsBox.appendChild(b);
+    return b;
+  });
+
+  /* ── состояние ── */
+  var i = 0, p = 0, paused = false, tick = 0;
+  var deadline = Date.now() + CFG.saleHours * 3600e3;
+
+  function paint() {
+    slides.forEach(function (s, n) {
+      s.classList.toggle('on', n === i);
+      s.classList.toggle('past', n < i);
+      s.setAttribute('aria-hidden', n === i ? 'false' : 'true');
+    });
+    dots.forEach(function (d, n) {
+      d.classList.toggle('on', n === i);
+      d.setAttribute('aria-current', n === i ? 'true' : 'false');
+      d.firstChild.style.width = n === i ? Math.round(p * 100) + '%' : '0%';
+    });
+  }
+
+  function go(n) {
+    i = (n + slides.length) % slides.length;
+    p = 0;
+    paint();
+    if (i === 1) countTo();
+  }
+
+  /* ── счётчик цены ── */
+  var priceEl = root.querySelector('[data-price]'), cnt = null;
+  function countTo() {
+    clearInterval(cnt);
+    var v = CFG.priceOld;
+    priceEl.textContent = ru(v) + ' ₽';
+    if (calm) { priceEl.textContent = ru(target) + ' ₽'; return; }
+    cnt = setInterval(function () {
+      v = v - Math.max(4, Math.round((v - target) * 0.14));
+      if (v <= target) { v = target; clearInterval(cnt); }
+      priceEl.textContent = ru(v) + ' ₽';
+    }, 34);
+  }
+
+  /* ── таймер акции ── */
+  var clH = root.querySelector('[data-cl-h]'), clM = root.querySelector('[data-cl-m]'), clS = root.querySelector('[data-cl-s]');
+  function clock() {
+    var r = Math.max(0, deadline - Date.now());
+    clH.textContent = pad(Math.floor(r / 36e5));
+    clM.textContent = pad(Math.floor(r / 6e4) % 60);
+    clS.textContent = pad(Math.floor(r / 1000) % 60);
+  }
+
+  /* ── сменное слово на третьем слайде ── */
+  var WORDS = ['будет нежной', 'будет дерзкой', 'вспомнит всё', 'заговорит вслух', 'будет только твоей'];
+  var wordEl = root.querySelector('[data-word]'), wordIdx = 0;
+  function word() {
+    var k = Math.floor(tick / 28) % WORDS.length;
+    var phase = tick % 28;
+    if (k !== wordIdx) { wordIdx = k; }
+    if (phase < 2) { wordEl.classList.add('out'); }
+    else {
+      if (wordEl.textContent !== WORDS[wordIdx]) wordEl.textContent = WORDS[wordIdx];
+      wordEl.classList.remove('out');
+    }
+  }
+
+  /* ── печатающийся текст ── */
+  var PHRASES = ['Ты сегодня такой молчаливый...', 'Я всё ещё думаю о том разговоре', 'Хочешь, расскажу секрет?'];
+  var typedEl = root.querySelector('[data-typed]'), ph = 0, ch = 0, dir = 1;
+  function typer() {
+    var s = PHRASES[ph];
+    ch += dir;
+    if (ch > s.length) { dir = 0; setTimeout(function () { dir = -1; }, 1400); }
+    if (ch <= 0 && dir === -1) { dir = 1; ph = (ph + 1) % PHRASES.length; }
+    typedEl.textContent = s.slice(0, Math.max(0, Math.min(ch, s.length)));
+  }
+
+  /* ── пауза на наведении.
+       Параллакс от курсора из референса намеренно не переносим:
+       по решению дизайнера фотографии только парят и на курсор не реагируют. ── */
+  root.addEventListener('mouseenter', function () { paused = true; });
+  root.addEventListener('mouseleave', function () { paused = false; });
+  root.addEventListener('focusin',  function () { paused = true; });
+  root.addEventListener('focusout', function () { paused = false; });
+
+  /* ── свайп: на мобильной точек и стрелок нет, переключать иначе нечем ── */
+  var sx = null, sy = null;
+  root.addEventListener('touchstart', function (e) {
+    var p = e.changedTouches[0]; sx = p.clientX; sy = p.clientY;
+  }, { passive: true });
+  root.addEventListener('touchend', function (e) {
+    if (sx === null) return;
+    var p = e.changedTouches[0], dx = p.clientX - sx, dy = p.clientY - sy;
+    // горизонтальным считаем только явный жест — иначе перехватим прокрутку страницы
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) go(i + (dx < 0 ? 1 : -1));
+    sx = sy = null;
+  }, { passive: true });
+
+  /* ── стрелки и клавиатура ── */
+  root.querySelectorAll('[data-step]').forEach(function (b) {
+    b.addEventListener('click', function () { go(i + Number(b.dataset.step)); });
+  });
+  root.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft')  { go(i - 1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { go(i + 1); e.preventDefault(); }
+  });
+
+  /* ── такты ── */
+  setInterval(function () {
+    tick++;
+    clock();
+    word();
+    if (!paused && !calm) {
+      p += 100 / CFG.autoplayMs;
+      if (p >= 1) { p = 0; go(i + 1); return; }
+    }
+    dots[i].firstChild.style.width = Math.round(p * 100) + '%';
+  }, 100);
+
+  if (!calm) setInterval(typer, 52);
+  else typedEl.textContent = PHRASES[0];
+
+  clock(); paint(); countTo();
+})();
+</script>
+
+</body>
+</html>

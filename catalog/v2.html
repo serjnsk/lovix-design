@@ -54,12 +54,15 @@
     position: relative; border-radius: 30px; padding: 1.5px; overflow: hidden;
     background: linear-gradient(120deg, rgba(255,122,194,.9), rgba(140,90,255,.5) 30%, rgba(255,255,255,.14) 52%, rgba(255,200,107,.8) 88%);
   }
+  /* Высоту баннера задаёт min-height сцены (в хендоффе было 460).
+     Снижено до 410: самой длинной текстовой колонке — первого слайда —
+     нужно 386px вместе с паддингами, остальное было пустым запасом. */
   .hs-scene {
     position: relative; display: grid; grid-template-columns: 1fr;
-    min-height: 460px; border-radius: 29px; overflow: hidden; background: #120e26;
+    min-height: 410px; border-radius: 29px; overflow: hidden; background: #120e26;
   }
   .hs-slide {
-    position: relative; grid-area: 1 / 1; min-height: 460px;
+    position: relative; grid-area: 1 / 1; min-height: 410px;
     opacity: 0; transform: scale(1.07) translateY(3%); filter: blur(14px); pointer-events: none;
     transition: opacity 760ms ease, transform 900ms cubic-bezier(.66,0,.24,1), filter 760ms ease;
     transform-origin: 50% 50%;
@@ -72,11 +75,14 @@
   .hs-s1 .hs-bg { background: linear-gradient(115deg, #1b1038 0%, #34124a 55%, #52124d 100%); }
   .hs-s2 .hs-bg { background: radial-gradient(70% 120% at 72% 50%, #5c1636 0%, #2a0c2e 55%, #150a24 100%); }
   .hs-s3 .hs-bg { background: radial-gradient(75% 130% at 26% 40%, #2b1c6b 0%, #1a1246 50%, #100b2a 100%); }
+  .hs-s4 .hs-bg { background: linear-gradient(115deg, #0d1736 0%, #15224c 55%, #1c2d63 100%); }
 
   .hs-blob { position: absolute; border-radius: 50%; }
   .hs-b1a { width: 780px; height: 780px; left: -14%; top: -60%; background: radial-gradient(circle, rgba(255,60,150,.3), rgba(255,60,150,0) 66%); filter: blur(70px); animation: hs-blobA 34s ease-in-out infinite; }
   .hs-b1b { width: 900px; height: 900px; right: -18%; bottom: -70%; background: radial-gradient(circle, rgba(120,60,255,.28), rgba(120,60,255,0) 66%); filter: blur(72px); animation: hs-blobB 40s ease-in-out infinite; }
   .hs-b2a { width: 700px; height: 700px; left: -12%; bottom: -55%; background: radial-gradient(circle, rgba(255,79,163,.26), rgba(255,79,163,0) 66%); filter: blur(70px); animation: hs-blobA 36s ease-in-out infinite; }
+  .hs-b4a { width: 800px; height: 800px; left: -12%; top: -58%; background: radial-gradient(circle, rgba(88,200,255,.26), rgba(88,200,255,0) 66%); filter: blur(70px); animation: hs-blobA 38s ease-in-out infinite; }
+  .hs-b4b { width: 860px; height: 860px; right: -16%; bottom: -66%; background: radial-gradient(circle, rgba(214,59,214,.2), rgba(214,59,214,0) 66%); filter: blur(72px); animation: hs-blobB 42s ease-in-out infinite; }
   .hs-b3a { width: 820px; height: 820px; right: -14%; top: -55%; background: radial-gradient(circle, rgba(154,123,255,.28), rgba(154,123,255,0) 66%); filter: blur(72px); animation: hs-blobB 40s ease-in-out infinite; }
 
   .hs-silk { position: absolute; inset: -12%; filter: blur(48px); animation: hs-silk 44s ease-in-out infinite;
@@ -86,15 +92,18 @@
 
   .hs-bok { position: absolute; border-radius: 50%; filter: blur(22px); opacity: .28; animation: hs-bokeh 40s ease-in-out infinite; }
   .hs-s2 .hs-bok, .hs-s3 .hs-bok { opacity: .26; }
+  .hs-s4 .hs-bok { opacity: .24; }
   .hs-spark { position: absolute; bottom: -18px; border-radius: 50%; filter: blur(1px); box-shadow: 0 0 14px currentColor; animation: hs-sway 14s ease-in-out infinite; }
 
   /* ── общий контент ── */
   .hs-wrap { position: relative; height: 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 34px 44px; }
   .hs-s2 .hs-wrap, .hs-s3 .hs-wrap { gap: 18px; }
   .hs-s2 .hs-wrap { z-index: 3; pointer-events: none; }
-  .hs-col { flex: 1 1 360px; min-width: 260px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
-  .hs-s2 .hs-col { flex: 1 1 380px; min-width: 270px; gap: 16px; }
-  .hs-s3 .hs-col { flex: 1 1 370px; min-width: 270px; }
+  /* базисы занижены: при 360+380 колонки переносились уже на ~1150 и арт
+     растягивался во всю ширину, наезжая на текст. Теперь до 860 — две колонки. */
+  .hs-col { flex: 1 1 320px; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .hs-s2 .hs-col { flex: 1 1 320px; min-width: 260px; gap: 16px; }
+  .hs-s3 .hs-col { flex: 1 1 320px; min-width: 260px; }
   .hs-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
   .hs-s3 .hs-stack { gap: 20px; }
 
@@ -109,6 +118,11 @@
     background: linear-gradient(90deg, #ff7ac2, #ffd9a0 35%, #9a7bff 65%, #ff7ac2);
     background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
   }
+  /* аниме-слайд: свой холодный акцент, чтобы раздел читался как отдельный */
+  .hs-grad4 {
+    background: linear-gradient(90deg, #58c8ff, #a9e4ff 38%, #ff9ed1 78%);
+    background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
   .hs-sub { margin: 0; max-width: 380px; font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.66); text-wrap: pretty; }
 
   /* Лейблы: вместо JetBrains Mono — проектный шрифт, разрядка и капс держат «технический» вид */
@@ -119,6 +133,7 @@
   .hs-s1 .hs-badge { color: #ff9ed1; }
   .hs-s2 .hs-badge { background: rgba(255,200,107,.14); border: 1px solid rgba(255,200,107,.45); color: #ffd79a; }
   .hs-s3 .hs-badge { background: rgba(154,123,255,.16); border: 1px solid rgba(170,140,255,.45); color: #cbb0ff; letter-spacing: .14em; }
+  .hs-s4 .hs-badge { background: rgba(88,200,255,.14); border: 1px solid rgba(88,200,255,.45); color: #a9e4ff; letter-spacing: .18em; }
   .hs-dot-live { position: relative; width: 8px; height: 8px; flex: none; }
   .hs-dot-live i { position: absolute; inset: 0; border-radius: 50%; background: #ff4fa3; }
   .hs-dot-live u { position: absolute; inset: -6px; border-radius: 50%; background: rgba(255,79,163,.4); animation: hs-glow 2s ease-in-out infinite; }
@@ -151,17 +166,49 @@
   .hs-cta2 i.hs-sheen { background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.8), rgba(255,255,255,0)); }
   .hs-cta3 { margin-top: 8px; gap: 10px; background: linear-gradient(95deg, #7c4dff, #d63bd6 60%, #ff4fa3); box-shadow: 0 18px 46px rgba(124,77,255,.45); }
   .hs-cta3:hover { box-shadow: 0 26px 60px rgba(124,77,255,.6); }
+  .hs-cta4 { margin-top: 10px; background: linear-gradient(95deg, #2f8fd8, #58c8ff 55%, #b98cff); box-shadow: 0 18px 46px rgba(88,200,255,.4); }
+  .hs-cta4:hover { box-shadow: 0 26px 60px rgba(88,200,255,.55); }
 
   /* ── слайд 1: портреты ── */
-  .hs-art { position: relative; flex: 1 1 380px; min-width: 260px; align-self: stretch; }
+  .hs-art { position: relative; flex: 1 1 320px; min-width: 250px; align-self: stretch; }
   .hs-art-in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
   .hs-fig img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-  .hs-f1 { position: absolute; left: -6%; bottom: -32%; width: 60%; height: 136%; }
+  .hs-f1 { position: absolute; left: -12%; bottom: -32%; width: 62%; height: 136%; }
   .hs-f2 { position: absolute; right: -18%; bottom: -18%; width: 66%; height: 148%; }
   .hs-f3 { position: relative; width: 66%; height: 130%; margin-bottom: -14%; }
   .hs-f1 img, .hs-f2 img { filter: drop-shadow(0 26px 34px rgba(0,0,0,.55)); }
   .hs-f3 img { position: relative; filter: drop-shadow(0 34px 44px rgba(0,0,0,.6)); }
   .hs-f3 .hs-aura { position: absolute; left: 50%; top: 8%; width: 230px; height: 230px; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(255,140,200,.4), rgba(255,140,200,0) 68%); filter: blur(12px); animation: hs-glow 7s ease-in-out infinite; }
+
+  /* Аниме-кадры ставим рядом и задаём высоту напрямую, а не процентным боксом:
+     при object-fit: contain в высоком боксе картинка масштабируется по ширине,
+     снизу остаётся вертикальный люфт — фигура повисает в воздухе, и чем уже
+     экран, тем сильнее. Здесь картинка сама себе бокс, низ всегда на кромке. */
+  /* прижимаем ряд к правому краю колонки: при центрировании перекрытие
+     выпирает влево и наезжает на текст */
+  .hs-s4 .hs-cast { position: absolute; inset: 0 -44px 0 0; display: flex; align-items: flex-end; justify-content: flex-end; }
+  .hs-s4 .hs-cast img {
+    width: auto; object-fit: contain; object-position: bottom center;
+    filter: drop-shadow(0 22px 30px rgba(0,0,0,.5));
+  }
+  /* Текстовая колонка тут короткая — отдаём место под арт, фигуры крупные.
+     Высоты резиновые по ширине окна, иначе ряд выезжает из колонки на текст.
+     margin-bottom перекрывает сразу три вещи: нижний паддинг .hs-wrap (34px),
+     амплитуду парения (16px) и небольшой запас — иначе фигуры не доходят
+     до нижней кромки и «висят в воздухе». */
+  /* Затемнение слева: фигуры крупные и на средних ширинах заходят
+     на текстовую колонку — вуаль держит читаемость, как на промо-слайде. */
+  .hs-veil4 {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(95deg, rgba(11,20,48,.94) 26%, rgba(11,20,48,.62) 46%, rgba(11,20,48,0) 64%);
+  }
+  .hs-s4 .hs-badge { z-index: 5; }
+  /* текстовая колонка поверх вуали, вуаль поверх картинок */
+  .hs-s4 .hs-col { position: relative; z-index: 2; flex: 0 1 370px; }
+  .hs-s4 .hs-art { flex: 1 1 auto; }
+  .hs-s4 .hs-cast img:nth-of-type(1) { height: clamp(214px, 24.5vw, 358px); margin-right: clamp(-92px, -6.4vw, -38px); margin-bottom: -58px; }
+  .hs-s4 .hs-cast img:nth-of-type(2) { height: clamp(242px, 28vw, 408px); margin-bottom: -58px; z-index: 2; }
+  .hs-s4 .hs-cast img:nth-of-type(3) { height: clamp(226px, 26vw, 378px); margin-left: clamp(-92px, -6.4vw, -38px); margin-bottom: -58px; }
 
   .hs-name {
     position: absolute; display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px;
@@ -170,9 +217,10 @@
     font-size: 11px; font-weight: 600; color: rgba(255,255,255,.88); white-space: nowrap;
   }
   .hs-name i { width: 5px; height: 5px; flex: none; border-radius: 50%; background: #5ce0a0; }
-  .hs-name.main { z-index: 3; left: 50%; top: 58%; translate: -50% 0; padding: 6px 12px; background: rgba(9,6,20,.6); border-color: rgba(255,255,255,.18); font-size: 12px; font-weight: 700; color: #fff; }
+  /* размер у всех трёх одинаковый; у центральной чуть плотнее фон и светится точка */
+  .hs-name.main { z-index: 3; left: 50%; top: 58%; translate: -50% 0; background: rgba(9,6,20,.6); border-color: rgba(255,255,255,.18); color: #fff; }
   .hs-name.main i { box-shadow: 0 0 10px #5ce0a0; }
-  .hs-name.a { left: 8%; top: 34%; }
+  .hs-name.a { left: 26%; top: 40%; }
   .hs-name.b { right: 26%; top: 52%; }
 
   /* ── слайд 2 ── */
@@ -264,6 +312,9 @@
   .hs-s2.on .hs-h span.hs-line:nth-child(1) > span, .hs-s3.on .hs-h span.hs-line:nth-child(1) > span { animation-delay: 60ms; }
   .hs-s2.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 180ms; }
   .hs-s3.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 190ms; }
+  .hs-s4.on .hs-h span.hs-line:nth-child(1) > span { animation-delay: 70ms; }
+  .hs-s4.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 200ms; }
+  .hs-s4.on .hs-sub,
   .hs-s1.on .hs-sub { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 360ms both; }
   .hs-s1.on .hs-chat { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 420ms both; }
   .hs-s2.on .hs-price { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 300ms both; }
@@ -271,6 +322,10 @@
   .hs-s1.on .hs-cta1 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 560ms both; }
   .hs-s2.on .hs-cta2 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 480ms both; }
   .hs-s3.on .hs-cta3 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 420ms both; }
+  .hs-s4.on .hs-cast img:nth-of-type(1) { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 160ms both, hs-floatA 12s ease-in-out infinite 1.3s; }
+  .hs-s4.on .hs-cast img:nth-of-type(2) { animation: hs-cardIn 950ms cubic-bezier(.16,1,.3,1) 60ms both,  hs-floatA 10s ease-in-out infinite 1.1s; }
+  .hs-s4.on .hs-cast img:nth-of-type(3) { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 240ms both, hs-floatA 14s ease-in-out infinite 1.5s; }
+  .hs-s4.on .hs-cta4 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 520ms both; }
   .hs-slide.on .hs-cta i.hs-sheen { animation: hs-sheen 3.2s ease-in-out infinite 1.1s; }
   .hs-s2.on .hs-cta i.hs-sheen { animation-duration: 2.8s; animation-delay: .9s; }
   .hs-s3.on .hs-cta i.hs-sheen { animation-duration: 3.4s; animation-delay: 1.2s; }
@@ -306,7 +361,10 @@
     .hs-wrap { display: contents; }
     .hs-badge { position: static; align-self: flex-start; order: 1; margin: 22px 20px 0; }
     .hs-col { order: 2; flex: none; min-width: 0; padding: 16px 20px 0; gap: 14px; }
-    .hs-s2 .hs-col, .hs-s3 .hs-col { flex: none; min-width: 0; }
+    /* .hs-s4 .hs-col и .hs-s4 .hs-art весомее общих правил — сбрасываем явно,
+       иначе десктопный flex-basis в колоночном флексе становится высотой */
+    .hs-s2 .hs-col, .hs-s3 .hs-col, .hs-s4 .hs-col { flex: none; min-width: 0; }
+    .hs-s4 .hs-art { flex: none; }
     .hs-s1 .hs-h { margin-top: 0; }
     .hs-sub { max-width: none; }
     .hs-halo { inset: -10px 0; }
@@ -325,11 +383,20 @@
     .hs-f1 { left: -4%; bottom: -38px; width: 50%; height: 104%; }
     .hs-f2 { right: -8%; bottom: -38px; width: 54%; height: 110%; }
     .hs-f3 { width: 56%; height: 116%; margin-bottom: -38px; }
+    /* у слайда 4 свои правила: селектор .hs-s4 .hs-fN весомее общего .hs-fN
+       и иначе перебил бы мобильные значения десктопными */
+    .hs-s4 .hs-art { height: 274px; }
+    /* на мобильной у .hs-wrap нет нижнего паддинга — сдвиг только под парение;
+       ряд снова по центру, правый вылет нужен только на десктопе */
+    .hs-s4 .hs-cast { inset: 0; justify-content: center; }
+    .hs-s4 .hs-cast img { margin-bottom: -24px; }
+    .hs-s4 .hs-cast img:nth-of-type(1) { height: 200px; margin-right: -8px; }
+    .hs-s4 .hs-cast img:nth-of-type(2) { height: 230px; }
+    .hs-s4 .hs-cast img:nth-of-type(3) { height: 212px; margin-left: -8px; }
     .hs-f3 .hs-aura { width: 140px; height: 140px; top: 2%; }
     /* фигуры выходят за кромку баннера, поэтому проценты отсчитываются
        с запасом — иначе плашки с именами вылетают за рамку */
     .hs-name { font-size: 10px; padding: 4px 9px; gap: 5px; }
-    .hs-name.main { font-size: 11px; padding: 5px 10px; }
     .hs-name.a { left: 17%; top: 22%; }
     .hs-name.b { right: 23%; top: 36%; }
     .hs-name.main { top: 44%; }
@@ -376,6 +443,10 @@
     .hs-sub { font-size: 13.5px; }
     .hs-cta { padding: 13px 22px; font-size: 14px; }
     .hs-price b { font-size: 24px; }
+    /* на 375 три аниме-фигуры не помещаются по ширине — оставляем двух покрупнее */
+    .hs-s4 .hs-cast img:nth-of-type(1) { display: none; }
+    .hs-s4 .hs-cast img:nth-of-type(2) { height: 244px; }
+    .hs-s4 .hs-cast img:nth-of-type(3) { height: 262px; margin-left: -4px; }
     .hs-arr { display: none; }
     .hs-art { height: 233px; }
     .hs-duo { height: 238px; }
@@ -600,7 +671,7 @@
               <div class="hs-art">
                 <div class="hs-art-in">
                   <div class="hs-fig hs-f1">
-                    <img src="../assets/img/hero/school.webp" alt="" fetchpriority="high">
+                    <img src="../assets/img/hero/ginger.webp" alt="" fetchpriority="high">
                     <span class="hs-name a"><i></i>Аня, 19</span>
                   </div>
                   <div class="hs-fig hs-f2">
@@ -713,6 +784,42 @@
             </div>
 
             <div class="hs-params hs-mono" style="letter-spacing:.18em;font-weight:500">внешность · характер · голос · сценарий · имя</div>
+          </article>
+
+          <!-- ── слайд 4 · аниме ── -->
+          <article class="hs-slide hs-s4" aria-label="Аниме-компаньоны уже в каталоге">
+            <div class="hs-bg" aria-hidden="true">
+              <div class="hs-blob hs-b4a"></div>
+              <div class="hs-blob hs-b4b"></div>
+              <div data-bokeh></div>
+            </div>
+
+            <div class="hs-badge pill hs-mono">аниме · рисованный стиль</div>
+
+            <div class="hs-wrap">
+              <div class="hs-col">
+                <div class="hs-stack">
+                  <h2 class="hs-h">
+                    <span class="hs-line"><span>Аниме-компаньоны</span></span>
+                    <span class="hs-line"><span class="hs-grad4">в отдельном разделе</span></span>
+                  </h2>
+                  <p class="hs-sub">Эльфийки, тихони и строгие секретарши — тот же характер, голос и память, только в рисованном стиле.</p>
+                  <button type="button" class="hs-cta hs-cta4">
+                    <span>Смотреть аниме</span>
+                    <i class="hs-sheen"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="hs-art">
+                <div class="hs-cast">
+                  <img src="../assets/img/hero/anime-elf.webp" alt="" loading="lazy">
+                  <img src="../assets/img/hero/anime-office.webp" alt="" loading="lazy">
+                  <img src="../assets/img/hero/anime-blonde.webp" alt="" loading="lazy">
+                </div>
+              </div>
+              <div class="hs-veil4" aria-hidden="true"></div>
+            </div>
           </article>
 
           <div class="hs-dots" data-dots></div>

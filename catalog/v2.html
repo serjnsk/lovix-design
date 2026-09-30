@@ -67,12 +67,13 @@
 
   /* фигуры-вырезы: справа, прижаты к низу; ширина колонки — 46% карточки */
   .pb-art { position: absolute; z-index: 1; right: 0; top: 0; bottom: 0; width: 46%; pointer-events: none; }
-  .pb-art img {
+  /* только фигуры (прямые дети): у пилюли автора внутри свой img-аватар */
+  .pb-art > img {
     position: absolute; bottom: 0; height: 100%; width: auto; max-width: none;
     object-fit: contain; object-position: bottom;
     transition: transform .6s cubic-bezier(.2,.8,.2,1);
   }
-  .pb-card:hover .pb-art img { transform: translateY(-2%); }
+  .pb-card:hover .pb-art > img { transform: translateY(-2%); }
   .pb-art .solo { right: 8%; }
   .pb-art .l { right: 44%; height: 92%; z-index: 0; filter: brightness(.8); }
   .pb-art .r { right: 6%; z-index: 1; }
@@ -147,8 +148,9 @@
     padding: 6px 12px 6px 6px; border-radius: 999px; font-size: 12px; white-space: nowrap;
     background: rgba(10,6,20,.62); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(8px);
   }
-  .pb-creator .av { width: 24px; height: 24px; border-radius: 50%; overflow: hidden; background: #1a3a3a; }
-  .pb-creator .av img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .pb-creator .av { position: relative; width: 24px; height: 24px; border-radius: 50%; overflow: hidden; background: #1a3a3a; }
+  /* аватар — лицо из того же выреза: картинка увеличена так, чтобы в кружок попала голова */
+  .pb-creator .av img { position: absolute; left: -27px; top: -1px; width: 76px; height: auto; }
   .pb-creator b { display: inline-flex; align-items: center; gap: 3px; font-weight: 700; }
   .pb-creator b svg { width: 12px; height: 12px; color: #6ee7c8; }
   .pb-creator span { color: rgba(255,255,255,.6); }
@@ -161,7 +163,7 @@
 
   /* аниме: три фигуры в ряд */
   .pb-anime .pb-art { width: 52%; }
-  .pb-anime .pb-art img { height: 96%; }
+  .pb-anime .pb-art > img { height: 96%; }
   .pb-anime .pb-art .a1 { right: 58%; z-index: 0; filter: brightness(.75); }
   .pb-anime .pb-art .a2 { right: 30%; z-index: 1; filter: brightness(.9); }
   .pb-anime .pb-art .a3 { right: 2%;  z-index: 2; }
@@ -218,7 +220,7 @@
     .pb-sub { display: none; }
     .pb-cta { font-size: 12px; padding: 8px 13px; margin-top: 2px; }
     .pb-art { width: 44%; }
-    .pb-art img { height: 100%; }
+    .pb-art > img { height: 100%; }
     .pb-pill, .pb-creator, .pb-duo { font-size: 11px; }
     .pb-pill .txt, .pb-creator span { display: none; }
     .pb-tag { font-size: 16px; padding: 5px 9px; }
@@ -625,7 +627,6 @@
     <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
     <nav class="tb-nav"><a>Девушки</a><a>Аниме</a><a>Парни</a></nav>
     <div class="tb-right">
-      <a class="promo">Осенняя Распродажа до 75% 🔥</a>
       <button class="tb-login">Войти</button>
     </div>
   </header>

@@ -620,6 +620,55 @@
     .cc-nick { max-width: 160px; opacity: 1; }
   }
 
+  /* избранное — сердечко сверху справа (как у референса), в стиле бейджа автора.
+     Клик заливает его, миниатюра фото «улетает» к пункту меню «Мои персонажи»,
+     на пункте растёт бейдж-счётчик. */
+  .cc-fav {
+    position: absolute; top: 10px; right: 10px; z-index: 4;
+    width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: #fff; transition: background .2s, transform .15s, color .2s;
+  }
+  .cc-fav .ic { width: 17px; height: 17px; }
+  .cc-fav .f { display: none; }
+  .cc-fav:hover { background: rgba(16,14,16,.82); transform: scale(1.08); }
+  .cc-fav:focus-visible { box-shadow: 0 0 0 2px rgba(240,171,252,.8); }
+  .cc-fav.on { color: rgb(var(--acc-to)); }
+  .cc-fav.on .o { display: none; }
+  .cc-fav.on .f { display: block; animation: fav-pop .35s ease; }
+  @keyframes fav-pop { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
+  /* летящая миниатюра */
+  .fav-fly {
+    position: fixed; z-index: 100; width: 56px; height: 56px; border-radius: 50%;
+    object-fit: cover; border: 2px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,.5);
+    pointer-events: none;
+  }
+  /* бейдж-счётчик на пункте меню и его «вздрагивание» при прилёте */
+  .sb-cnt {
+    margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+    background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    color: #fff; font-size: .7rem; font-weight: 800; font-style: normal;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sb-cnt[hidden] { display: none; }
+  .sb-item.bump { animation: sb-bump .4s ease; }
+  @keyframes sb-bump { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
+  /* тост подтверждения */
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; z-index: 100;
+    transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+    padding: 12px 18px; border-radius: 12px;
+    background: rgba(18,14,20,.94); border: 1px solid rgba(217,70,239,.35);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    font-size: .92rem; color: #fff; white-space: nowrap;
+    transition: opacity .2s, transform .2s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .toast a { color: #f0abfc; font-weight: 700; }
+  @media (max-width: 560px) { .toast { white-space: normal; max-width: calc(100vw - 32px); text-align: center; } }
+
   /* плитка «создать компаньона», макет 461:6709 */
   .cc.newcard { display: flex; align-items: center; justify-content: center; }
   /* фон плитки — продовый create-template-bg (уже размыт в самом файле) */
@@ -708,6 +757,7 @@
     <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-heart-f" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="currentColor"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cc-chat" viewBox="0 0 12.375 11.5"><path d="M4.21875 4.4375C4.21875 4.55831 4.12081 4.65625 4 4.65625C3.87919 4.65625 3.78125 4.55831 3.78125 4.4375C3.78125 4.31669 3.87919 4.21875 4 4.21875C4.12081 4.21875 4.21875 4.31669 4.21875 4.4375ZM4.21875 4.4375H4M6.40625 4.4375C6.40625 4.55831 6.30831 4.65625 6.1875 4.65625C6.06669 4.65625 5.96875 4.55831 5.96875 4.4375C5.96875 4.31669 6.06669 4.21875 6.1875 4.21875C6.30831 4.21875 6.40625 4.31669 6.40625 4.4375ZM6.40625 4.4375H6.1875M8.59375 4.4375C8.59375 4.55831 8.49581 4.65625 8.375 4.65625C8.25419 4.65625 8.15625 4.55831 8.15625 4.4375C8.15625 4.31669 8.25419 4.21875 8.375 4.21875C8.49581 4.21875 8.59375 4.31669 8.59375 4.4375ZM8.59375 4.4375H8.375M0.5 6.19295C0.5 7.12691 1.15532 7.93986 2.07935 8.07573C2.71291 8.16888 3.35338 8.24082 4 8.29079V11L6.44037 8.55963C6.56096 8.43904 6.72378 8.37048 6.89427 8.36626C8.04668 8.33772 9.18181 8.23955 10.2956 8.0758C11.2197 7.93994 11.875 7.12699 11.875 6.19302V2.68199C11.875 1.74802 11.2197 0.935065 10.2956 0.799212C8.95485 0.602091 7.58318 0.5 6.18767 0.5C4.79203 0.5 3.42023 0.602109 2.07936 0.799265C1.15533 0.935128 0.5 1.74808 0.5 2.68204V6.19295Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cc-like" viewBox="0 0 11.5 10.625"><path d="M11 3.125C11 1.67525 9.77578 0.5 8.26562 0.5C7.13651 0.5 6.16725 1.157 5.75 2.09449C5.33275 1.157 4.36349 0.5 3.23438 0.5C1.72422 0.5 0.5 1.67525 0.5 3.125C0.5 7.33699 5.75 10.125 5.75 10.125C5.75 10.125 11 7.33699 11 3.125Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -722,7 +772,7 @@
     <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
     <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
     <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item" id="sb-models" href="../models/v1.html"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи<i class="sb-cnt" hidden>0</i></a>
     <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
   </nav>
   <nav class="sb-bottom">
@@ -1036,6 +1086,9 @@
         <span class="cc-av">L</span>
         <span class="cc-nick">@${AUTHOR.nick}<svg class="cc-ver"><use href="#i-verified"/></svg></span>
       </a>
+      <button class="cc-fav" type="button" data-fav="${i}" aria-pressed="false" aria-label="В избранное">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
       <div class="cc-meta">
         <div class="cc-text">
           <div class="cc-name"><b>${name},</b><span>${age}</span></div>
@@ -1126,8 +1179,9 @@
         card.addEventListener('mouseenter', function () { enter(card); });
         card.addEventListener('mouseleave', function () { leave(card); });
       }
-      card.addEventListener('focus', function () { enter(card); });
-      card.addEventListener('blur', function () { leave(card); });
+      // focusin/focusout, а не focus/blur: фокус на сердечке или бейдже внутри карточки не гасит её
+      card.addEventListener('focusin', function () { enter(card); });
+      card.addEventListener('focusout', function (e) { if (!card.contains(e.relatedTarget)) leave(card); });
     });
     document.addEventListener('visibilitychange', function () { if (document.hidden && active) leave(active); });
 
@@ -1138,6 +1192,56 @@
       }, { rootMargin: '200px 0px' });
       cards.forEach(function (c) { if (video(c)) io.observe(c); });
     }
+  })();
+
+  /* Избранное. Клик по сердечку: бот «улетает» в «Мои персонажи» (миниатюра фото летит
+     к пункту меню, на нём растёт счётчик), внизу — тост со ссылкой на вкладку «Избранное».
+     Состояние — в localStorage, чтобы пережило перезагрузку. Вкладка «Избранное» на самой
+     странице «Мои персонажи» — отдельный экран. */
+  (function () {
+    var KEY = 'lovix.fav';
+    var fav; try { fav = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { fav = []; }
+    var target = document.getElementById('sb-models'), badge = target && target.querySelector('.sb-cnt');
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(fav)); } catch (e) {} }
+    function paint() {
+      document.querySelectorAll('.cc-fav').forEach(function (b) {
+        var on = fav.indexOf(+b.dataset.fav) !== -1;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on);
+        b.setAttribute('aria-label', on ? 'Убрать из избранного' : 'В избранное');
+      });
+      if (badge) { badge.textContent = fav.length; badge.hidden = !fav.length; }
+    }
+    function bump() { if (!target) return; target.classList.remove('bump'); void target.offsetWidth; target.classList.add('bump'); }
+    function fly(card) {
+      if (!target || !target.offsetParent) return;           // сайдбар скрыт (мобильный) — без полёта
+      var img = card.querySelector('.cc-photo'), from = card.querySelector('.cc-fav').getBoundingClientRect(), to = target.getBoundingClientRect();
+      var el = document.createElement('img'); el.className = 'fav-fly'; el.src = img.currentSrc || img.src;
+      el.style.left = (from.left + from.width / 2 - 28) + 'px'; el.style.top = (from.top + from.height / 2 - 28) + 'px';
+      document.body.appendChild(el);
+      var dx = (to.left + 30) - (from.left + from.width / 2), dy = (to.top + to.height / 2) - (from.top + from.height / 2);
+      el.animate([
+        { transform: 'translate(0,0) scale(1)', opacity: 1 },
+        { transform: 'translate(' + dx * .5 + 'px,' + (dy * .5 - 70) + 'px) scale(.75)', opacity: 1, offset: .5 },
+        { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(.2)', opacity: 0 }
+      ], { duration: 700, easing: 'cubic-bezier(.4,0,.2,1)' }).onfinish = function () { el.remove(); bump(); };
+    }
+    var toastEl, toastT;
+    function toast(html) {
+      if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
+      toastEl.innerHTML = html; toastEl.classList.add('show');
+      clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('show'); }, 3000);
+    }
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest('.cc-fav'); if (!b) return;
+      e.preventDefault();
+      var id = +b.dataset.fav, card = b.closest('.cc'), name = card.querySelector('.cc-name b').textContent.replace(/,$/, '');
+      var i = fav.indexOf(id);
+      if (i === -1) { fav.push(id); fly(card); toast('<b>' + name + '</b> — в избранном · <a href="../models/v1.html">Мои персонажи → Избранное</a>'); }
+      else { fav.splice(i, 1); toast('<b>' + name + '</b> убрана из избранного'); }
+      save(); paint();
+    });
+    paint();
   })();
 </script>
 

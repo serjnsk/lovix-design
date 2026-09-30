@@ -19,6 +19,12 @@
 
   .content { max-width: 1240px; }
 
+  /* Фон страницы — как на проде (body: bg-gradient-to-br from-page-from 0% to-page-to 60%):
+     диагональ через всю высоту документа, синий слева сверху → #221f22 к 60%.
+     Верхнее свечение .page из assets/lovix.css здесь отключено. */
+  body { background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); }
+  .page { background: none; }
+
   /* ── Hero-слайдер баннеров. Перенос дизайн-референса из Claude Design
        (design_handoff_hero_slider). Рантайм референса не переносился:
        разметка, стили и логика переписаны на обычные HTML/CSS/JS.
@@ -505,16 +511,19 @@
     cursor: pointer;
   }
   .cc:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(217,70,239,.16); }
-  .cc-bg { position: absolute; inset: 0; }
-  .cc-img {
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    height: 92%; width: auto; max-width: none;
-    filter: drop-shadow(0 12px 26px rgba(0,0,0,.45));
+  /* Реальные фото и видео-превью ботов с lovix.ai/ru (assets/img/bots, assets/video/bots).
+     Фото — на всю карточку; видео лежит поверх и проявляется, когда ряд карточек
+     в экране (логика — в скрипте ниже, как на проде). */
+  .cc-photo, .cc-video {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; background: #1b171d;
   }
-  /* градиент из макета: прозрачный → rgba(16,14,16,.92), высота 110 */
+  .cc-video { opacity: 0; transition: opacity .22s ease-in-out; }
+  .cc-video.is-visible { opacity: 1; }
+  /* подложка под текст — как на проде: прозрачный → .4 → .8, высота 160 */
   .cc-shade {
-    position: absolute; inset: auto 0 0 0; height: 110px;
-    background: linear-gradient(180deg, rgba(16,14,16,0), rgba(16,14,16,.92));
+    position: absolute; inset: auto 0 0 0; height: 160px;
+    background: linear-gradient(180deg, rgba(0,0,0,0), rgba(16,14,16,.4), rgba(16,14,16,.8));
   }
   .cc-meta {
     position: relative;
@@ -557,8 +566,9 @@
 
   /* плитка «создать компаньона», макет 461:6709 */
   .cc.newcard { display: flex; align-items: center; justify-content: center; }
-  .cc.newcard .blur { position: absolute; inset: 0; filter: blur(9px) saturate(1.1); }
-  .cc.newcard .veil { position: absolute; inset: 0; background: rgba(220,70,228,.25); backdrop-filter: blur(6px); }
+  /* фон плитки — продовый create-template-bg (уже размыт в самом файле) */
+  .cc.newcard .cc-photo { transform: scale(1.04); }
+  .cc.newcard .veil { position: absolute; inset: 0; background: rgba(220,70,228,.25); }
   .cc.newcard .lbl {
     position: relative; z-index: 2; display: flex; align-items: center; gap: 10px;
     font-size: 1.6rem; font-weight: 800; color: #fff;
@@ -943,36 +953,20 @@
     ['Инга', 21, 'Я инфлюенсер в соцсетях, которая ловит идеальные кадры и снимает вирусные танцевальные рилсы. Дни — в погоне за золотым часом, ночи — за ритмами, что заводят на новые идеи.', '771.8k', '4.5'],
   ];
 
-  // кадрировка и тон: два исходных выреза, но разная крупность и подача — карточки не выглядят одинаковыми
-  const FRAME = [
-    { h: '92%',  b: '0',     f: 'saturate(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '126%', b: '-6%',   f: 'saturate(.94) brightness(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '104%', b: '-2%',   f: 'saturate(1.08) contrast(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '138%', b: '-14%',  f: 'saturate(.9) brightness(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '88%',  b: '0',     f: 'saturate(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '116%', b: '-5%',   f: 'saturate(.96) contrast(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '98%',  b: '-1%',   f: 'saturate(1.1) brightness(.98) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '132%', b: '-10%',  f: 'saturate(.92) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '110%', b: '-3%',   f: 'saturate(1.04) contrast(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' }
-  ];
-
-  const BG = [
-    'linear-gradient(160deg, #3b2a5e, #7b2d6b)',
-    'linear-gradient(160deg, #2a3b5e, #2d6b6b)',
-    'linear-gradient(160deg, #5e2a3b, #a13a5a)',
-    'linear-gradient(160deg, #2c2a5e, #4b2d8b)',
-    'linear-gradient(160deg, #5e4a2a, #a1683a)',
-    'linear-gradient(160deg, #2a5e4a, #2d8b6b)',
-    'linear-gradient(160deg, #4a2a5e, #8b2d7b)',
-    'linear-gradient(160deg, #2a4a5e, #2d5b8b)',
-    'linear-gradient(160deg, #5e2a2a, #8b3d2d)'
+  // Фото и видео-превью этих же ботов, скачанные с lovix.ai/ru; порядок совпадает с BOTS.
+  // Видео — одноимённый .mp4 в assets/video/bots.
+  const MEDIA = [
+    '01-aleksandra.jpg', '02-olesya.jpg', '03-dina.jpg', '04-aleksandra-3.jpg', '05-emma-4.webp',
+    '06-lada-5.jpg', '07-dina-3.webp', '08-mayya-6.jpg', '09-yuliya-2.jpg', '10-iskra-2.jpg',
+    '11-nika-3.webp', '12-taisiya-3.jpg', '13-ulyana-2.jpg', '14-nadezhda.jpg', '15-anna.jpg',
+    '16-valeriya-2.jpg', '17-tamara.jpg', '18-inga.jpg',
   ];
 
   const cards = BOTS.map(([name, age, desc, talks, rate], i) => `
     <article class="cc">
-      <div class="cc-bg" style="background:${BG[i % BG.length]}"></div>
-      <img class="cc-img" src="../assets/img/model-${(i % 2) + 1}.webp" alt="${name}"
-           style="height:${FRAME[i % FRAME.length].h}; bottom:${FRAME[i % FRAME.length].b}; filter:${FRAME[i % FRAME.length].f}">
+      <img class="cc-photo" src="../assets/img/bots/${MEDIA[i]}" alt="${name}" loading="${i < 7 ? 'eager' : 'lazy'}">
+      <video class="cc-video" data-src="../assets/video/bots/${MEDIA[i].replace(/\.\w+$/, '.mp4')}"
+             muted loop playsinline preload="none" aria-hidden="true"></video>
       <div class="cc-shade"></div>
       <div class="cc-meta">
         <div class="cc-text">
@@ -989,14 +983,102 @@
 
   const newCard = `
     <article class="cc newcard">
-      <div class="blur"><div class="cc-bg" style="background:linear-gradient(160deg,#4a2a5e,#8b2d7b)"></div>
-        <img class="cc-img" src="../assets/img/model-1.webp" alt="" style="height:110%">
-      </div>
+      <img class="cc-photo" src="../assets/img/bots/create-bg.jpg" alt="">
       <div class="veil"></div>
       <div class="lbl"><svg class="ic"><use href="#i-plus"/></svg>Создать компаньона</div>
     </article>`;
 
   document.getElementById('grid').innerHTML = newCard + cards;
+
+  /* Видео-превью — по логике прода (blade.js): играют только ряды, видимые хотя бы
+     наполовину (на мобильном — на 20%), не больше 3 рядов сразу; ролики ряда стартуют
+     с одной точки, чтобы не «дёргались» вразнобой; видео проявляется поверх фото,
+     когда реально пошло. Файл грузится только когда ряд подошёл к экрану. */
+  (function () {
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var vids = Array.prototype.slice.call(document.querySelectorAll('.cc-video'));
+    if (!vids.length || calm) return;
+    var MAX_ROWS = 3, TOL = 8, raf = null;
+
+    function rows() {
+      var map = [];
+      vids.forEach(function (v) {
+        var top = v.closest('.cc').offsetTop;
+        var r = map.find(function (x) { return Math.abs(x.top - top) <= TOL; });
+        if (!r) { r = { top: top, vids: [] }; map.push(r); }
+        r.vids.push(v);
+      });
+      return map.sort(function (a, b) { return a.top - b.top; });
+    }
+    function ratio(row) {
+      var el = row.vids[0].closest('.cc'), r = el.getBoundingClientRect(), h = innerHeight;
+      var vis = Math.min(r.bottom, h) - Math.max(r.top, 0);
+      return vis <= 0 ? 0 : Math.min(1, vis / r.height);
+    }
+    function load(v) { if (!v.src) { v.src = v.dataset.src; v.preload = 'metadata'; v.load(); } }
+    function stop(v) { v.classList.remove('is-visible'); v.pause(); }
+    /* play() у немого ролика без аудиодорожки может отклониться (AbortError: Chrome ставит
+       «фоновое» видео на паузу ради экономии энергии, или play() перебит seek/pause).
+       Поэтому: пробуем ещё несколько раз, пока ряд «включён», а видео показываем не по
+       промису play(), а по событию playing — когда кадры реально пошли. */
+    function tryPlay(v) {
+      if (v.dataset.on !== '1' || !v.paused) return;
+      var n = +v.dataset.tries || 0;
+      if (n >= 8) return;
+      v.dataset.tries = n + 1;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () { setTimeout(function () { tryPlay(v); }, 150 + 120 * n); });
+    }
+    vids.forEach(function (v) {
+      v.addEventListener('playing', function () { if (v.dataset.on === '1') v.classList.add('is-visible'); });
+      v.addEventListener('pause', function () { if (v.dataset.on === '1') setTimeout(function () { tryPlay(v); }, 200); });
+    });
+    function ready(v) {
+      return v.readyState >= 1 ? Promise.resolve() : new Promise(function (res) {
+        var t = setTimeout(res, 1500);
+        ['loadedmetadata', 'error'].forEach(function (e) { v.addEventListener(e, function () { clearTimeout(t); res(); }, { once: true }); });
+      });
+    }
+    function start(row) {
+      // пока ряд грузится, tick() на каждом скролле не должен запускать его повторно
+      if (row.vids[0].dataset.starting === '1') return;
+      row.vids.forEach(function (v) { v.dataset.starting = '1'; load(v); });
+      Promise.all(row.vids.map(ready)).then(function () {
+        var live = row.vids.filter(function (v) { return v.dataset.on === '1'; });
+        var t0 = (live.find(function (v) { return v.readyState >= 1; }) || {}).currentTime || 0;
+        live.forEach(function (v) {
+          try { v.currentTime = t0; } catch (e) {}   // ряд стартует с одной точки
+          v.dataset.tries = '0';
+          tryPlay(v);
+        });
+        row.vids.forEach(function (v) { v.dataset.starting = '0'; });
+      });
+    }
+    function tick() {
+      raf = null;
+      var need = innerWidth < 640 ? .2 : .5;
+      var all = rows(), on = all.filter(function (r) { return ratio(r) >= need; }).slice(0, MAX_ROWS);
+      // подгружаем ряд заранее — как только он показался хотя бы краем
+      all.forEach(function (r) { if (ratio(r) > 0) r.vids.forEach(load); });
+      all.forEach(function (r) {
+        var keep = on.indexOf(r) !== -1;
+        r.vids.forEach(function (v) {
+          if (keep) { if (v.dataset.on !== '1') { v.dataset.on = '1'; v.dataset.tries = '0'; } }
+          else { v.dataset.on = '0'; stop(v); }
+        });
+        if (keep && !r.vids.some(function (v) { return !v.paused; })) start(r);
+      });
+    }
+    function ask() { if (raf === null) raf = requestAnimationFrame(tick); }
+    addEventListener('scroll', ask, { passive: true });
+    addEventListener('resize', ask);
+    document.addEventListener('visibilitychange', function () {
+      // вкладка ушла в фон — выключаем ряды целиком, чтобы pause-обработчик не дёргал play()
+      if (document.hidden) vids.forEach(function (v) { v.dataset.on = '0'; stop(v); });
+      else ask();
+    });
+    ask();
+  })();
 </script>
 
 <script>

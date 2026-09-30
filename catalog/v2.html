@@ -10,10 +10,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
 <style>
-  /* ── Главная lovix.ai с новым hero-слайдером. Контент-зона повторяет
+  /* ── Главная lovix.ai с новым промо-блоком. Контент-зона повторяет
        текущий прод (lovix.ai/ru): H1 + вводный абзац, сетка карточек с
        авторством сервиса «Lovix», бесконечная прокрутка, две SEO-секции и
-       FAQ из трёх вопросов. Отличие от прода — только баннер (hs-*).
+       FAQ из трёх вопросов. Отличие от прода — только баннеры (pb-*).
        Фича «авторы компаньонов» (ники, подписки) здесь НЕ применяется —
        её черновики лежат в catalog/v1.html и review/. ── */
 
@@ -25,456 +25,208 @@
   body { background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); }
   .page { background: none; }
 
-  /* ── Hero-слайдер баннеров. Перенос дизайн-референса из Claude Design
-       (design_handoff_hero_slider). Рантайм референса не переносился:
-       разметка, стили и логика переписаны на обычные HTML/CSS/JS.
-       Шрифты заменены на проектные — вместо Unbounded / Manrope /
-       JetBrains Mono везде var(--font) из assets/lovix.css.
-       Все классы с префиксом hs-, чтобы не столкнуться с общими стилями. ── */
+  /* ── Промо-баннеры (pb-*). Формат по референсу secrets.ai: две карточки
+       рядом, каждая 1800:664 (≈2.7:1), скругление 14px, без рамок и свечений —
+       баннер занимает ~220px вместо 410, каталог поднимается в первый экран.
+       Одна карточка = один интент (фича сервиса) + один CTA-глагол в неё.
+       Карусель листает парами: стрелка справа, точки, автоплей 7с с паузой
+       при наведении. Телефон: ряд со свайпом, карточка 86% ширины.
+       Пул карточек фильтруется по тарифу (data-tariff на <html>): VIP не
+       видит VIP-маркеры и карточку акции VIP-года (правило chat/SPEC.md §7). ── */
 
-  @keyframes hs-blobA { 0% { transform: translate3d(0,0,0) scale(1); } 33% { transform: translate3d(12%, -8%, 0) scale(1.18); } 66% { transform: translate3d(-8%, 10%, 0) scale(.92); } 100% { transform: translate3d(0,0,0) scale(1); } }
-  @keyframes hs-blobB { 0% { transform: translate3d(0,0,0) scale(1.1); } 50% { transform: translate3d(-14%, 12%, 0) scale(.9); } 100% { transform: translate3d(0,0,0) scale(1.1); } }
-  @keyframes hs-bokeh { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(18px,-24px,0) scale(1.22); } }
-  @keyframes hs-silk { 0%,100% { transform: translate3d(0,0,0) scale(1); } 50% { transform: translate3d(-3%, 2%, 0) scale(1.08); } }
-  @keyframes hs-satin { 0%,100% { transform: translateX(-30%) skewX(-8deg); } 50% { transform: translateX(120%) skewX(-8deg); } }
-  @keyframes hs-spinSlow { to { transform: rotate(360deg); } }
-  @keyframes hs-maskUp { from { clip-path: inset(112% 0 -12% 0); transform: translateY(18px); } to { clip-path: inset(-12% 0 -12% 0); transform: translateY(0); } }
-  @keyframes hs-fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes hs-popIn { 0% { opacity: 0; transform: scale(.8); } 65% { opacity: 1; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
-  @keyframes hs-cardIn { from { opacity: 0; transform: translateY(60px) scale(.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  @keyframes hs-floatA { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
-  @keyframes hs-floatB { 0%,100% { transform: translateY(-10px); } 50% { transform: translateY(12px); } }
-  @keyframes hs-sheen { 0% { transform: translateX(-160%) skewX(-16deg); } 55%,100% { transform: translateX(300%) skewX(-16deg); } }
-  @keyframes hs-bar { 0%,100% { transform: scaleY(.22); } 50% { transform: scaleY(1); } }
-  @keyframes hs-caret { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
-  @keyframes hs-shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-  @keyframes hs-glow { 0%,100% { opacity: .35; transform: scale(1); } 50% { opacity: .85; transform: scale(1.14); } }
-  @keyframes hs-glitch { 0%,92%,100% { transform: translate(0,0); } 93% { transform: translate(-3px,1px); } 95% { transform: translate(4px,-2px); } 97% { transform: translate(-2px,2px); } }
-  @keyframes hs-sway { 0% { opacity: 0; transform: translate3d(0,0,0) scale(.7); } 12% { opacity: .9; } 50% { transform: translate3d(26px,-130px,0) scale(1); } 88% { opacity: .5; } 100% { opacity: 0; transform: translate3d(-14px,-280px,0) scale(1.15); } }
+  @keyframes pb-bar   { 0%,100% { transform: scaleY(.25); } 50% { transform: scaleY(1); } }
+  @keyframes pb-ring  { 0% { transform: scale(1); opacity: .7; } 100% { transform: scale(1.9); opacity: 0; } }
+  @keyframes pb-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
-  /* ── каркас ── */
-  .hs { position: relative; width: 100%; }
-  .hs-halo {
-    position: absolute; inset: -22px -10px; border-radius: 46px; pointer-events: none;
-    background:
-      radial-gradient(55% 65% at 28% 45%, rgba(214,59,214,.3), rgba(214,59,214,0) 72%),
-      radial-gradient(55% 70% at 74% 60%, rgba(255,79,163,.26), rgba(255,79,163,0) 72%);
-    filter: blur(60px); opacity: .5;
+  .pb { position: relative; margin: 0 0 8px; }
+  .pb-track {
+    display: grid; grid-auto-flow: column; grid-auto-columns: calc(50% - 12px); column-gap: 24px;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+    scrollbar-width: none; -ms-overflow-style: none; outline: none;
   }
-  .hs-frame {
-    position: relative; border-radius: 30px; padding: 1.5px; overflow: hidden;
-    background: linear-gradient(120deg, rgba(255,122,194,.9), rgba(140,90,255,.5) 30%, rgba(255,255,255,.14) 52%, rgba(255,200,107,.8) 88%);
+  .pb-track::-webkit-scrollbar { display: none; }
+  .pb-track:focus-visible { outline: 2px solid rgb(var(--acc-from)); outline-offset: 4px; border-radius: 14px; }
+
+  .pb-card {
+    --a: #d63bd6; --b: #ff4fa3;
+    position: relative; display: grid; scroll-snap-align: start;
+    border-radius: 14px; overflow: hidden; isolation: isolate; color: #fff; text-decoration: none;
+    background: #150f2a; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s;
   }
-  /* Высоту баннера задаёт min-height сцены (в хендоффе было 460).
-     Снижено до 410: самой длинной текстовой колонке — первого слайда —
-     нужно 386px вместе с паддингами, остальное было пустым запасом. */
-  .hs-scene {
-    position: relative; display: grid; grid-template-columns: 1fr;
-    min-height: 410px; border-radius: 29px; overflow: hidden; background: #120e26;
+  /* Пропорция 1800:664 задаётся распоркой в той же grid-ячейке, что и текст:
+     высота карточки = max(распорка, текст). Если текст не помещается в
+     пропорцию, карточка (и вся пара — ряд grid) подрастает, а не режет CTA. */
+  .pb-card::before { content: ""; grid-area: 1 / 1; align-self: start; height: 0; padding-bottom: 36.9%; }
+  .pb-card:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), 0 14px 40px rgba(0,0,0,.35); }
+  .pb-bg { position: absolute; inset: 0; z-index: 0; }
+  .pb-bg::after {
+    content: ""; position: absolute; inset: -20%; filter: blur(50px); opacity: .55;
+    background: radial-gradient(40% 60% at 78% 50%, var(--b), transparent 70%);
   }
-  .hs-slide {
-    position: relative; grid-area: 1 / 1; min-height: 410px;
-    opacity: 0; transform: scale(1.07) translateY(3%); filter: blur(14px); pointer-events: none;
-    transition: opacity 760ms ease, transform 900ms cubic-bezier(.66,0,.24,1), filter 760ms ease;
-    transform-origin: 50% 50%;
+
+  /* фигуры-вырезы: справа, прижаты к низу; ширина колонки — 46% карточки */
+  .pb-art { position: absolute; z-index: 1; right: 0; top: 0; bottom: 0; width: 46%; pointer-events: none; }
+  .pb-art img {
+    position: absolute; bottom: 0; height: 100%; width: auto; max-width: none;
+    object-fit: contain; object-position: bottom;
+    transition: transform .6s cubic-bezier(.2,.8,.2,1);
   }
-  .hs-slide.past { transform: scale(.94) translateY(-3%); }
-  .hs-slide.on   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); pointer-events: auto; }
+  .pb-card:hover .pb-art img { transform: translateY(-2%); }
+  .pb-art .solo { right: 8%; }
+  .pb-art .l { right: 44%; height: 92%; z-index: 0; filter: brightness(.8); }
+  .pb-art .r { right: 6%; z-index: 1; }
+  /* фейд снизу — чтобы обрез вырезов не бросался в глаза */
+  .pb-art::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 2;
+    background: linear-gradient(to top, rgba(0,0,0,.28), transparent); }
 
-  /* фоны слайдов */
-  .hs-bg { position: absolute; inset: 0; overflow: hidden; }
-  .hs-s1 .hs-bg { background: linear-gradient(115deg, #1b1038 0%, #34124a 55%, #52124d 100%); }
-  .hs-s2 .hs-bg { background: radial-gradient(70% 120% at 72% 50%, #5c1636 0%, #2a0c2e 55%, #150a24 100%); }
-  .hs-s3 .hs-bg { background: radial-gradient(75% 130% at 26% 40%, #2b1c6b 0%, #1a1246 50%, #100b2a 100%); }
-  .hs-s4 .hs-bg { background: linear-gradient(115deg, #0d1736 0%, #15224c 55%, #1c2d63 100%); }
-
-  .hs-blob { position: absolute; border-radius: 50%; }
-  .hs-b1a { width: 780px; height: 780px; left: -14%; top: -60%; background: radial-gradient(circle, rgba(255,60,150,.3), rgba(255,60,150,0) 66%); filter: blur(70px); animation: hs-blobA 34s ease-in-out infinite; }
-  .hs-b1b { width: 900px; height: 900px; right: -18%; bottom: -70%; background: radial-gradient(circle, rgba(120,60,255,.28), rgba(120,60,255,0) 66%); filter: blur(72px); animation: hs-blobB 40s ease-in-out infinite; }
-  .hs-b2a { width: 700px; height: 700px; left: -12%; bottom: -55%; background: radial-gradient(circle, rgba(255,79,163,.26), rgba(255,79,163,0) 66%); filter: blur(70px); animation: hs-blobA 36s ease-in-out infinite; }
-  .hs-b4a { width: 800px; height: 800px; left: -12%; top: -58%; background: radial-gradient(circle, rgba(88,200,255,.26), rgba(88,200,255,0) 66%); filter: blur(70px); animation: hs-blobA 38s ease-in-out infinite; }
-  .hs-b4b { width: 860px; height: 860px; right: -16%; bottom: -66%; background: radial-gradient(circle, rgba(214,59,214,.2), rgba(214,59,214,0) 66%); filter: blur(72px); animation: hs-blobB 42s ease-in-out infinite; }
-  .hs-b3a { width: 820px; height: 820px; right: -14%; top: -55%; background: radial-gradient(circle, rgba(154,123,255,.28), rgba(154,123,255,0) 66%); filter: blur(72px); animation: hs-blobB 40s ease-in-out infinite; }
-
-  .hs-silk { position: absolute; inset: -12%; filter: blur(48px); animation: hs-silk 44s ease-in-out infinite;
-    background: radial-gradient(38% 52% at 74% 32%, rgba(255,200,107,.2), rgba(255,200,107,0) 70%), radial-gradient(42% 58% at 58% 82%, rgba(255,120,175,.2), rgba(255,120,175,0) 72%); }
-  .hs-satin { position: absolute; top: -20%; bottom: -20%; left: 30%; width: 34%; filter: blur(40px); animation: hs-satin 22s ease-in-out infinite;
-    background: linear-gradient(100deg, rgba(255,255,255,0), rgba(255,240,220,.16), rgba(255,255,255,0)); }
-
-  .hs-bok { position: absolute; border-radius: 50%; filter: blur(22px); opacity: .28; animation: hs-bokeh 40s ease-in-out infinite; }
-  .hs-s2 .hs-bok, .hs-s3 .hs-bok { opacity: .26; }
-  .hs-s4 .hs-bok { opacity: .24; }
-  .hs-spark { position: absolute; bottom: -18px; border-radius: 50%; filter: blur(1px); box-shadow: 0 0 14px currentColor; animation: hs-sway 14s ease-in-out infinite; }
-
-  /* ── общий контент ── */
-  .hs-wrap { position: relative; height: 100%; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 34px 44px; }
-  .hs-s2 .hs-wrap, .hs-s3 .hs-wrap { gap: 18px; }
-  .hs-s2 .hs-wrap { z-index: 3; pointer-events: none; }
-  /* базисы занижены: при 360+380 колонки переносились уже на ~1150 и арт
-     растягивался во всю ширину, наезжая на текст. Теперь до 860 — две колонки. */
-  .hs-col { flex: 1 1 320px; min-width: 250px; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
-  .hs-s2 .hs-col { flex: 1 1 320px; min-width: 260px; gap: 16px; }
-  .hs-s3 .hs-col { flex: 1 1 320px; min-width: 260px; }
-  .hs-stack { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
-  .hs-s3 .hs-stack { gap: 20px; }
-
-  /* Заголовки: вместо Unbounded — проектный шрифт в тяжёлых начертаниях */
-  /* В референсе Unbounded 700–800 — узкий дисплейный шрифт. Проектный
-     заметно плотнее и шире, поэтому вес 800 и кегль ниже оригинала. */
-  .hs-h { margin: 0; font-weight: 800; font-size: clamp(25px, 2.4vw, 36px); line-height: 1.08; letter-spacing: -.02em; color: #fff; }
-  .hs-s1 .hs-h { margin: 26px 0 0; font-size: clamp(26px, 2.5vw, 38px); }
-  .hs-h span.hs-line { display: block; overflow: hidden; }
-  .hs-h span.hs-line > span { display: block; }
-  .hs-grad {
-    background: linear-gradient(90deg, #ff7ac2, #ffd9a0 35%, #9a7bff 65%, #ff7ac2);
-    background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  .pb-txt {
+    position: relative; z-index: 2; grid-area: 1 / 1; align-self: center; box-sizing: border-box; width: 56%;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    padding: 18px 0 18px 26px;
   }
-  /* аниме-слайд: свой холодный акцент, чтобы раздел читался как отдельный */
-  .hs-grad4 {
-    background: linear-gradient(90deg, #58c8ff, #a9e4ff 38%, #ff9ed1 78%);
-    background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  .pb-badges { display: flex; gap: 6px; margin-bottom: 2px; }
+  .pb-badge {
+    display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; line-height: 1.3;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.88);
   }
-  .hs-sub { margin: 0; max-width: 380px; font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.66); text-wrap: pretty; }
-
-  /* Лейблы: вместо JetBrains Mono — проектный шрифт, разрядка и капс держат «технический» вид */
-  .hs-mono { font-weight: 700; letter-spacing: .2em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
-
-  .hs-badge { position: absolute; z-index: 5; left: 44px; top: 30px; pointer-events: none; display: flex; align-items: center; gap: 12px; font-size: 11px; white-space: nowrap; }
-  .hs-badge.pill { gap: 10px; padding: 8px 16px; border-radius: 999px; }
-  .hs-s1 .hs-badge { color: #ff9ed1; }
-  .hs-s2 .hs-badge { background: rgba(255,200,107,.14); border: 1px solid rgba(255,200,107,.45); color: #ffd79a; }
-  .hs-s3 .hs-badge { background: rgba(154,123,255,.16); border: 1px solid rgba(170,140,255,.45); color: #cbb0ff; letter-spacing: .14em; }
-  .hs-s4 .hs-badge { background: rgba(88,200,255,.14); border: 1px solid rgba(88,200,255,.45); color: #a9e4ff; letter-spacing: .18em; }
-  .hs-dot-live { position: relative; width: 8px; height: 8px; flex: none; }
-  .hs-dot-live i { position: absolute; inset: 0; border-radius: 50%; background: #ff4fa3; }
-  .hs-dot-live u { position: absolute; inset: -6px; border-radius: 50%; background: rgba(255,79,163,.4); animation: hs-glow 2s ease-in-out infinite; }
-
-  /* облачко «она печатает» */
-  .hs-chat {
-    display: flex; align-items: center; gap: 14px; margin-top: 6px; padding: 14px 18px;
-    border-radius: 18px 18px 18px 6px; background: rgba(9,6,20,.6); border: 1px solid rgba(255,255,255,.12);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 20px 50px rgba(0,0,0,.4);
+  .pb-badge.new { background: linear-gradient(95deg, var(--a), var(--b)); border-color: transparent; color: #fff; }
+  .pb-badge.vip { background: rgba(255,200,107,.16); border-color: rgba(255,200,107,.5); color: #ffd79a; }
+  /* Бюджет высоты: все 8 карточек лежат в одном ряду grid и получают высоту
+     самой высокой, поэтому каждая обязана укладываться в пропорцию 2.7:1 —
+     бейдж + заголовок в 2 строки + подзаголовок в 2 строки + CTA. */
+  .pb-h { margin: 0; font-weight: 800; font-size: clamp(18px, 1.5vw, 22px); line-height: 1.12; letter-spacing: -.015em; text-wrap: balance; }
+  .pb-h em { font-style: normal; background: linear-gradient(90deg, var(--a), var(--b)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .pb-sub { margin: 0; font-size: 13px; line-height: 1.4; color: rgba(255,255,255,.72); text-wrap: pretty; max-width: 34ch;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+  .pb-cta {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; padding: 9px 16px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap;
+    background: linear-gradient(95deg, var(--a), var(--b)); box-shadow: 0 8px 22px color-mix(in srgb, var(--b) 40%, transparent);
+    transition: transform .25s, filter .25s;
   }
-  .hs-eq { display: flex; align-items: flex-end; gap: 3px; height: 26px; flex: none; }
-  .hs-eq i { width: 3px; height: 26px; border-radius: 2px; background: linear-gradient(180deg, #ff7ac2, #9a7bff); transform-origin: 50% 100%; animation: hs-bar 1.1s ease-in-out infinite; }
-  .hs-typed { font-size: 16px; font-weight: 600; color: #fff; min-height: 22px; }
-  .hs-caret { display: inline-block; width: 2px; height: 17px; margin-left: 2px; vertical-align: -2px; background: #ff7ac2; animation: hs-caret 1s step-end infinite; }
+  .pb-cta i { font-style: normal; transition: transform .25s; }
+  .pb-card:hover .pb-cta { filter: brightness(1.08); transform: translateY(-1px); }
+  .pb-card:hover .pb-cta i { transform: translateX(3px); }
 
-  /* CTA */
-  .hs-cta {
-    position: relative; display: inline-flex; align-items: center; gap: 12px;
-    padding: 16px 32px; border-radius: 999px; overflow: hidden; border: 0; cursor: pointer;
-    font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: -.01em; color: #fff;
-    transition: transform .18s ease, box-shadow .18s ease;
+  /* ── интенты: палитра фона и акценты ── */
+  .pb-calls  { --a: #d63bd6; --b: #ff4fa3; } .pb-calls  .pb-bg { background: linear-gradient(110deg, #22103a, #3d1250 60%, #52154a); }
+  .pb-video  { --a: #7c4dff; --b: #b98cff; } .pb-video  .pb-bg { background: linear-gradient(110deg, #150f3a, #241a62 60%, #2e1f70); }
+  .pb-build  { --a: #ff4fa3; --b: #ff8a4c; } .pb-build  .pb-bg { background: linear-gradient(110deg, #1b1038, #35123f 60%, #4a1638); }
+  .pb-spicy  { --a: #ff3d5a; --b: #ff8a3d; } .pb-spicy  .pb-bg { background: linear-gradient(110deg, #2a0b14, #4a1119 60%, #5a1a16); }
+  .pb-group  { --a: #2f8fd8; --b: #58c8ff; } .pb-group  .pb-bg { background: linear-gradient(110deg, #0c1a36, #142a58 60%, #183466); }
+  .pb-author { --a: #12b6a1; --b: #6ee7c8; } .pb-author .pb-bg { background: linear-gradient(110deg, #0c2226, #113538 60%, #123f3a); }
+  .pb-anime  { --a: #ff7ac2; --b: #9a7bff; } .pb-anime  .pb-bg { background: linear-gradient(110deg, #1b1440, #2a1c66 60%, #35237a); }
+  .pb-sale   { --a: #ffc86b; --b: #ff9ed1; } .pb-sale   .pb-bg { background: linear-gradient(110deg, #2a1608, #4a2a0c 60%, #5a2f14); }
+  .pb-sale .pb-cta { color: #2b0f24; box-shadow: 0 8px 22px rgba(255,200,107,.35); }
+
+  /* звонки: пилюля «в сети» с эквалайзером поверх фигуры */
+  .pb-pill {
+    position: absolute; z-index: 3; left: 4%; top: 14px; display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 6px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap;
+    background: rgba(10,6,20,.62); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(8px);
+    animation: pb-float 5s ease-in-out infinite;
   }
-  .hs-cta:hover { transform: translateY(-3px) scale(1.02); }
-  .hs-cta span { position: relative; z-index: 2; }
-  .hs-cta i.hs-sheen { position: absolute; top: 0; bottom: 0; width: 45%; background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.5), rgba(255,255,255,0)); }
-  .hs-cta1 { margin-top: 10px; background: linear-gradient(95deg, #d63bd6, #ff4fa3 55%, #ff8a4c); box-shadow: 0 18px 46px rgba(255,79,163,.45); }
-  .hs-cta1:hover { box-shadow: 0 26px 60px rgba(255,79,163,.6); }
-  .hs-cta2 { margin-top: 12px; gap: 10px; pointer-events: auto; color: #2b0f24; background: linear-gradient(95deg, #fff0cf, #ffc86b 45%, #ff9ed1); box-shadow: 0 18px 46px rgba(255,200,107,.4); }
-  .hs-cta2:hover { box-shadow: 0 26px 60px rgba(255,200,107,.55); }
-  .hs-cta2 i.hs-sheen { background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.8), rgba(255,255,255,0)); }
-  .hs-cta3 { margin-top: 8px; gap: 10px; background: linear-gradient(95deg, #7c4dff, #d63bd6 60%, #ff4fa3); box-shadow: 0 18px 46px rgba(124,77,255,.45); }
-  .hs-cta3:hover { box-shadow: 0 26px 60px rgba(124,77,255,.6); }
-  .hs-cta4 { margin-top: 10px; background: linear-gradient(95deg, #2f8fd8, #58c8ff 55%, #b98cff); box-shadow: 0 18px 46px rgba(88,200,255,.4); }
-  .hs-cta4:hover { box-shadow: 0 26px 60px rgba(88,200,255,.55); }
+  .pb-pill .ph { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #22c55e; color: #052e16; }
+  .pb-pill .ph svg { width: 13px; height: 13px; }
+  .pb-eq { display: inline-flex; align-items: center; gap: 2px; height: 14px; }
+  .pb-eq i { display: block; width: 3px; height: 14px; border-radius: 2px; background: #fff; transform-origin: 50% 100%; animation: pb-bar 1.1s ease-in-out infinite; }
+  .pb-eq i:nth-child(2) { animation-delay: .15s; } .pb-eq i:nth-child(3) { animation-delay: .3s; }
+  .pb-eq i:nth-child(4) { animation-delay: .45s; } .pb-eq i:nth-child(5) { animation-delay: .6s; }
 
-  /* ── слайд 1: портреты ── */
-  .hs-art { position: relative; flex: 1 1 320px; min-width: 250px; align-self: stretch; }
-  .hs-art-in { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .hs-fig img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-  .hs-f1 { position: absolute; left: -12%; bottom: -32%; width: 62%; height: 136%; }
-  .hs-f2 { position: absolute; right: -18%; bottom: -18%; width: 66%; height: 148%; }
-  .hs-f3 { position: relative; width: 66%; height: 130%; margin-bottom: -14%; }
-  .hs-f1 img, .hs-f2 img { filter: drop-shadow(0 26px 34px rgba(0,0,0,.55)); }
-  .hs-f3 img { position: relative; filter: drop-shadow(0 34px 44px rgba(0,0,0,.6)); }
-  .hs-f3 .hs-aura { position: absolute; left: 50%; top: 8%; width: 230px; height: 230px; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle, rgba(255,140,200,.4), rgba(255,140,200,0) 68%); filter: blur(12px); animation: hs-glow 7s ease-in-out infinite; }
+  /* видео: кнопка play с пульсирующим кольцом */
+  .pb-play { position: absolute; z-index: 3; left: 4%; top: 50%; width: 44px; height: 44px; margin-top: -22px; border-radius: 50%;
+    display: grid; place-items: center; background: rgba(255,255,255,.92); color: #2e1f70; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  .pb-play::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,.7); animation: pb-ring 1.8s ease-out infinite; }
+  .pb-play svg { width: 18px; height: 18px; margin-left: 3px; }
 
-  /* Аниме-кадры ставим рядом и задаём высоту напрямую, а не процентным боксом:
-     при object-fit: contain в высоком боксе картинка масштабируется по ширине,
-     снизу остаётся вертикальный люфт — фигура повисает в воздухе, и чем уже
-     экран, тем сильнее. Здесь картинка сама себе бокс, низ всегда на кромке. */
-  /* прижимаем ряд к правому краю колонки: при центрировании перекрытие
-     выпирает влево и наезжает на текст */
-  .hs-s4 .hs-cast { position: absolute; inset: 0 -44px 0 0; display: flex; align-items: flex-end; justify-content: flex-end; }
-  .hs-s4 .hs-cast img {
-    width: auto; object-fit: contain; object-position: bottom center;
-    filter: drop-shadow(0 22px 30px rgba(0,0,0,.5));
+  /* авторы: карточка креатора поверх фигуры */
+  .pb-creator {
+    position: absolute; z-index: 3; left: 4%; bottom: 14px; display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 6px; border-radius: 999px; font-size: 12px; white-space: nowrap;
+    background: rgba(10,6,20,.62); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(8px);
   }
-  /* Текстовая колонка тут короткая — отдаём место под арт, фигуры крупные.
-     Высоты резиновые по ширине окна, иначе ряд выезжает из колонки на текст.
-     margin-bottom перекрывает сразу три вещи: нижний паддинг .hs-wrap (34px),
-     амплитуду парения (16px) и небольшой запас — иначе фигуры не доходят
-     до нижней кромки и «висят в воздухе». */
-  /* Затемнение слева: фигуры крупные и на средних ширинах заходят
-     на текстовую колонку — вуаль держит читаемость, как на промо-слайде. */
-  .hs-veil4 {
-    position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    background: linear-gradient(95deg, rgba(11,20,48,.94) 26%, rgba(11,20,48,.62) 46%, rgba(11,20,48,0) 64%);
+  .pb-creator .av { width: 24px; height: 24px; border-radius: 50%; overflow: hidden; background: #1a3a3a; }
+  .pb-creator .av img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .pb-creator b { display: inline-flex; align-items: center; gap: 3px; font-weight: 700; }
+  .pb-creator b svg { width: 12px; height: 12px; color: #6ee7c8; }
+  .pb-creator span { color: rgba(255,255,255,.6); }
+
+  /* групповой чат: две фигуры и плашка «2 компаньона» */
+  .pb-group .pb-art .l { right: 40%; }
+  .pb-group .pb-art .r { right: 2%; }
+  .pb-duo { position: absolute; z-index: 3; left: 4%; bottom: 14px; padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;
+    background: rgba(10,6,20,.62); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(8px); }
+
+  /* аниме: три фигуры в ряд */
+  .pb-anime .pb-art { width: 52%; }
+  .pb-anime .pb-art img { height: 96%; }
+  .pb-anime .pb-art .a1 { right: 58%; z-index: 0; filter: brightness(.75); }
+  .pb-anime .pb-art .a2 { right: 30%; z-index: 1; filter: brightness(.9); }
+  .pb-anime .pb-art .a3 { right: 2%;  z-index: 2; }
+
+  /* акция: ярлык −45% */
+  .pb-tag {
+    position: absolute; z-index: 3; left: 2%; top: 14px; transform: rotate(-8deg);
+    padding: 6px 12px; border-radius: 10px; font-weight: 900; font-size: 22px; letter-spacing: -.02em; line-height: 1;
+    color: #2b0f24; background: linear-gradient(95deg, #fff0cf, #ffc86b); box-shadow: 0 10px 26px rgba(255,200,107,.35);
+    animation: pb-float 6s ease-in-out infinite;
   }
-  .hs-s4 .hs-badge { z-index: 5; }
-  /* текстовая колонка поверх вуали, вуаль поверх картинок */
-  .hs-s4 .hs-col { position: relative; z-index: 2; flex: 0 1 370px; }
-  .hs-s4 .hs-art { flex: 1 1 auto; }
-  .hs-s4 .hs-cast img:nth-of-type(1) { height: clamp(214px, 24.5vw, 358px); margin-right: clamp(-92px, -6.4vw, -38px); margin-bottom: -58px; }
-  .hs-s4 .hs-cast img:nth-of-type(2) { height: clamp(242px, 28vw, 408px); margin-bottom: -58px; z-index: 2; }
-  .hs-s4 .hs-cast img:nth-of-type(3) { height: clamp(226px, 26vw, 378px); margin-left: clamp(-92px, -6.4vw, -38px); margin-bottom: -58px; }
-
-  .hs-name {
-    position: absolute; display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px;
-    background: rgba(9,6,20,.55); border: 1px solid rgba(255,255,255,.14);
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    font-size: 11px; font-weight: 600; color: rgba(255,255,255,.88); white-space: nowrap;
-  }
-  .hs-name i { width: 5px; height: 5px; flex: none; border-radius: 50%; background: #5ce0a0; }
-  /* размер у всех трёх одинаковый; у центральной чуть плотнее фон и светится точка */
-  .hs-name.main { z-index: 3; left: 50%; top: 58%; translate: -50% 0; background: rgba(9,6,20,.6); border-color: rgba(255,255,255,.18); color: #fff; }
-  .hs-name.main i { box-shadow: 0 0 10px #5ce0a0; }
-  .hs-name.a { left: 26%; top: 40%; }
-  .hs-name.b { right: 26%; top: 52%; }
-
-  /* ── слайд 2 ── */
-  .hs-s2 .hs-fig { position: absolute; }
-  .hs-g1 { right: 27%; bottom: -4%; width: 31%; height: 124%; max-width: 360px; z-index: 1; animation: hs-floatB 15s ease-in-out infinite 1.1s; }
-  .hs-g2 { right: 0; bottom: -16%; width: 34%; height: 146%; max-width: 420px; z-index: 2; animation: hs-floatA 13s ease-in-out infinite; }
-  .hs-g1 img { filter: drop-shadow(0 28px 38px rgba(0,0,0,.5)); }
-  .hs-g2 img { object-position: bottom right; filter: drop-shadow(0 30px 40px rgba(0,0,0,.55)); }
-
-  .hs-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin-top: 2px; }
-  .hs-price b { white-space: nowrap; font-size: 29px; font-weight: 800; letter-spacing: -.02em; color: #ffc86b; font-variant-numeric: tabular-nums; }
-  .hs-price s { white-space: nowrap; font-size: 17px; color: rgba(255,255,255,.45); }
-  .hs-price em { white-space: nowrap; font-style: normal; color: rgba(255,255,255,.55); font-size: 14px; }
-
-  .hs-disc-wrap { position: relative; flex: 1 1 260px; min-width: 240px; align-self: stretch; }
-  .hs-disc-in { position: absolute; top: 0; right: -44px; bottom: 0; left: -10px; }
-  /* Позиционирование без transform: на круге висит анимация парения, она пишет
-     в transform и затёрла бы его. Наклона нет по решению дизайнера. */
-  .hs-disc {
-    position: absolute; right: calc(42% + 18px); top: 68%; width: 162px; height: 162px;
-    display: flex; align-items: center; justify-content: center;
-    filter: drop-shadow(0 26px 50px rgba(0,0,0,.55));
-  }
-  .hs-disc .ring { position: absolute; inset: -12px; border-radius: 50%; background: conic-gradient(from 0deg, #ffc86b, #ff4fa3, rgba(255,200,107,0) 62%, #ffc86b); filter: blur(3px); animation: hs-spinSlow 7s linear infinite; }
-  .hs-disc .body { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 34% 26%, #5a1440, #1c0a26 80%); border: 1px solid rgba(255,255,255,.18); box-shadow: inset 0 0 60px rgba(255,200,107,.22); }
-  .hs-disc .txt { position: relative; text-align: center; animation: hs-glitch 7s steps(1) infinite; }
-  .hs-disc .num { font-size: 44px; font-weight: 800; line-height: .9; letter-spacing: -.04em; color: #fff; text-shadow: 2px 0 rgba(255,79,163,.7), -2px 0 rgba(120,200,255,.5); }
-  .hs-disc .num span { font-size: 26px; }
-  .hs-disc .cap { margin-top: 8px; font-size: 10px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; color: #ffc86b; }
-
-  .hs-timer { position: absolute; z-index: 4; left: 44px; bottom: 26px; display: flex; align-items: center; gap: 12px; pointer-events: none; }
-  .hs-timer .lbl { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.45); }
-  .hs-timer .lbl span.pt { position: relative; width: 6px; height: 6px; flex: none; }
-  .hs-timer .lbl span.pt i { position: absolute; inset: 0; border-radius: 50%; background: #ffc86b; }
-  .hs-timer .lbl span.pt u { position: absolute; inset: -4px; border-radius: 50%; background: rgba(255,200,107,.35); animation: hs-glow 2s ease-in-out infinite; }
-  .hs-clock { display: flex; align-items: center; gap: 5px; }
-  .hs-clock div { display: flex; align-items: baseline; gap: 3px; padding: 6px 10px; border-radius: 9px; background: rgba(12,6,20,.55); border: 1px solid rgba(255,200,107,.22); box-shadow: inset 0 1px 0 rgba(255,255,255,.08); }
-  .hs-clock b { font-size: 15px; font-weight: 700; line-height: 1; letter-spacing: .04em; color: #fff; font-variant-numeric: tabular-nums; }
-  .hs-clock i { font-style: normal; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,200,107,.7); }
-
-  /* ── слайд 3 ── */
-  .hs-trait { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .35em; max-width: 100%; font-size: clamp(16px, 1.35vw, 20px); font-weight: 500; line-height: 1.45; letter-spacing: -.01em; color: rgba(255,255,255,.5); }
-  .hs-trait > span.st { white-space: nowrap; }
-  .hs-trait .slot { display: inline-block; overflow: hidden; padding: .16em 0 .18em; }
-  .hs-word {
-    display: inline-block; white-space: nowrap; font-weight: 700;
-    background: linear-gradient(95deg, #cbb0ff, #ff9ed1); -webkit-background-clip: text; background-clip: text; color: transparent;
-    transition: opacity 520ms ease, transform 520ms cubic-bezier(.16,1,.3,1), filter 520ms ease;
-  }
-  .hs-word.out { opacity: 0; transform: translateY(14px); filter: blur(4px); }
-  .hs-params { position: absolute; z-index: 5; left: 44px; bottom: 26px; pointer-events: none; font-size: 11px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.34); white-space: nowrap; }
-  .hs-duo { position: absolute; top: 0; right: 0; bottom: 0; left: 44%; display: flex; align-items: center; justify-content: center; }
-  .hs-duo-in { position: relative; width: 74%; height: 112%; margin-bottom: -14%; }
-  .hs-duo-in img { position: absolute; bottom: 0; object-fit: contain; object-position: bottom center; }
-  .hs-duo-in img.l { left: -16%; width: 78%; height: 102%; z-index: 1; filter: drop-shadow(0 30px 40px rgba(0,0,0,.6)); animation: hs-floatB 12s ease-in-out infinite 1.2s; }
-  .hs-duo-in img.r { right: -22%; width: 80%; height: 116%; z-index: 2; filter: drop-shadow(0 32px 42px rgba(0,0,0,.6)); }
+  .pb-tag small { display: block; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .7; margin-top: 2px; }
+  .pb-price { display: flex; align-items: baseline; gap: 8px; font-size: 13px; color: rgba(255,255,255,.7); }
+  .pb-price b { font-size: 22px; font-weight: 900; color: #ffd79a; letter-spacing: -.02em; }
+  .pb-price s { opacity: .55; }
 
   /* ── навигация ── */
-  .hs-dots { position: absolute; z-index: 5; left: 0; right: 0; bottom: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .hs-dot {
-    position: relative; height: 7px; width: 7px; border: 0; border-radius: 999px; cursor: pointer; padding: 0; overflow: hidden;
-    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
-    background: rgba(255,255,255,.35); transition: width 450ms ease, background 450ms ease, opacity 300ms ease;
+  .pb-arr {
+    position: absolute; z-index: 4; top: 50%; width: 36px; height: 36px; margin-top: -18px; border-radius: 50%;
+    display: grid; place-items: center; border: 1px solid rgba(255,255,255,.18); color: #fff; cursor: pointer;
+    background: rgba(12,8,22,.7); backdrop-filter: blur(8px); transition: opacity .25s, transform .25s, background .25s;
   }
-  .hs-dot:hover { opacity: .85; }
-  .hs-dot.on { width: 30px; background: rgba(255,255,255,.28); }
-  .hs-dot i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: rgba(255,255,255,.85); }
-  .hs-arr {
-    position: absolute; z-index: 6; top: 50%; width: 46px; height: 46px; border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.22); background: rgba(12,8,26,.34);
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    color: rgba(255,255,255,.9); font-size: 22px; line-height: 1; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; transform: translateY(-50%);
-    opacity: 0; pointer-events: none; transition: opacity 320ms ease, background 320ms ease, border-color 320ms ease;
-  }
-  .hs-arr.prev { left: 18px; }
-  .hs-arr.next { right: 18px; }
-  .hs:hover .hs-arr, .hs-arr:focus-visible { opacity: 1; pointer-events: auto; }
-  .hs-arr:hover { background: rgba(255,79,163,.6); border-color: rgba(255,255,255,.5); }
-  .hs-dot:focus-visible, .hs-arr:focus-visible, .hs-cta:focus-visible { outline: 2px solid #ff9ed1; outline-offset: 3px; }
-
-  /* ── входные анимации: живут только у активного слайда,
-       поэтому при каждом возврате на слайд проигрываются заново ── */
-  .hs-slide.on .hs-badge { animation: hs-fadeUp 640ms cubic-bezier(.2,.8,.2,1) both; }
-  .hs-s2.on .hs-badge, .hs-s3.on .hs-badge { animation-duration: 620ms; }
-  .hs-slide.on .hs-h span.hs-line > span { animation: hs-maskUp 900ms cubic-bezier(.16,1,.3,1) both; }
-  .hs-s1.on .hs-h span.hs-line:nth-child(1) > span { animation-delay: 80ms; }
-  .hs-s1.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 220ms; animation-name: hs-maskUp, hs-shimmer; animation-duration: 900ms, 5s; animation-timing-function: cubic-bezier(.16,1,.3,1), linear; animation-iteration-count: 1, infinite; animation-fill-mode: both, none; }
-  .hs-s2.on .hs-h span.hs-line:nth-child(1) > span, .hs-s3.on .hs-h span.hs-line:nth-child(1) > span { animation-delay: 60ms; }
-  .hs-s2.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 180ms; }
-  .hs-s3.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 190ms; }
-  .hs-s4.on .hs-h span.hs-line:nth-child(1) > span { animation-delay: 70ms; }
-  .hs-s4.on .hs-h span.hs-line:nth-child(2) > span { animation-delay: 200ms; }
-  .hs-s4.on .hs-sub,
-  .hs-s1.on .hs-sub { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 360ms both; }
-  .hs-s1.on .hs-chat { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 420ms both; }
-  .hs-s2.on .hs-price { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 300ms both; }
-  .hs-s3.on .hs-trait { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 280ms both; }
-  .hs-s1.on .hs-cta1 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 560ms both; }
-  .hs-s2.on .hs-cta2 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 480ms both; }
-  .hs-s3.on .hs-cta3 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 420ms both; }
-  .hs-s4.on .hs-cast img:nth-of-type(1) { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 160ms both, hs-floatA 12s ease-in-out infinite 1.3s; }
-  .hs-s4.on .hs-cast img:nth-of-type(2) { animation: hs-cardIn 950ms cubic-bezier(.16,1,.3,1) 60ms both,  hs-floatA 10s ease-in-out infinite 1.1s; }
-  .hs-s4.on .hs-cast img:nth-of-type(3) { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 240ms both, hs-floatA 14s ease-in-out infinite 1.5s; }
-  .hs-s4.on .hs-cta4 { animation: hs-popIn 720ms cubic-bezier(.2,.9,.2,1) 520ms both; }
-  .hs-slide.on .hs-cta i.hs-sheen { animation: hs-sheen 3.2s ease-in-out infinite 1.1s; }
-  .hs-s2.on .hs-cta i.hs-sheen { animation-duration: 2.8s; animation-delay: .9s; }
-  .hs-s3.on .hs-cta i.hs-sheen { animation-duration: 3.4s; animation-delay: 1.2s; }
-  .hs-s1.on .hs-f1 { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 120ms both, hs-floatA 12s ease-in-out infinite 1.1s; }
-  .hs-s1.on .hs-f2 { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) 240ms both, hs-floatA 14s ease-in-out infinite 1.2s; }
-  .hs-s1.on .hs-f3 { animation: hs-cardIn 950ms cubic-bezier(.16,1,.3,1) both, hs-floatA 10s ease-in-out infinite .95s; }
-  .hs-s1.on .hs-name.main { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 640ms both; }
-  .hs-s1.on .hs-name.a { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 760ms both; }
-  .hs-s1.on .hs-name.b { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 880ms both; }
-  .hs-s2.on .hs-disc { animation: hs-popIn 820ms cubic-bezier(.2,.9,.2,1) 160ms both, hs-floatA 11s ease-in-out infinite 1s; }
-  .hs-s2.on .hs-timer .lbl { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 520ms both; }
-  .hs-s2.on .hs-clock { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 600ms both; }
-  .hs-s3.on .hs-duo-in { animation: hs-cardIn 900ms cubic-bezier(.16,1,.3,1) both, hs-floatA 10s ease-in-out infinite 1s; }
-  .hs-s3.on .hs-params { animation: hs-fadeUp 700ms cubic-bezier(.2,.8,.2,1) 520ms both; }
+  .pb-arr svg { width: 16px; height: 16px; }
+  .pb-arr:hover { background: rgba(255,79,163,.7); border-color: rgba(255,255,255,.4); }
+  .pb-arr.next { right: -18px; }
+  .pb-arr.prev { left: -18px; opacity: 0; pointer-events: none; }
+  .pb:hover .pb-arr.prev, .pb-arr.prev:focus-visible { opacity: 1; pointer-events: auto; }
+  .pb-arr:focus-visible { outline: 2px solid #ff9ed1; outline-offset: 2px; }
+  .pb-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+  .pb-dot { width: 6px; height: 6px; border-radius: 999px; border: 0; padding: 0; cursor: pointer; background: rgba(255,255,255,.22); transition: width .3s, background .3s; }
+  .pb-dot.on { width: 18px; background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+  .pb-dot:focus-visible { outline: 2px solid #ff9ed1; outline-offset: 3px; }
 
   /* ── адаптив ── */
-  @media (max-width: 1080px) {
-    .hs-scene, .hs-slide { min-height: 420px; }
-    .hs-wrap { padding: 28px 30px; }
-    .hs-badge, .hs-timer, .hs-params { left: 30px; }
-    .hs-disc { width: 132px; height: 132px; right: calc(40% + 10px); }
-    .hs-disc .num { font-size: 40px; }
+  /* бюджет текста: карточка ниже 560px по ширине (экраны до ~1440 с сайдбаром)
+     не вмещает бейдж + заголовок в 2 строки + подзаголовок + CTA — подзаголовок
+     и чипы пресетов уходят, остаются бейдж, заголовок и кнопка */
+  @media (max-width: 1440px) {
+    .pb-txt { padding: 16px 0 16px 22px; gap: 6px; }
+    .pb-sub, .pb-price { display: none; }
   }
-  /* ── мобильная раскладка.
-       В хендоффе её не проектировали («нужно решить отдельно, согласовать
-       с дизайнером») — это наш вариант. Слайд становится колонкой без пустот,
-       фотографии прижаты к нижней кромке, индикатора слайдера нет.
-       display: contents распускает .hs-wrap, чтобы таймер и строка параметров
-       (они лежат вне wrap) вставали сразу под кнопкой. ── */
   @media (max-width: 860px) {
-    .hs-scene, .hs-slide { min-height: 0; }
-    .hs-slide { display: flex; flex-direction: column; }
-    .hs-wrap { display: contents; }
-    .hs-badge { position: static; align-self: flex-start; order: 1; margin: 22px 20px 0; }
-    .hs-col { order: 2; flex: none; min-width: 0; padding: 16px 20px 0; gap: 14px; }
-    /* .hs-s4 .hs-col и .hs-s4 .hs-art весомее общих правил — сбрасываем явно,
-       иначе десктопный flex-basis в колоночном флексе становится высотой */
-    .hs-s2 .hs-col, .hs-s3 .hs-col, .hs-s4 .hs-col { flex: none; min-width: 0; }
-    .hs-s4 .hs-art { flex: none; }
-    .hs-s1 .hs-h { margin-top: 0; }
-    .hs-sub { max-width: none; }
-    .hs-halo { inset: -10px 0; }
-    .hs-dots { display: none; }
-
-    /* слайд 1 — облачко компактное, портреты стоят на нижней кромке */
-    .hs-chat { margin-top: 0; padding: 9px 13px; gap: 9px; border-radius: 14px 14px 14px 5px; max-width: 100%; }
-    .hs-eq { height: 16px; gap: 2px; }
-    .hs-eq i { width: 2px; height: 16px; }
-    .hs-typed { font-size: 13px; min-height: 16px; }
-    .hs-caret { height: 13px; }
-    .hs-art { order: 3; flex: none; align-self: auto; height: 257px; margin-top: 2px; }
-    .hs-art-in { align-items: flex-end; }
-    /* фигуры уходят ниже кромки баннера: floatA поднимает их на 16px,
-       и при bottom: 0 в верхней точке становится видна линия обреза кадра */
-    .hs-f1 { left: -4%; bottom: -38px; width: 50%; height: 104%; }
-    .hs-f2 { right: -8%; bottom: -38px; width: 54%; height: 110%; }
-    .hs-f3 { width: 56%; height: 116%; margin-bottom: -38px; }
-    /* у слайда 4 свои правила: селектор .hs-s4 .hs-fN весомее общего .hs-fN
-       и иначе перебил бы мобильные значения десктопными */
-    .hs-s4 .hs-art { height: 274px; }
-    /* на мобильной у .hs-wrap нет нижнего паддинга — сдвиг только под парение;
-       ряд снова по центру, правый вылет нужен только на десктопе */
-    .hs-s4 .hs-cast { inset: 0; justify-content: center; }
-    .hs-s4 .hs-cast img { margin-bottom: -24px; }
-    .hs-s4 .hs-cast img:nth-of-type(1) { height: 200px; margin-right: -8px; }
-    .hs-s4 .hs-cast img:nth-of-type(2) { height: 230px; }
-    .hs-s4 .hs-cast img:nth-of-type(3) { height: 212px; margin-left: -8px; }
-    .hs-f3 .hs-aura { width: 140px; height: 140px; top: 2%; }
-    /* фигуры выходят за кромку баннера, поэтому проценты отсчитываются
-       с запасом — иначе плашки с именами вылетают за рамку */
-    .hs-name { font-size: 10px; padding: 4px 9px; gap: 5px; }
-    .hs-name.a { left: 17%; top: 22%; }
-    .hs-name.b { right: 23%; top: 36%; }
-    .hs-name.main { top: 44%; }
-
-    /* слайд 2 — таймер под кнопкой, круг скидки маленький и между девушками */
-    /* left/bottom от десктопной абсолютной раскладки надо погасить,
-       иначе relative сдвигает таймер вверх и вправо прямо на кнопку */
-    .hs-timer { order: 3; position: relative; left: auto; bottom: auto; z-index: 4; margin: 14px 20px 0; }
-    /* Высоты фотозон подобраны так, чтобы собственная высота всех трёх слайдов
-       совпадала: слайды лежат в одной ячейке грида и растягиваются по самому
-       высокому, а разница вылезала пустотой над фотографиями. */
-    .hs-disc-wrap { order: 4; position: relative; flex: none; min-width: 0; height: 240px; margin-top: 2px; }
-    .hs-disc-in { position: absolute; inset: 0; }
-    /* круг ложится в просвет между двумя фигурами, а не над ними */
-    .hs-disc {
-      right: auto; left: 51%; top: auto; bottom: 16px; width: 86px; height: 86px; z-index: 3;
-      translate: -50% 0;
-    }
-    .hs-disc .ring { inset: -7px; }
-    .hs-disc .num { font-size: 26px; }
-    .hs-disc .num span { font-size: 14px; }
-    .hs-disc .cap { margin-top: 4px; font-size: 7px; letter-spacing: .22em; }
-    .hs-s2 .hs-fig { bottom: -38px; height: 240px; max-width: none; }
-    .hs-g1 { right: 50%; width: 50%; }
-    .hs-g2 { right: 0; width: 50%; }
-
-    /* слайд 3 — строка параметров под кнопкой, пара прижата к низу */
-    .hs-params { order: 3; position: relative; left: auto; bottom: auto; z-index: 4; margin: 12px 20px 0; font-size: 9px; letter-spacing: .12em; line-height: 1.7; white-space: normal; }
-    .hs-duo { order: 4; position: relative; left: 0; height: 262px; margin-top: 4px; }
-    .hs-duo-in { width: 84%; height: 100%; margin-bottom: 0; }
-    /* на десктопе фигуры выше контейнера (102% и 116%) и торчат вверх —
-       на мобильной это наезжало на строку параметров.
-       Сдвиг вниз больше суммарной амплитуды парения: блок .hs-duo-in
-       поднимается на 16px (floatA) и левая картинка ещё на 10px (floatB) —
-       при меньшем сдвиге в верхней точке открывается линия обреза кадра. */
-    .hs-duo-in img.l, .hs-duo-in img.r { height: 100%; bottom: -48px; }
+    /* телефон/планшет: ряд со свайпом, одна карточка на экран + край следующей */
+    .pb-track { grid-auto-columns: 86%; column-gap: 12px; scroll-padding-left: 0; }
+    .pb-card::before { padding-bottom: 43.75%; }   /* 16:7 */
+    .pb-arr { display: none; }
+    .pb-dots { margin-top: 10px; }
+    .pb-anime .pb-art { width: 48%; }
   }
   @media (max-width: 560px) {
-    .hs-frame { border-radius: 22px; }
-    .hs-scene { border-radius: 21px; }
-    .hs-badge { margin: 18px 16px 0; font-size: 10px; }
-    .hs-col { padding: 14px 16px 0; }
-    .hs-h, .hs-s1 .hs-h { font-size: 23px; }
-    .hs-sub { font-size: 13.5px; }
-    .hs-cta { padding: 13px 22px; font-size: 14px; }
-    .hs-price b { font-size: 24px; }
-    /* на 375 три аниме-фигуры не помещаются по ширине — оставляем двух покрупнее */
-    .hs-s4 .hs-cast img:nth-of-type(1) { display: none; }
-    .hs-s4 .hs-cast img:nth-of-type(2) { height: 244px; }
-    .hs-s4 .hs-cast img:nth-of-type(3) { height: 262px; margin-left: -4px; }
-    .hs-arr { display: none; }
-    .hs-art { height: 233px; }
-    .hs-duo { height: 238px; }
-    .hs-s2 .hs-fig { height: 222px; bottom: -34px; }
-    .hs-disc-wrap { height: 222px; }
-    .hs-disc { width: 76px; height: 76px; bottom: 14px; }
-    .hs-disc .num { font-size: 24px; }
-    .hs-timer { margin: 12px 16px 0; gap: 8px; }
-    .hs-timer .lbl { display: none; }
-    .hs-params { margin: 10px 16px 0; }
+    .pb-card::before { padding-bottom: 60%; }      /* 5:3 */
+    .pb-txt { width: 62%; padding: 16px 0 16px 16px; }
+    .pb-h { font-size: 17px; }
+    .pb-sub { display: none; }
+    .pb-cta { font-size: 12px; padding: 8px 13px; margin-top: 2px; }
+    .pb-art { width: 44%; }
+    .pb-art img { height: 100%; }
+    .pb-pill, .pb-creator, .pb-duo { font-size: 11px; }
+    .pb-pill .txt, .pb-creator span { display: none; }
+    .pb-tag { font-size: 16px; padding: 5px 9px; }
+    .pb-price b { font-size: 18px; }
   }
-
-  /* ── спокойный режим ── */
   @media (prefers-reduced-motion: reduce) {
-    .hs-slide, .hs-slide * { animation: none !important; }
-    .hs-slide { transition: opacity 260ms ease !important; transform: none !important; filter: none !important; }
-    .hs-word { transition: none !important; }
+    .pb-pill, .pb-tag, .pb-eq i, .pb-play::before { animation: none !important; }
+    .pb-track { scroll-behavior: auto; }
   }
 
   /* ── заголовок + вводный абзац (как на проде: по центру, акцент во второй части) ── */
@@ -876,203 +628,137 @@
 
   <main class="content">
 
-    <section class="hs" data-hero role="region" aria-label="Промо-баннеры">
-      <div class="hs-halo" aria-hidden="true"></div>
-      <div class="hs-frame">
-        <div class="hs-scene">
+    <!-- Промо-баннеры: 8 карточек = 4 пары, каждая — один интент (фича сервиса).
+         Порядок: сильные вау-фичи (звонки + видео) видны без листания. -->
+    <section class="pb" data-pb role="region" aria-roledescription="карусель" aria-label="Промо-баннеры">
+      <div class="pb-track" data-pb-track tabindex="0" aria-live="polite">
 
-          <!-- ── слайд 1 · живой диалог ── -->
-          <article class="hs-slide hs-s1 on" aria-label="Она уже набирает тебе сообщение">
-            <div class="hs-bg" aria-hidden="true">
-              <div class="hs-blob hs-b1a"></div>
-              <div class="hs-blob hs-b1b"></div>
-              <div data-bokeh></div>
-            </div>
+        <!-- 1 · голосовые звонки -->
+        <a class="pb-card pb-calls" href="#" data-intent="calls">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="solo" src="../assets/img/hero/red.webp" alt="" fetchpriority="high">
+            <span class="pb-pill"><span class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2z"/></svg></span><span class="txt">Мия</span><span class="pb-eq"><i></i><i></i><i></i><i></i><i></i></span></span>
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge new">Новое</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
+            <h2 class="pb-h">Позвони ей <em>прямо сейчас</em></h2>
+            <p class="pb-sub">Живой голос, её характер и память о ваших разговорах — в реальном времени.</p>
+            <span class="pb-cta">Позвонить <i>→</i></span>
+          </div>
+        </a>
 
-            <div class="hs-badge hs-mono">
-              <span class="hs-dot-live"><i></i><u></u></span>
-              <span>live · <b data-online>2 481</b> онлайн</span>
-            </div>
+        <!-- 2 · видео по пресетам -->
+        <a class="pb-card pb-video" href="#" data-intent="video">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="solo" src="../assets/img/hero/blonde2.webp" alt="" fetchpriority="high">
+            <span class="pb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge new">Новое</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
+            <h2 class="pb-h">Она <em>станцует</em> для тебя</h2>
+            <p class="pb-sub">Танцует, йога, воздушный поцелуй — видео по готовым сценам прямо в чате.</p>
+            <span class="pb-cta">Заказать видео <i>→</i></span>
+          </div>
+        </a>
 
-            <div class="hs-wrap">
-              <div class="hs-col">
-                <div class="hs-stack">
-                  <h2 class="hs-h">
-                    <span class="hs-line"><span>Она уже набирает</span></span>
-                    <span class="hs-line"><span class="hs-grad">тебе сообщение</span></span>
-                  </h2>
-                  <p class="hs-sub">Выбери характер, голос и внешность — она запомнит всё, о чём вы говорили, и напишет первой.</p>
-                  <div class="hs-chat">
-                    <span class="hs-eq" data-eq aria-hidden="true"></span>
-                    <span class="hs-typed"><span data-typed></span><span class="hs-caret"></span></span>
-                  </div>
-                  <button type="button" class="hs-cta hs-cta1">
-                    <span>Ответить ей</span><span style="font-size:19px">→</span>
-                    <i class="hs-sheen"></i>
-                  </button>
-                </div>
-              </div>
+        <!-- 3 · конструктор -->
+        <a class="pb-card pb-build" href="#" data-intent="create">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="l" src="../assets/img/hero/glasses-blonde.webp" alt="" loading="lazy">
+            <img class="r" src="../assets/img/hero/brown2.webp" alt="" loading="lazy">
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge">Конструктор</span></div>
+            <h2 class="pb-h">Собери её <em>по своему вкусу</em></h2>
+            <p class="pb-sub">Внешность, характер, голос и имя — она будет именно такой, как ты решишь.</p>
+            <span class="pb-cta">Создать компаньона <i>→</i></span>
+          </div>
+        </a>
 
-              <div class="hs-art">
-                <div class="hs-art-in">
-                  <div class="hs-fig hs-f1">
-                    <img src="../assets/img/hero/ginger.webp" alt="" fetchpriority="high">
-                    <span class="hs-name a"><i></i>Аня, 19</span>
-                  </div>
-                  <div class="hs-fig hs-f2">
-                    <img src="../assets/img/hero/beach.webp" alt="" fetchpriority="high">
-                    <span class="hs-name b"><i></i>Лея, 23</span>
-                  </div>
-                  <div class="hs-fig hs-f3">
-                    <span class="hs-aura" aria-hidden="true"></span>
-                    <img src="../assets/img/hero/pink.webp" alt="" fetchpriority="high">
-                    <span class="hs-name main"><i></i>Мия, 21</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
+        <!-- 4 · spicy-сценарии -->
+        <a class="pb-card pb-spicy" href="#" data-intent="scenarios">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="solo" src="../assets/img/hero/leather.webp" alt="" loading="lazy">
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge">🌶 Spicy</span></div>
+            <h2 class="pb-h">С чего <em>начнём</em> сегодня?</h2>
+            <p class="pb-sub">Десятки готовых сценариев — от первого свидания до самых острых.</p>
+            <span class="pb-cta">Выбрать сценарий <i>→</i></span>
+          </div>
+        </a>
 
-          <!-- ── слайд 2 · акция ── -->
-          <article class="hs-slide hs-s2" aria-label="VIP на год выгоднее">
-            <div class="hs-bg" aria-hidden="true">
-              <div class="hs-silk"></div>
-              <div class="hs-satin"></div>
-              <div data-bokeh></div>
-              <div class="hs-blob hs-b2a"></div>
-              <div class="hs-fig hs-g1"><img src="../assets/img/hero/glasses.webp" alt=""></div>
-              <div class="hs-fig hs-g2"><img src="../assets/img/hero/red.webp" alt=""></div>
-              <div data-sparks></div>
-            </div>
+        <!-- 5 · групповые чаты -->
+        <a class="pb-card pb-group" href="#" data-intent="group">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="l" src="../assets/img/hero/tanktop.webp" alt="" loading="lazy">
+            <img class="r" src="../assets/img/hero/pink.webp" alt="" loading="lazy">
+            <span class="pb-duo">2 компаньонки · 1 чат</span>
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge new">Новое</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
+            <h2 class="pb-h">Двое — это уже <em>сцена</em></h2>
+            <p class="pb-sub">Несколько компаньонок в одном чате, у каждой — свой характер.</p>
+            <span class="pb-cta">Открыть групповой чат <i>→</i></span>
+          </div>
+        </a>
 
-            <div class="hs-badge pill hs-mono">выгода <b data-save>8 586</b> ₽</div>
+        <!-- 6 · авторы компаньонов -->
+        <a class="pb-card pb-author" href="#" data-intent="author">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="solo" src="../assets/img/hero/ginger.webp" alt="" loading="lazy">
+            <span class="pb-creator"><span class="av"><img src="../assets/img/hero/ginger.webp" alt=""></span><b>@nika_ai <svg><use href="#i-verified"/></svg></b><span>3,2k подписчиков</span></span>
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge new">Новое</span></div>
+            <h2 class="pb-h">Стань <em>автором</em> компаньонов</h2>
+            <p class="pb-sub">Публикуй персонажей в каталоге, набирай подписчиков и лайки.</p>
+            <span class="pb-cta">Стать автором <i>→</i></span>
+          </div>
+        </a>
 
-            <div class="hs-wrap">
-              <div class="hs-col">
-                <div class="hs-stack">
-                  <h2 class="hs-h">
-                    <span class="hs-line"><span>VIP на год</span></span>
-                    <span class="hs-line"><span>выгоднее на <b data-disc>45</b>%</span></span>
-                  </h2>
-                  <div class="hs-price">
-                    <b data-price>1 590 ₽</b>
-                    <s data-price-old>1 590 ₽</s>
-                    <em>/ мес при оплате за год</em>
-                  </div>
-                  <button type="button" class="hs-cta hs-cta2">
-                    <span>Оформить на год</span>
-                    <i class="hs-sheen"></i>
-                  </button>
-                </div>
-              </div>
+        <!-- 7 · аниме-раздел -->
+        <a class="pb-card pb-anime" href="#" data-intent="anime">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="a1" src="../assets/img/hero/anime-office.webp" alt="" loading="lazy">
+            <img class="a2" src="../assets/img/hero/anime-blonde.webp" alt="" loading="lazy">
+            <img class="a3" src="../assets/img/hero/anime-elf.webp" alt="" loading="lazy">
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge">Новый раздел</span></div>
+            <h2 class="pb-h">Аниме <em>уже в каталоге</em></h2>
+            <p class="pb-sub">Эльфийки, тихони и строгие секретарши — в рисованном стиле.</p>
+            <span class="pb-cta">Смотреть аниме <i>→</i></span>
+          </div>
+        </a>
 
-              <div class="hs-disc-wrap">
-                <div class="hs-disc-in">
-                  <div class="hs-disc">
-                    <div class="ring" aria-hidden="true"></div>
-                    <div class="body" aria-hidden="true"></div>
-                    <div class="txt">
-                      <div class="num">−<b data-disc>45</b><span>%</span></div>
-                      <div class="cap">vip · год</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <!-- 8 · акция VIP на год (скрывается для VIP; цену и скидку отдаёт бэкенд) -->
+        <a class="pb-card pb-sale" href="#" data-intent="sale" data-hide-for="vip">
+          <div class="pb-bg" aria-hidden="true"></div>
+          <div class="pb-art" aria-hidden="true">
+            <img class="solo" src="../assets/img/hero/glasses.webp" alt="" loading="lazy">
+            <span class="pb-tag">−45%<small>vip · год</small></span>
+          </div>
+          <div class="pb-txt">
+            <div class="pb-badges"><span class="pb-badge">Акция</span></div>
+            <h2 class="pb-h">VIP на год <em>выгоднее на 45%</em></h2>
+            <div class="pb-price"><b>875 ₽</b><s>1 590 ₽</s><span>/ мес</span></div>
+            <span class="pb-cta">Оформить на год <i>→</i></span>
+          </div>
+        </a>
 
-            <div class="hs-timer">
-              <div class="lbl">
-                <span class="pt"><i></i><u></u></span>
-                <span>до конца акции</span>
-              </div>
-              <div class="hs-clock">
-                <div><b data-cl-h>00</b><i>ч</i></div>
-                <div><b data-cl-m>00</b><i>м</i></div>
-                <div><b data-cl-s>00</b><i>с</i></div>
-              </div>
-            </div>
-          </article>
-
-          <!-- ── слайд 3 · конструктор ── -->
-          <article class="hs-slide hs-s3" aria-label="Собери компаньона по своему вкусу">
-            <div class="hs-bg" aria-hidden="true">
-              <div class="hs-blob hs-b3a"></div>
-              <div data-bokeh></div>
-            </div>
-
-            <div class="hs-badge pill hs-mono">конструктор · твои правила</div>
-
-            <div class="hs-wrap">
-              <div class="hs-col">
-                <div class="hs-stack">
-                  <h2 class="hs-h">
-                    <span class="hs-line"><span>Собери её</span></span>
-                    <span class="hs-line"><span>по своему вкусу</span></span>
-                  </h2>
-                  <div class="hs-trait">
-                    <span class="st">сегодня она</span>
-                    <span class="slot"><span class="hs-word" data-word>будет нежной</span></span>
-                  </div>
-                  <button type="button" class="hs-cta hs-cta3">
-                    <span>Создать компаньона</span>
-                    <i class="hs-sheen"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="hs-duo">
-                <div class="hs-duo-in">
-                  <img class="l" src="../assets/img/hero/brown2.webp" alt="">
-                  <img class="r" src="../assets/img/hero/blonde2.webp" alt="">
-                </div>
-              </div>
-            </div>
-
-            <div class="hs-params hs-mono" style="letter-spacing:.18em;font-weight:500">внешность · характер · голос · сценарий · имя</div>
-          </article>
-
-          <!-- ── слайд 4 · аниме ── -->
-          <article class="hs-slide hs-s4" aria-label="Аниме-компаньоны уже в каталоге">
-            <div class="hs-bg" aria-hidden="true">
-              <div class="hs-blob hs-b4a"></div>
-              <div class="hs-blob hs-b4b"></div>
-              <div data-bokeh></div>
-            </div>
-
-            <div class="hs-badge pill hs-mono">аниме · рисованный стиль</div>
-
-            <div class="hs-wrap">
-              <div class="hs-col">
-                <div class="hs-stack">
-                  <h2 class="hs-h">
-                    <span class="hs-line"><span>Аниме-компаньоны</span></span>
-                    <span class="hs-line"><span class="hs-grad4">в отдельном разделе</span></span>
-                  </h2>
-                  <p class="hs-sub">Эльфийки, тихони и строгие секретарши — тот же характер, голос и память, только в рисованном стиле.</p>
-                  <button type="button" class="hs-cta hs-cta4">
-                    <span>Смотреть аниме</span>
-                    <i class="hs-sheen"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="hs-art">
-                <div class="hs-cast">
-                  <img src="../assets/img/hero/anime-elf.webp" alt="" loading="lazy">
-                  <img src="../assets/img/hero/anime-office.webp" alt="" loading="lazy">
-                  <img src="../assets/img/hero/anime-blonde.webp" alt="" loading="lazy">
-                </div>
-              </div>
-              <div class="hs-veil4" aria-hidden="true"></div>
-            </div>
-          </article>
-
-          <div class="hs-dots" data-dots></div>
-        </div>
       </div>
 
-      <button type="button" class="hs-arr prev" data-step="-1" aria-label="Предыдущий баннер">‹</button>
-      <button type="button" class="hs-arr next" data-step="1" aria-label="Следующий баннер">›</button>
+      <button type="button" class="pb-arr prev" data-step="-1" aria-label="Предыдущие баннеры"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button type="button" class="pb-arr next" data-step="1" aria-label="Следующие баннеры"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      <div class="pb-dots" data-pb-dots role="tablist" aria-label="Страницы баннеров"></div>
     </section>
 
     <h1 class="cat-h1">ИИ девушка: <span>онлайн-чат с виртуальной подругой</span></h1>
@@ -1383,189 +1069,90 @@
 </script>
 
 <script>
-/* Hero-слайдер баннеров. Логика перенесена из дизайн-референса Claude Design
-   (класс Component в .dc.html) на обычный JS без рантайма.
-   Параметры вынесены в CFG — в проде цену, скидку и дедлайн акции отдаёт бэкенд. */
+/* Промо-баннеры: карусель на нативной прокрутке со scroll-snap.
+   Страница = столько карточек, сколько помещается в ряд (2 на десктопе, 1 на
+   телефоне). Автоплей 7с, пауза при наведении/фокусе/скрытой вкладке.
+   Тариф пользователя — data-tariff на <html> (в проде из профиля): VIP не
+   видит VIP-маркеры и карточки с data-hide-for="vip". */
 (function () {
-  var CFG = { autoplayMs: 7500, discount: 45, priceOld: 1590, saleHours: 11, months: 12 };
-  var root = document.querySelector('[data-hero]');
+  var root = document.querySelector('[data-pb]');
   if (!root) return;
+  var track = root.querySelector('[data-pb-track]'), dotsEl = root.querySelector('[data-pb-dots]');
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var AUTOPLAY = 7000, paused = false, dots = [], raf = 0;
 
-  var calm   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var slides = Array.prototype.slice.call(root.querySelectorAll('.hs-slide'));
-  var dotsBox = root.querySelector('[data-dots]');
-  var ru = function (n) { return Number(n).toLocaleString('ru-RU'); };
-  var pad = function (n) { return String(n).padStart(2, '0'); };
+  /* ── фильтр по тарифу ── */
+  var tariff = document.documentElement.dataset.tariff || 'free';
+  root.querySelectorAll('[data-hide-for]').forEach(function (c) {
+    if (c.dataset.hideFor.split(' ').indexOf(tariff) > -1) c.remove();
+  });
+  if (tariff === 'vip') root.querySelectorAll('[data-vip-mark]').forEach(function (m) { m.remove(); });
 
-  /* ── декор: боке, искры, эквалайзер ── */
-  var BOKEH = [
-    ['8%','18%','120px','rgba(255,180,215,.5)','0ms'],   ['26%','62%','80px','rgba(255,215,160,.45)','2600ms'],
-    ['48%','12%','64px','rgba(255,255,255,.35)','5200ms'], ['62%','70%','140px','rgba(255,140,190,.4)','1400ms'],
-    ['80%','24%','96px','rgba(255,215,160,.38)','7600ms'], ['90%','64%','70px','rgba(255,180,215,.42)','3800ms'],
-    ['38%','40%','54px','rgba(255,255,255,.3)','9200ms']
-  ];
-  root.querySelectorAll('[data-bokeh]').forEach(function (box) {
-    BOKEH.forEach(function (k) {
-      var s = document.createElement('span');
-      s.className = 'hs-bok';
-      s.style.cssText = 'left:' + k[0] + ';top:' + k[1] + ';width:' + k[2] + ';height:' + k[2] +
-        ';background:radial-gradient(circle,' + k[3] + ', transparent 70%);animation-delay:' + k[4];
-      box.appendChild(s);
-    });
-  });
-  root.querySelectorAll('[data-sparks]').forEach(function (box) {
-    for (var n = 0; n < 9; n++) {
-      var c = n % 3 === 0 ? '#ffc86b' : n % 3 === 1 ? '#ff8fc6' : 'rgba(255,255,255,.75)';
-      var d = (4 + (n % 3) * 3) + 'px';
-      var s = document.createElement('span');
-      s.className = 'hs-spark';
-      s.style.cssText = 'left:' + (6 + n * 10.5) + '%;width:' + d + ';height:' + d +
-        ';background:' + c + ';color:' + c + ';animation-delay:' + ((n * 780) % 7000) + 'ms';
-      box.appendChild(s);
-    }
-  });
-  root.querySelectorAll('[data-eq]').forEach(function (box) {
-    for (var n = 0; n < 14; n++) {
-      var i = document.createElement('i');
-      i.style.animationDelay = ((n * 90) % 1100) + 'ms';
-      box.appendChild(i);
-    }
-  });
-
-  /* ── подстановка чисел акции ── */
-  var target = Math.round(CFG.priceOld * (1 - CFG.discount / 100));
-  root.querySelectorAll('[data-disc]').forEach(function (e) { e.textContent = CFG.discount; });
-  root.querySelectorAll('[data-price-old]').forEach(function (e) { e.textContent = ru(CFG.priceOld) + ' ₽'; });
-  root.querySelectorAll('[data-save]').forEach(function (e) { e.textContent = ru((CFG.priceOld - target) * CFG.months); });
+  var cards = function () { return Array.prototype.slice.call(track.querySelectorAll('.pb-card')); };
+  function gap()     { return parseFloat(getComputedStyle(track).columnGap) || 0; }
+  function cardW()   { var c = cards()[0]; return c ? c.getBoundingClientRect().width : track.clientWidth; }
+  function perView() { return Math.max(1, Math.round((track.clientWidth + gap()) / (cardW() + gap()))); }
+  function step()    { return perView() * (cardW() + gap()); }
+  function pages()   { return Math.max(1, Math.ceil(cards().length / perView())); }
+  function maxLeft() { return track.scrollWidth - track.clientWidth; }
+  function page() {
+    if (track.scrollLeft >= maxLeft() - 2) return pages() - 1;
+    return Math.min(pages() - 1, Math.round(track.scrollLeft / step()));
+  }
+  function go(n, instant) {
+    var p = pages(); n = (n + p) % p;
+    track.scrollTo({ left: Math.min(n * step(), maxLeft()), behavior: (instant || calm) ? 'auto' : 'smooth' });
+  }
 
   /* ── точки ── */
-  var dots = slides.map(function (_, n) {
-    var b = document.createElement('button');
-    b.type = 'button'; b.className = 'hs-dot'; b.setAttribute('aria-label', 'Баннер ' + (n + 1));
-    b.appendChild(document.createElement('i'));
-    b.addEventListener('click', function () { go(n); });
-    dotsBox.appendChild(b);
-    return b;
-  });
-
-  /* ── состояние ── */
-  var i = 0, p = 0, paused = false, tick = 0;
-  var deadline = Date.now() + CFG.saleHours * 3600e3;
-
-  function paint() {
-    slides.forEach(function (s, n) {
-      s.classList.toggle('on', n === i);
-      s.classList.toggle('past', n < i);
-      s.setAttribute('aria-hidden', n === i ? 'false' : 'true');
-    });
-    dots.forEach(function (d, n) {
-      d.classList.toggle('on', n === i);
-      d.setAttribute('aria-current', n === i ? 'true' : 'false');
-      d.firstChild.style.width = n === i ? Math.round(p * 100) + '%' : '0%';
-    });
-  }
-
-  function go(n) {
-    i = (n + slides.length) % slides.length;
-    p = 0;
-    paint();
-    if (i === 1) countTo();
-  }
-
-  /* ── счётчик цены ── */
-  var priceEl = root.querySelector('[data-price]'), cnt = null;
-  function countTo() {
-    clearInterval(cnt);
-    var v = CFG.priceOld;
-    priceEl.textContent = ru(v) + ' ₽';
-    if (calm) { priceEl.textContent = ru(target) + ' ₽'; return; }
-    cnt = setInterval(function () {
-      v = v - Math.max(4, Math.round((v - target) * 0.14));
-      if (v <= target) { v = target; clearInterval(cnt); }
-      priceEl.textContent = ru(v) + ' ₽';
-    }, 34);
-  }
-
-  /* ── таймер акции ── */
-  var clH = root.querySelector('[data-cl-h]'), clM = root.querySelector('[data-cl-m]'), clS = root.querySelector('[data-cl-s]');
-  function clock() {
-    var r = Math.max(0, deadline - Date.now());
-    clH.textContent = pad(Math.floor(r / 36e5));
-    clM.textContent = pad(Math.floor(r / 6e4) % 60);
-    clS.textContent = pad(Math.floor(r / 1000) % 60);
-  }
-
-  /* ── сменное слово на третьем слайде ── */
-  var WORDS = ['будет нежной', 'будет дерзкой', 'вспомнит всё', 'заговорит вслух', 'будет только твоей'];
-  var wordEl = root.querySelector('[data-word]'), wordIdx = 0;
-  function word() {
-    var k = Math.floor(tick / 28) % WORDS.length;
-    var phase = tick % 28;
-    if (k !== wordIdx) { wordIdx = k; }
-    if (phase < 2) { wordEl.classList.add('out'); }
-    else {
-      if (wordEl.textContent !== WORDS[wordIdx]) wordEl.textContent = WORDS[wordIdx];
-      wordEl.classList.remove('out');
+  function buildDots() {
+    dotsEl.innerHTML = ''; dots = [];
+    for (var i = 0; i < pages(); i++) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'pb-dot'; b.setAttribute('role', 'tab');
+      b.setAttribute('aria-label', 'Баннеры ' + (i + 1) + ' из ' + pages());
+      b.addEventListener('click', function (n) { return function () { go(n); restart(); }; }(i));
+      dotsEl.appendChild(b); dots.push(b);
     }
+    paint();
   }
-
-  /* ── печатающийся текст ── */
-  var PHRASES = ['Ты сегодня такой молчаливый...', 'Я всё ещё думаю о том разговоре', 'Хочешь, расскажу секрет?'];
-  var typedEl = root.querySelector('[data-typed]'), ph = 0, ch = 0, dir = 1;
-  function typer() {
-    var s = PHRASES[ph];
-    ch += dir;
-    if (ch > s.length) { dir = 0; setTimeout(function () { dir = -1; }, 1400); }
-    if (ch <= 0 && dir === -1) { dir = 1; ph = (ph + 1) % PHRASES.length; }
-    typedEl.textContent = s.slice(0, Math.max(0, Math.min(ch, s.length)));
+  function paint() {
+    var cur = page();
+    dots.forEach(function (d, i) { d.classList.toggle('on', i === cur); d.setAttribute('aria-selected', i === cur); });
   }
-
-  /* ── пауза на наведении.
-       Параллакс от курсора из референса намеренно не переносим:
-       по решению дизайнера фотографии только парят и на курсор не реагируют. ── */
-  root.addEventListener('mouseenter', function () { paused = true; });
-  root.addEventListener('mouseleave', function () { paused = false; });
-  root.addEventListener('focusin',  function () { paused = true; });
-  root.addEventListener('focusout', function () { paused = false; });
-
-  /* ── свайп: на мобильной точек и стрелок нет, переключать иначе нечем ── */
-  var sx = null, sy = null;
-  root.addEventListener('touchstart', function (e) {
-    var p = e.changedTouches[0]; sx = p.clientX; sy = p.clientY;
-  }, { passive: true });
-  root.addEventListener('touchend', function (e) {
-    if (sx === null) return;
-    var p = e.changedTouches[0], dx = p.clientX - sx, dy = p.clientY - sy;
-    // горизонтальным считаем только явный жест — иначе перехватим прокрутку страницы
-    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) go(i + (dx < 0 ? 1 : -1));
-    sx = sy = null;
+  track.addEventListener('scroll', function () {
+    if (raf) return;
+    raf = requestAnimationFrame(function () { raf = 0; paint(); });
   }, { passive: true });
 
   /* ── стрелки и клавиатура ── */
   root.querySelectorAll('[data-step]').forEach(function (b) {
-    b.addEventListener('click', function () { go(i + Number(b.dataset.step)); });
+    b.addEventListener('click', function () { go(page() + Number(b.dataset.step)); restart(); });
   });
-  root.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft')  { go(i - 1); e.preventDefault(); }
-    if (e.key === 'ArrowRight') { go(i + 1); e.preventDefault(); }
+  track.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft')  { go(page() - 1); restart(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { go(page() + 1); restart(); e.preventDefault(); }
   });
 
-  /* ── такты ── */
-  setInterval(function () {
-    tick++;
-    clock();
-    word();
-    if (!paused && !calm) {
-      p += 100 / CFG.autoplayMs;
-      if (p >= 1) { p = 0; go(i + 1); return; }
-    }
-    dots[i].firstChild.style.width = Math.round(p * 100) + '%';
-  }, 100);
+  /* ── автоплей ── */
+  var timer = 0;
+  function tick() { if (!paused && !document.hidden) go(page() + 1); }
+  function restart() { clearInterval(timer); if (!calm) timer = setInterval(tick, AUTOPLAY); }
+  root.addEventListener('pointerenter', function () { paused = true; });
+  root.addEventListener('pointerleave', function () { paused = false; });
+  root.addEventListener('focusin',  function () { paused = true; });
+  root.addEventListener('focusout', function () { paused = false; });
+  track.addEventListener('pointerdown', function () { paused = true; }, { passive: true });
+  track.addEventListener('pointerup',   function () { paused = false; restart(); }, { passive: true });
 
-  if (!calm) setInterval(typer, 52);
-  else typedEl.textContent = PHRASES[0];
+  /* пересчёт при смене ширины (2 карточки ↔ 1) — остаёмся на той же странице */
+  var lastPer = perView();
+  window.addEventListener('resize', function () {
+    var cur = page();
+    if (perView() !== lastPer) { lastPer = perView(); buildDots(); go(0, true); } else { go(cur, true); }
+  });
 
-  clock(); paint(); countTo();
+  buildDots(); restart();
 })();
 </script>
 

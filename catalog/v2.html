@@ -1232,6 +1232,104 @@
   addEventListener('scroll', ask, { passive: true });
   addEventListener('resize', ask);
 
+  /* Фильтры. Выпадающие списки: открытие/закрытие, выбор пункта → подпись кнопки, Esc / клик вне.
+     Категории: один список CATS; в ряду показываем столько чипов, сколько помещается до конца
+     контентной области (пересчёт на ресайзе), остальные — в модалке «Ещё» (все категории чипами).
+     Выбранная категория, если её чип в ряду скрыт, встаёт в подпись «Ещё». В прототипе фильтры
+     держат только состояние — сетка на них не реагирует. */
+  (function () {
+    var dds = Array.prototype.slice.call(document.querySelectorAll('[data-dd]'));
+    function closeDds() { dds.forEach(function (d) { d.classList.remove('open'); d.querySelector('.dd-btn').setAttribute('aria-expanded', 'false'); }); }
+    dds.forEach(function (d) {
+      var btn = d.querySelector('.dd-btn'), val = d.querySelector('.dd-val');
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = !d.classList.contains('open');
+        closeDds(); d.classList.toggle('open', open); btn.setAttribute('aria-expanded', open);
+      });
+      d.querySelectorAll('li').forEach(function (li) {
+        li.addEventListener('click', function (e) {
+          e.stopPropagation();
+          d.querySelectorAll('li').forEach(function (x) { x.setAttribute('aria-selected', 'false'); });
+          li.setAttribute('aria-selected', 'true'); val.textContent = li.textContent; closeDds();
+        });
+      });
+    });
+
+    var CATS = [
+      ['all', 'Все'], ['official', 'Официальные'], ['mature', 'Зрелые'], ['petite', 'Миниатюрные'], ['curvy', 'Пышные'],
+      ['blonde', 'Блондинки'], ['brunette', 'Брюнетки'], ['asian', 'Азиатки'], ['latina', 'Латина'], ['goth', 'Гот и альт'],
+      ['romantic', 'Романтичные'], ['dominant', 'Доминантные'], ['submissive', 'Покорные'], ['playful', 'Игривые'],
+      ['shy', 'Скромные'], ['confident', 'Уверенные'], ['athletic', 'Спортивные'], ['muscular', 'Атлетичные'],
+      ['redhead', 'Рыжие'], ['tattooed', 'С татуировками'], ['black', 'Темнокожие'], ['middle-east', 'Ближний Восток'],
+      ['college', 'Студентки'], ['professional', 'Профессионалки'], ['gamer', 'Геймерши'], ['cosplay', 'Косплей'],
+      ['fantasy', 'Фэнтези'], ['supernatural', 'Сверхъестественное'], ['royalty', 'Королевские']
+    ];
+    var row = document.getElementById('cat-row'), all = document.getElementById('cat-all'), modal = document.getElementById('cat-modal');
+    var chip = function (c) { return '<a class="tag" href="?tag=' + c[0] + '" data-cat="' + c[0] + '">' + c[1] + '</a>'; };
+    row.innerHTML = CATS.map(chip).join('') +
+      '<button class="tag more" type="button" data-more aria-haspopup="dialog" aria-expanded="false" aria-controls="cat-modal">Ещё<svg class="ic chev"><use href="#i-chevr"/></svg></button>';
+    all.innerHTML = CATS.map(chip).join('');
+    var chips = Array.prototype.slice.call(row.querySelectorAll('a.tag')), more = row.querySelector('[data-more]');
+    var active = 'all', widths = null;
+
+    function paint() {
+      document.querySelectorAll('[data-cat]').forEach(function (t) { t.classList.toggle('on', t.dataset.cat === active); });
+      var hiddenActive = chips.some(function (t) { return t.dataset.cat === active && t.style.display === 'none'; });
+      var label = CATS.filter(function (c) { return c[0] === active; })[0][1];
+      more.firstChild.nodeValue = hiddenActive ? label : 'Ещё';
+      more.classList.toggle('on', hiddenActive);
+      if (narrow()) {                                   // телефон: подвезти ряд к выбранному чипу
+        var t = chips.filter(function (c) { return c.dataset.cat === active; })[0];
+        if (t) {   // позиция чипа внутри ряда — через rect, offsetLeft здесь считается от другого предка
+          var tr = t.getBoundingClientRect(), rr = row.getBoundingClientRect();
+          if (tr.left < rr.left || tr.right > rr.right)  // только если чип не виден целиком
+            row.scrollTo({ left: Math.max(0, tr.left - rr.left + row.scrollLeft - 12), behavior: 'smooth' });
+        }
+      }
+    }
+    /* показать столько чипов, сколько влезает вместе с «Ещё» до конца ряда */
+    var narrow = function () { return window.matchMedia('(max-width: 640px)').matches; };
+    function fit() {
+      chips.forEach(function (t) { t.style.display = ''; });
+      if (narrow()) { paint(); return; }               // телефон: все чипы, ряд прокручивается
+      widths = chips.map(function (t) { return t.offsetWidth; });
+      var gap = 8, avail = row.clientWidth, moreW = more.offsetWidth, used = 0, shown = 0;
+      for (var i = 0; i < chips.length; i++) {
+        var next = used + (i ? gap : 0) + widths[i];
+        if (next + gap + moreW > avail) break;
+        used = next; shown = i + 1;
+      }
+      chips.forEach(function (t, i) { t.style.display = i < shown ? '' : 'none'; });
+      paint();
+    }
+    function pick(cat) { active = cat; closeModal(); paint(); }   // сначала закрыть модалку, потом прокрутка — по устоявшейся раскладке
+    function openModal() { modal.hidden = false; more.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; modal.querySelector('.modal-x').focus(); }
+    function closeModal() { if (modal.hidden) return; modal.hidden = true; more.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; more.focus({ preventScroll: true }); }   // без preventScroll фокус на «Ещё» прокрутил бы ряд в конец
+
+    document.querySelectorAll('[data-cat]').forEach(function (t) { t.addEventListener('click', function (e) { e.preventDefault(); pick(t.dataset.cat); }); });
+    more.addEventListener('click', function (e) { e.stopPropagation(); closeDds(); openModal(); });
+    modal.querySelectorAll('[data-close]').forEach(function (x) { x.addEventListener('click', closeModal); });
+    document.addEventListener('click', closeDds);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeDds(); closeModal(); } });
+    addEventListener('resize', fit);
+    if (document.fonts) document.fonts.ready.then(fit);
+    fit();
+  })();
+
+  /* вводный абзац: свёрнут до первой строки, «ещё» раскрывает; если текст и так
+     помещается в строку (очень широкий экран) — переключатель не нужен */
+  (function () {
+    var box = document.getElementById('intro'), p = box.querySelector('p'), btn = box.querySelector('.cat-intro-more');
+    function fits() { box.classList.toggle('fits', !box.classList.contains('open') && p.scrollHeight <= p.clientHeight + 1); }
+    btn.addEventListener('click', function () {
+      var open = box.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+      btn.setAttribute('aria-label', open ? 'Свернуть описание' : 'Развернуть описание');
+    });
+    addEventListener('resize', fits); fits();
+  })();
+
   /* Избранное. Клик по сердечку: бот «улетает» в «Мои персонажи» (миниатюра фото летит
      к пункту меню, на нём растёт счётчик), внизу — тост со ссылкой на вкладку «Избранное».
      Состояние — в localStorage, чтобы пережило перезагрузку. Вкладка «Избранное» на самой

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — Мои ИИ-компаньоны · с вкладкой «Избранное»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<style>
+  /* ── «Мои ИИ-компаньоны»: текущая продовая страница lovix.ai + вкладка «Избранное».
+       Всё, кроме вкладок и содержимого «Избранного», повторяет прод: заголовок,
+       подзаголовок, кнопка «Создать модель», карточка модели с чипами и корзиной,
+       плитка «+ Создать модель». Классы с префиксами my-/cc-, общие стили не трогаются.
+       Черновик с статусами публикации (фича авторов) — models/v1.html. ── */
+
+  .content { max-width: 1240px; }
+
+  /* фон и хром — залогиненное состояние, как на проде этой страницы */
+  body { background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); }
+  .page { background: none; }
+  .sb-item.on { background: rgba(255,255,255,.08); }         /* активный пункт — тихая подложка */
+  .sb-item.cta { background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); color: #fff; }
+  .sb-item.cta .ic { color: #fff; }
+  .sb-cnt {
+    margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+    background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    color: #fff; font-size: .7rem; font-weight: 800; font-style: normal;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .my-head { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .my-head .sub { max-width: 60ch; }
+  .my-head .btn { margin-left: auto; flex: none; }
+
+  /* вкладки: «Мои модели» / «Избранное» — сегмент из общих стилей, счётчики по образцу .off */
+  .my-bar { margin: 26px 0 22px; }
+  .my-bar .seg button { gap: .45rem; }
+  .my-bar .seg .ic { width: 15px; height: 15px; }
+  .seg .cnt {
+    font-size: .72rem; font-weight: 800;
+    padding: .16rem .45rem; border-radius: 999px;
+    background: rgba(217,70,239,.16); color: #f0abfc;
+  }
+  .seg button.on .cnt { background: rgba(0,0,0,.28); color: #fff; }
+
+  .my-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; align-items: start; }
+
+  /* карточка — по макету Figma 5201:52203 (285×400, r12) */
+  .cc {
+    position: relative; overflow: hidden;
+    border-radius: 12px;
+    aspect-ratio: 285 / 400;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    transition: transform .18s, box-shadow .18s;
+    cursor: pointer;
+  }
+  .cc:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(217,70,239,.16); }
+  .cc-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: #1b171d; }
+  .cc-bg { position: absolute; inset: 0; }
+  .cc-img {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    height: 96%; width: auto; max-width: none;
+    filter: drop-shadow(0 12px 26px rgba(0,0,0,.45));
+  }
+  .cc-shade {
+    position: absolute; inset: auto 0 0 0; height: 62%;
+    background: linear-gradient(180deg, rgba(16,14,16,0) 0%, rgba(16,14,16,.45) 40%, rgba(16,14,16,.9) 100%);
+  }
+  .cc-meta { position: relative; padding: 0 14px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .cc-text { display: flex; flex-direction: column; gap: 3px; }
+  .cc-name {
+    display: flex; align-items: baseline; gap: 6px;
+    font-size: 24px; line-height: 28px; font-weight: 600; color: #fff; white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 2px 14px rgba(0,0,0,.45);
+  }
+  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .cc-name span { opacity: .7; }
+  .cc-desc {
+    font-size: 14px; line-height: 17px; font-weight: 400; color: rgba(255,255,255,.85);
+    text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 1px 10px rgba(0,0,0,.4);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .cc-foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .cc-m {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 9px; border-radius: 999px;
+    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    font-size: 13px; font-weight: 500; color: #fff;
+  }
+  .cc-ic { width: 13px; height: 13px; flex: none; opacity: .9; }
+  /* чипы своей модели — как на проде: «Модель №1» серый, «Активен» синий */
+  .cc-m.st { background: rgba(37,99,235,.85); }
+
+  /* корзина у своей модели — как на проде, сверху справа */
+  .cc-del {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    transition: background .2s, transform .15s;
+  }
+  .cc-del .ic { width: 15px; height: 15px; }
+  .cc-del:hover { background: rgba(239,68,68,.75); transform: scale(1.08); }
+
+  /* плитка «+ Создать модель» — как на проде: тихая панель, круг с плюсом, подпись */
+  .cc.newtile {
+    justify-content: center; align-items: center; gap: 12px;
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.06);
+    color: rgb(var(--muted));
+  }
+  .cc.newtile:hover { background: rgba(255,255,255,.07); box-shadow: none; }
+  .cc.newtile .plus {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,.08); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cc.newtile .plus .ic { width: 22px; height: 22px; }
+  .cc.newtile .lbl { font-size: 14px; color: #d7d7e0; }
+
+  /* ── вкладка «Избранное»: боты других авторов, отмеченные сердечком в каталоге.
+       Источник — localStorage lovix.fav (индексы CATALOG_BOTS из assets/bots-data.js),
+       тот же, что пишет главная. Карточка — как на главной: фото, бейдж автора,
+       сердечко «убрать». ── */
+  .cc-auth {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 3px 10px 3px 3px; border-radius: 999px;
+    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: #fff; font-size: 12px; font-weight: 600; text-decoration: none;
+  }
+  .cc-auth:hover { background: rgba(16,14,16,.85); }
+  .cc-av {
+    width: 22px; height: 22px; flex: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+    background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+  }
+  .cc-ver { width: 12px; height: 12px; flex: none; color: rgb(var(--primary)); }
+  .cc-unfav {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: rgb(var(--acc-to)); display: flex; align-items: center; justify-content: center;
+    transition: transform .15s, background .2s;
+  }
+  .cc-unfav .ic { width: 17px; height: 17px; }
+  .cc-unfav:hover { background: rgba(16,14,16,.85); transform: scale(1.08); }
+
+  /* пустое состояние */
+  .my-empty {
+    text-align: center; padding: 64px 40px;
+    background: rgba(255,255,255,.05); border-radius: 20px;
+  }
+  .my-empty .ibox {
+    width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 16px;
+    background: rgba(255,255,255,.08); color: rgb(var(--muted));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .my-empty .ibox .ic { width: 24px; height: 24px; }
+  .my-empty h3 { font-size: 1.15rem; font-weight: 800; }
+  .my-empty p { color: rgb(var(--muted)); font-size: .92rem; margin: 8px auto 18px; max-width: 44ch; }
+
+  @media (max-width: 900px) { .my-head .btn { margin-left: 0; width: 100%; } }
+  @media (max-width: 560px) { .my-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .my-bar .seg { display: flex; } }
+
+  /* Кнопки — по боевому lovix.ai: высота 52, радиус 12, кегль 18/600, без свечения. */
+  .btn { border-radius: 12px; font-size: 1.125rem; font-weight: 600; padding: .9rem 2rem; }
+  .btn-grad { box-shadow: none; }
+  .btn-grad:hover { box-shadow: none; filter: brightness(1.1); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-heart-f" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="currentColor"/></symbol>
+    <symbol id="i-verified" viewBox="0 0 24 24"><path d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Z" fill="currentColor"/><path d="m8.6 12.25 2.25 2.25 4.55-5.4" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 9h20M12 22 8 9l3-6M12 22l4-13-3-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" opacity=".55"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m22 6-10 7L2 6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 16v-5M12 8h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-chat" viewBox="0 0 12.375 11.5"><path d="M4.21875 4.4375C4.21875 4.55831 4.12081 4.65625 4 4.65625C3.87919 4.65625 3.78125 4.55831 3.78125 4.4375C3.78125 4.31669 3.87919 4.21875 4 4.21875C4.12081 4.21875 4.21875 4.31669 4.21875 4.4375ZM4.21875 4.4375H4M6.40625 4.4375C6.40625 4.55831 6.30831 4.65625 6.1875 4.65625C6.06669 4.65625 5.96875 4.55831 5.96875 4.4375C5.96875 4.31669 6.06669 4.21875 6.1875 4.21875C6.30831 4.21875 6.40625 4.31669 6.40625 4.4375ZM6.40625 4.4375H6.1875M8.59375 4.4375C8.59375 4.55831 8.49581 4.65625 8.375 4.65625C8.25419 4.65625 8.15625 4.55831 8.15625 4.4375C8.15625 4.31669 8.25419 4.21875 8.375 4.21875C8.49581 4.21875 8.59375 4.31669 8.59375 4.4375ZM8.59375 4.4375H8.375M0.5 6.19295C0.5 7.12691 1.15532 7.93986 2.07935 8.07573C2.71291 8.16888 3.35338 8.24082 4 8.29079V11L6.44037 8.55963C6.56096 8.43904 6.72378 8.37048 6.89427 8.36626C8.04668 8.33772 9.18181 8.23955 10.2956 8.0758C11.2197 7.93994 11.875 7.12699 11.875 6.19302V2.68199C11.875 1.74802 11.2197 0.935065 10.2956 0.799212C8.95485 0.602091 7.58318 0.5 6.18767 0.5C4.79203 0.5 3.42023 0.602109 2.07936 0.799265C1.15533 0.935128 0.5 1.74808 0.5 2.68204V6.19295Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cc-like" viewBox="0 0 11.5 10.625"><path d="M11 3.125C11 1.67525 9.77578 0.5 8.26562 0.5C7.13651 0.5 6.16725 1.157 5.75 2.09449C5.33275 1.157 4.36349 0.5 3.23438 0.5C1.72422 0.5 0.5 1.67525 0.5 3.125C0.5 7.33699 5.75 10.125 5.75 10.125C5.75 10.125 11 7.33699 11 3.125Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<aside class="sb">
+  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <nav class="sb-top">
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
+    <a class="sb-item" href="../catalog/v2.html"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты<i class="sb-cnt">11</i></a>
+    <a class="sb-item on"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
+    <a class="sb-item cta"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+  </nav>
+  <nav class="sb-bottom">
+    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-info"/></svg>Информация</a>
+    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+  </nav>
+</aside>
+
+<div class="page">
+  <header class="tb">
+    <a class="logo" href="../catalog/v2.html"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
+    <div class="tb-right">
+      <a class="promo">Осенняя скидка до 75% 🔥</a>
+      <button class="bell" aria-label="Уведомления"><svg class="ic"><use href="#i-bell"/></svg></button>
+      <div class="avatar">A</div>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <div class="my-head">
+      <div>
+        <h1 class="h1">Мои ИИ-компаньоны</h1>
+        <p class="sub" id="sub">Управляйте персональными моделями: создавайте новые, следите за прогрессом генерации и возвращайтесь к готовым.</p>
+      </div>
+      <button class="btn btn-grad">Создать модель</button>
+    </div>
+
+    <div class="my-bar">
+      <div class="seg" id="seg" role="tablist"></div>
+    </div>
+
+    <div class="my-grid" id="grid"></div>
+
+  </main>
+</div>
+
+<script src="../assets/bots-data.js"></script>
+<script>
+  /* Свои модели — как на проде: карточка с чипами «Модель №N» и статусом, корзина; демо-данные */
+  const MY = [
+    { name: 'Марго', age: 27, desc: 'Я шеф-повар с дерзким характером и привычкой пробовать всё первой.', img: '../assets/img/hero/red.webp', bg: 'linear-gradient(160deg, #3b2a5e, #7b2d6b)', status: 'Активен' },
+  ];
+
+  /* «Избранное» — индексы ботов каталога (CATALOG_BOTS) из localStorage, ключ общий с главной */
+  const FAV_KEY = 'lovix.fav';
+  const favs = () => { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch (e) { return []; } };
+  const SUB = {
+    own: 'Управляйте персональными моделями: создавайте новые, следите за прогрессом генерации и возвращайтесь к готовым.',
+    fav: 'Боты других авторов, которые вы отметили сердечком в каталоге.',
+  };
+  let active = location.hash === '#favorites' ? 'fav' : 'own';   // из тоста на главной — сразу во «Избранное»
+
+  function drawSeg() {
+    document.getElementById('seg').innerHTML =
+      `<button data-k="own" role="tab" aria-selected="${active === 'own'}" class="${active === 'own' ? 'on' : ''}"><svg class="ic"><use href="#i-users"/></svg>Мои модели<span class="cnt">${MY.length}</span></button>` +
+      `<button data-k="fav" role="tab" aria-selected="${active === 'fav'}" class="${active === 'fav' ? 'on' : ''}"><svg class="ic"><use href="#i-heart-o"/></svg>Избранное<span class="cnt">${favs().length}</span></button>`;
+    document.getElementById('sub').textContent = active === 'fav' ? SUB.fav : SUB.own;
+  }
+
+  function myCardHtml(m, i) {
+    return `<article class="cc">
+      <div class="cc-bg" style="background:${m.bg}"></div>
+      <img class="cc-img" src="${m.img}" alt="${m.name}">
+      <div class="cc-shade"></div>
+      <button class="cc-del" type="button" aria-label="Удалить модель" title="Удалить модель"><svg class="ic"><use href="#i-trash"/></svg></button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>${m.name},</b><span>${m.age}</span></div>
+          <p class="cc-desc">${m.desc}</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m">Модель №${i + 1}</span>
+          <span class="cc-m st">${m.status}</span>
+        </div>
+      </div>
+    </article>`;
+  }
+  const newTile = `<article class="cc newtile" role="button" tabindex="0" aria-label="Создать модель">
+      <span class="plus"><svg class="ic"><use href="#i-plus"/></svg></span>
+      <span class="lbl">Создать модель</span>
+    </article>`;
+
+  /* карточка избранного — данные и фото из каталога главной */
+  function favCardHtml(id) {
+    const b = CATALOG_BOTS[id]; if (!b) return '';
+    const [name, age, desc, talks, likes, by] = b, au = CATALOG_AUTHORS[by];
+    return `<article class="cc fav">
+      <img class="cc-photo" src="../assets/img/bots/${CATALOG_MEDIA[id]}" alt="${name}" loading="lazy">
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../author/v1.html?u=${by}" title="${au.name} · @${by}"><span class="cc-av"${au.color ? ` style="background:${au.color}"` : ''}>${au.name[0].toUpperCase()}</span>@${by}${au.verified ? '<svg class="cc-ver"><use href="#i-verified"/></svg>' : ''}</a>
+      <button class="cc-unfav" type="button" data-unfav="${id}" aria-label="Убрать из избранного" title="Убрать из избранного"><svg class="ic"><use href="#i-heart-f"/></svg></button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>${name},</b><span>${age}</span></div>
+          <p class="cc-desc">${desc}</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
+          <span class="cc-m like"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${fmtCount(likes)}</span>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function render() {
+    const grid = document.getElementById('grid');
+    if (active === 'fav') {
+      const ids = favs();
+      grid.innerHTML = ids.length
+        ? ids.map(favCardHtml).join('')
+        : `<div class="my-empty" style="grid-column:1/-1">
+             <div class="ibox"><svg class="ic"><use href="#i-heart-o"/></svg></div>
+             <h3>В избранном пока пусто</h3>
+             <p>Отмечайте ботов сердечком в каталоге — они появятся здесь.</p>
+             <a class="btn btn-grad" href="../catalog/v2.html">В каталог</a>
+           </div>`;
+      return;
+    }
+    grid.innerHTML = MY.map(myCardHtml).join('') + newTile;
+  }
+
+  document.getElementById('seg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-k]');
+    if (!b) return;
+    active = b.dataset.k;
+    history.replaceState(null, '', active === 'fav' ? '#favorites' : location.pathname);
+    drawSeg(); render();
+  });
+  document.addEventListener('click', e => {
+    const un = e.target.closest('[data-unfav]');            // убрать из избранного
+    if (!un) return;
+    const id = +un.dataset.unfav;
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(favs().filter(x => x !== id))); } catch (err) {}
+    drawSeg(); render();
+  });
+  addEventListener('hashchange', () => { active = location.hash === '#favorites' ? 'fav' : 'own'; drawSeg(); render(); });
+
+  drawSeg(); render();
+</script>
+
+</body>
+</html>

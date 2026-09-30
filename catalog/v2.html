@@ -1156,6 +1156,7 @@
 </div>
 
 <script src="../assets/bots-data.js"></script>
+<script src="../assets/bot-card.js"></script>
 <script>
   // Данные ботов — общие с «Мои персонажи → Избранное»: assets/bots-data.js
   const AUTHORS = CATALOG_AUTHORS, BOTS = CATALOG_BOTS, MEDIA = CATALOG_MEDIA, fmt = fmtCount;
@@ -1292,76 +1293,7 @@
     addEventListener('resize', fits); fits();
   })();
 
-  /* Видео-превью — по референсу secrets.ai: в покое все карточки статичные, ролик
-     играет только у карточки под курсором (или в фокусе с клавиатуры), она же
-     подсвечивается классом is-active. Ничего не стартует само — ничто не «разбегается»
-     и не лагает от десятка одновременных декодеров. Файл прогревается заранее (только
-     метаданные), когда карточка подошла к экрану, чтобы старт по наведению был быстрым. */
-  (function () {
-    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var hoverable = window.matchMedia('(hover: hover)').matches;
-    var cards = Array.prototype.slice.call(document.querySelectorAll('.cc'));
-    var active = null;
-
-    function video(card) { return card.querySelector('.cc-video'); }
-    function warm(v) { if (v && !v.src) { v.src = v.dataset.src; v.preload = 'metadata'; v.load(); } }
-    function attempt(v) {
-      var p = v.play();
-      if (p && p.catch) p.catch(function () { retry(v); });   // AbortError при быстром уходе курсора — норма
-    }
-    /* Chrome может отклонить play() или сам поставить немой ролик на паузу (энергосбережение
-       для «фонового» видео) — пока карточка активна, пробуем ещё, но не больше 5 раз */
-    function retry(v) {
-      if (v.dataset.on !== '1') return;
-      var n = +v.dataset.tries || 0; if (n >= 5) return;
-      v.dataset.tries = n + 1;
-      setTimeout(function () { if (v.dataset.on === '1' && v.paused) attempt(v); }, 200 + 150 * n);
-    }
-    function play(card) {
-      var v = video(card); if (!v || calm) return;
-      warm(v);
-      v.dataset.on = '1'; v.dataset.tries = '0';
-      attempt(v);
-    }
-    function stop(card) {
-      var v = video(card); if (!v) return;
-      v.dataset.on = '0'; v.classList.remove('is-visible'); v.pause();
-    }
-    function enter(card) {
-      if (active === card) return;
-      if (active) leave(active);                    // активная всегда одна
-      active = card; card.classList.add('is-active'); play(card);
-    }
-    function leave(card) {
-      card.classList.remove('is-active'); stop(card);
-      if (active === card) active = null;
-    }
-
-    cards.forEach(function (card) {
-      var v = video(card);
-      // видео проявляется по событию playing — когда кадры реально пошли, а не по промису play()
-      if (v) {
-        v.addEventListener('playing', function () { if (v.dataset.on === '1') v.classList.add('is-visible'); });
-        v.addEventListener('pause', function () { retry(v); });   // своя остановка ставит on=0 раньше — повтора не будет
-      }
-      if (hoverable) {
-        card.addEventListener('mouseenter', function () { enter(card); });
-        card.addEventListener('mouseleave', function () { leave(card); });
-      }
-      // focusin/focusout, а не focus/blur: фокус на сердечке или бейдже внутри карточки не гасит её
-      card.addEventListener('focusin', function () { enter(card); });
-      card.addEventListener('focusout', function (e) { if (!card.contains(e.relatedTarget)) leave(card); });
-    });
-    document.addEventListener('visibilitychange', function () { if (document.hidden && active) leave(active); });
-
-    /* прогрев: метаданные ролика подтягиваются, когда карточка в 200px от экрана */
-    if (hoverable && !calm && 'IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { warm(video(e.target)); io.unobserve(e.target); } });
-      }, { rootMargin: '200px 0px' });
-      cards.forEach(function (c) { if (video(c)) io.observe(c); });
-    }
-  })();
+  initBotCards(document.getElementById('grid'));   // поведение карточки при наведении — assets/bot-card.js
 
   /* Избранное. Клик по сердечку: бот «улетает» в «Мои персонажи» (миниатюра фото летит
      к пункту меню, на нём растёт счётчик), внизу — тост со ссылкой на вкладку «Избранное».

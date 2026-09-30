@@ -169,19 +169,19 @@
   /* стопка свёрнутых проактивов от других ботов */
   .lw-stack { display: flex; justify-content: flex-end; margin-top: 10px; }
   .lw-stack .sava {
-    width: 46px; height: 46px; border-radius: 50%;
-    padding: 2px; margin-left: -10px;
+    width: 60px; height: 60px; border-radius: 50%;
+    padding: 2.5px; margin-left: -14px;
     background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
     position: relative; cursor: pointer; border: 0;
     box-shadow: 0 6px 20px rgba(0,0,0,.45);
     transition: transform .15s;
   }
   .lw-stack .sava:hover { transform: translateY(-3px); }
-  .lw-stack .sava .ph { position: absolute; inset: 2px; border-radius: 50%; overflow: hidden; background: #221a28; }
+  .lw-stack .sava .ph { position: absolute; inset: 2.5px; border-radius: 50%; overflow: hidden; background: #221a28; }
   .lw-stack .sava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; }
   .lw-stack .sava i {
-    position: absolute; top: -2px; right: -2px; z-index: 1;
-    width: 13px; height: 13px; border-radius: 50%;
+    position: absolute; top: -1px; right: -1px; z-index: 1;
+    width: 15px; height: 15px; border-radius: 50%;
     background: #4ade80; border: 2px solid #17131c; font-style: normal;
   }
   @keyframes lw-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }

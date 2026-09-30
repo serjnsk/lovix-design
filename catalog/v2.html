@@ -544,10 +544,15 @@
   .dd-menu li:hover, .dd-menu a:hover { background: rgba(255,255,255,.07); color: #fff; }
   .dd-menu li[aria-selected="true"] { color: #fff; }
   .dd-menu li[aria-selected="true"]::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
-  /* чипы разделов */
-  .flt-tagsrow { position: relative; }
-  .flt-tags { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
-  .flt-tags::-webkit-scrollbar { display: none; }
+  /* чипы разделов: ряд без переноса и без прокрутки — скрипт показывает столько чипов,
+     сколько помещается до конца контентной области, остальные уходят в «Ещё» */
+  .flt-tags { display: flex; gap: 8px; overflow: hidden; white-space: nowrap; }
+  /* на узком экране (телефон) подгонки нет: ряд прокручивается пальцем, все категории
+     под рукой, «Ещё» в конце; полоса прокрутки скрыта */
+  @media (max-width: 640px) {
+    .flt-tags { overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; }
+    .flt-tags::-webkit-scrollbar { display: none; }
+  }
   .tag {
     flex: none; height: 36px; padding: 0 16px; border-radius: 999px; border: 0; cursor: pointer;
     background: rgba(255,255,255,.05); color: #d5d5d9; font: inherit; font-size: 14px; font-weight: 500;
@@ -560,9 +565,26 @@
   .tag.more .chev { width: 14px; height: 14px; opacity: .7; transform: rotate(90deg); transition: transform .15s; }
   .tag.more[aria-expanded="true"] { background: rgba(255,255,255,.12); color: #fff; }
   .tag.more[aria-expanded="true"] .chev { transform: rotate(-90deg); }
-  /* список «Ещё» — вне прокручиваемого ряда (иначе обрежется), прижат к правому краю, с прокруткой */
-  .dd-scroll { left: auto; right: 0; min-width: 230px; max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.2) transparent; }
-  @media (max-width: 560px) { .dd-scroll { right: auto; left: 0; } }
+  /* модалка «Ещё» — по референсу: все категории чипами в несколько рядов, без заголовка, крестик */
+  .modal { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal[hidden] { display: none; }
+  .modal-back { position: absolute; inset: 0; background: rgba(8,6,10,.7); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .modal-panel {
+    position: relative; width: min(620px, 100%); max-height: calc(100vh - 40px); overflow: auto;
+    padding: 70px 24px 26px; border-radius: 20px;
+    background: #17131b; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 30px 80px rgba(0,0,0,.6);
+    animation: modal-in .2s ease;
+  }
+  @keyframes modal-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+  .modal-x {
+    position: absolute; top: 18px; right: 18px; width: 38px; height: 38px; border-radius: 50%; border: 0; cursor: pointer;
+    background: rgba(255,255,255,.08); color: #fff; display: flex; align-items: center; justify-content: center;
+  }
+  .modal-x:hover { background: rgba(255,255,255,.15); }
+  .modal-x .ic { width: 16px; height: 16px; }
+  .modal-tags { display: flex; flex-wrap: wrap; gap: 10px 8px; }
+  .modal-tags .tag { height: 40px; padding: 0 18px; font-size: 15px; }
+  @media (max-width: 560px) { .modal { padding: 12px; } .modal-panel { padding: 64px 16px 20px; } }
 
   /* ── сетка ── */
   .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
@@ -1078,42 +1100,15 @@
           <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Все авторы</li><li role="option">Официальные</li><li role="option">От пользователей</li><li role="option">Мои</li></ul>
         </div>
       </div>
-      <div class="flt-tagsrow">
-        <div class="flt-tags">
-          <a class="tag on" href="?tag=all">Все</a>
-          <a class="tag" href="?tag=official">Официальные</a>
-          <a class="tag" href="?tag=mature">Зрелые</a>
-          <a class="tag" href="?tag=petite">Миниатюрные</a>
-          <a class="tag" href="?tag=curvy">Пышные</a>
-          <a class="tag" href="?tag=blonde">Блондинки</a>
-          <a class="tag" href="?tag=brunette">Брюнетки</a>
-          <a class="tag" href="?tag=asian">Азиатки</a>
-          <button class="tag more" type="button" data-more aria-haspopup="menu" aria-expanded="false" aria-controls="more-menu">Ещё<svg class="ic chev"><use href="#i-chevr"/></svg></button>
-        </div>
-        <ul class="dd-menu dd-scroll" id="more-menu" role="menu">
-          <li><a href="?tag=latina" role="menuitem">Латина</a></li>
-          <li><a href="?tag=goth" role="menuitem">Гот и альт</a></li>
-          <li><a href="?tag=romantic" role="menuitem">Романтичные</a></li>
-          <li><a href="?tag=dominant" role="menuitem">Доминантные</a></li>
-          <li><a href="?tag=submissive" role="menuitem">Покорные</a></li>
-          <li><a href="?tag=shy" role="menuitem">Скромные</a></li>
-          <li><a href="?tag=athletic" role="menuitem">Спортивные</a></li>
-          <li><a href="?tag=redhead" role="menuitem">Рыжие</a></li>
-          <li><a href="?tag=tattooed" role="menuitem">С татуировками</a></li>
-          <li><a href="?tag=black" role="menuitem">Темнокожие</a></li>
-          <li><a href="?tag=middle-east" role="menuitem">Ближний Восток</a></li>
-          <li><a href="?tag=college" role="menuitem">Студентки</a></li>
-          <li><a href="?tag=gamer" role="menuitem">Геймерши</a></li>
-          <li><a href="?tag=cosplay" role="menuitem">Косплей</a></li>
-          <li><a href="?tag=fantasy" role="menuitem">Фэнтези</a></li>
-          <li><a href="?tag=teacher" role="menuitem">Учительницы</a></li>
-          <li><a href="?tag=nurse" role="menuitem">Медсёстры</a></li>
-          <li><a href="?tag=office" role="menuitem">Офис</a></li>
-          <li><a href="?tag=model" role="menuitem">Модели</a></li>
-          <li><a href="?tag=singer" role="menuitem">Певицы</a></li>
-          <li><a href="?tag=neighbor" role="menuitem">Соседки</a></li>
-          <li><a href="?tag=stranger" role="menuitem">Незнакомки</a></li>
-        </ul>
+      <div class="flt-tags" id="cat-row" aria-label="Категории"></div>
+    </div>
+
+    <!-- модалка «Ещё»: все категории -->
+    <div class="modal" id="cat-modal" hidden role="dialog" aria-modal="true" aria-label="Категории">
+      <div class="modal-back" data-close></div>
+      <div class="modal-panel">
+        <button class="modal-x" type="button" data-close aria-label="Закрыть"><svg class="ic"><use href="#i-x"/></svg></button>
+        <div class="modal-tags" id="cat-all"></div>
       </div>
     </div>
 
@@ -1242,48 +1237,85 @@
 
   document.getElementById('grid').innerHTML = newCard + cards;
 
-  /* Фильтры: выпадающие списки (открытие/закрытие, выбор пункта → подпись кнопки),
-     чипы разделов (в прототипе — только активное состояние, без перехода),
-     «Ещё» — список с прокруткой; выбранный в нём тег встаёт в подпись кнопки.
-     Закрытие — клик вне, Esc. Сетка на выбор пока не реагирует (данных мало). */
+  /* Фильтры. Выпадающие списки: открытие/закрытие, выбор пункта → подпись кнопки, Esc / клик вне.
+     Категории: один список CATS; в ряду показываем столько чипов, сколько помещается до конца
+     контентной области (пересчёт на ресайзе), остальные — в модалке «Ещё» (все категории чипами).
+     Выбранная категория, если её чип в ряду скрыт, встаёт в подпись «Ещё». В прототипе фильтры
+     держат только состояние — сетка на них не реагирует. */
   (function () {
     var dds = Array.prototype.slice.call(document.querySelectorAll('[data-dd]'));
-    var moreBtn = document.querySelector('[data-more]'), moreMenu = document.getElementById('more-menu');
-    var tags = Array.prototype.slice.call(document.querySelectorAll('.flt-tags .tag'));
-    function closeAll(except) {
-      dds.forEach(function (d) { if (d !== except) { d.classList.remove('open'); d.querySelector('.dd-btn').setAttribute('aria-expanded', 'false'); } });
-      if (except !== 'more') { moreMenu.classList.remove('show'); moreBtn.setAttribute('aria-expanded', 'false'); }
-    }
+    function closeDds() { dds.forEach(function (d) { d.classList.remove('open'); d.querySelector('.dd-btn').setAttribute('aria-expanded', 'false'); }); }
     dds.forEach(function (d) {
       var btn = d.querySelector('.dd-btn'), val = d.querySelector('.dd-val');
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         var open = !d.classList.contains('open');
-        closeAll(d); d.classList.toggle('open', open); btn.setAttribute('aria-expanded', open);
+        closeDds(); d.classList.toggle('open', open); btn.setAttribute('aria-expanded', open);
       });
       d.querySelectorAll('li').forEach(function (li) {
         li.addEventListener('click', function (e) {
           e.stopPropagation();
           d.querySelectorAll('li').forEach(function (x) { x.setAttribute('aria-selected', 'false'); });
-          li.setAttribute('aria-selected', 'true'); val.textContent = li.textContent; closeAll();
+          li.setAttribute('aria-selected', 'true'); val.textContent = li.textContent; closeDds();
         });
       });
     });
-    moreBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var open = !moreMenu.classList.contains('show');
-      closeAll('more'); moreMenu.classList.toggle('show', open); moreBtn.setAttribute('aria-expanded', open);
-    });
-    function pick(el) {
-      tags.forEach(function (t) { t.classList.remove('on'); });
-      if (el.classList.contains('tag')) { el.classList.add('on'); moreBtn.firstChild.nodeValue = 'Ещё'; }
-      else { moreBtn.classList.add('on'); moreBtn.firstChild.nodeValue = el.textContent; }   // тег из «Ещё» — в подпись кнопки
-      closeAll();
+
+    var CATS = [
+      ['all', 'Все'], ['official', 'Официальные'], ['mature', 'Зрелые'], ['petite', 'Миниатюрные'], ['curvy', 'Пышные'],
+      ['blonde', 'Блондинки'], ['brunette', 'Брюнетки'], ['asian', 'Азиатки'], ['latina', 'Латина'], ['goth', 'Гот и альт'],
+      ['romantic', 'Романтичные'], ['dominant', 'Доминантные'], ['submissive', 'Покорные'], ['playful', 'Игривые'],
+      ['shy', 'Скромные'], ['confident', 'Уверенные'], ['athletic', 'Спортивные'], ['muscular', 'Атлетичные'],
+      ['redhead', 'Рыжие'], ['tattooed', 'С татуировками'], ['black', 'Темнокожие'], ['middle-east', 'Ближний Восток'],
+      ['college', 'Студентки'], ['professional', 'Профессионалки'], ['gamer', 'Геймерши'], ['cosplay', 'Косплей'],
+      ['fantasy', 'Фэнтези'], ['supernatural', 'Сверхъестественное'], ['royalty', 'Королевские']
+    ];
+    var row = document.getElementById('cat-row'), all = document.getElementById('cat-all'), modal = document.getElementById('cat-modal');
+    var chip = function (c) { return '<a class="tag" href="?tag=' + c[0] + '" data-cat="' + c[0] + '">' + c[1] + '</a>'; };
+    row.innerHTML = CATS.map(chip).join('') +
+      '<button class="tag more" type="button" data-more aria-haspopup="dialog" aria-expanded="false" aria-controls="cat-modal">Ещё<svg class="ic chev"><use href="#i-chevr"/></svg></button>';
+    all.innerHTML = CATS.map(chip).join('');
+    var chips = Array.prototype.slice.call(row.querySelectorAll('a.tag')), more = row.querySelector('[data-more]');
+    var active = 'all', widths = null;
+
+    function paint() {
+      document.querySelectorAll('[data-cat]').forEach(function (t) { t.classList.toggle('on', t.dataset.cat === active); });
+      var hiddenActive = chips.some(function (t) { return t.dataset.cat === active && t.style.display === 'none'; });
+      var label = CATS.filter(function (c) { return c[0] === active; })[0][1];
+      more.firstChild.nodeValue = hiddenActive ? label : 'Ещё';
+      more.classList.toggle('on', hiddenActive);
+      if (narrow()) {                                   // телефон: подвезти ряд к выбранному чипу
+        var t = chips.filter(function (c) { return c.dataset.cat === active; })[0];
+        if (t) row.scrollTo({ left: Math.max(0, t.offsetLeft - 12), behavior: 'smooth' });
+      }
     }
-    tags.forEach(function (t) { if (t.tagName === 'A') t.addEventListener('click', function (e) { e.preventDefault(); pick(t); }); });
-    moreMenu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); pick(a); }); });
-    document.addEventListener('click', function () { closeAll(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+    /* показать столько чипов, сколько влезает вместе с «Ещё» до конца ряда */
+    var narrow = function () { return window.matchMedia('(max-width: 640px)').matches; };
+    function fit() {
+      chips.forEach(function (t) { t.style.display = ''; });
+      if (narrow()) { paint(); return; }               // телефон: все чипы, ряд прокручивается
+      widths = chips.map(function (t) { return t.offsetWidth; });
+      var gap = 8, avail = row.clientWidth, moreW = more.offsetWidth, used = 0, shown = 0;
+      for (var i = 0; i < chips.length; i++) {
+        var next = used + (i ? gap : 0) + widths[i];
+        if (next + gap + moreW > avail) break;
+        used = next; shown = i + 1;
+      }
+      chips.forEach(function (t, i) { t.style.display = i < shown ? '' : 'none'; });
+      paint();
+    }
+    function pick(cat) { active = cat; paint(); closeModal(); }
+    function openModal() { modal.hidden = false; more.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; modal.querySelector('.modal-x').focus(); }
+    function closeModal() { if (modal.hidden) return; modal.hidden = true; more.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; more.focus(); }
+
+    document.querySelectorAll('[data-cat]').forEach(function (t) { t.addEventListener('click', function (e) { e.preventDefault(); pick(t.dataset.cat); }); });
+    more.addEventListener('click', function (e) { e.stopPropagation(); closeDds(); openModal(); });
+    modal.querySelectorAll('[data-close]').forEach(function (x) { x.addEventListener('click', closeModal); });
+    document.addEventListener('click', closeDds);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeDds(); closeModal(); } });
+    addEventListener('resize', fit);
+    if (document.fonts) document.fonts.ready.then(fit);
+    fit();
   })();
 
   /* вводный абзац: свёрнут до первой строки, «ещё» раскрывает; если текст и так

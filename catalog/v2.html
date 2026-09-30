@@ -519,79 +519,104 @@
   }
   .cat-more button:hover { border-color: rgb(var(--primary)); background: rgba(217,70,239,.13); transform: translateY(-1px); }
 
-  /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12) */
+  /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12).
+     Поведение — по референсу secrets.ai: в покое у всех карточек статичное фото,
+     видео играет только у карточки под курсором, она же подсвечивается. */
   .cc {
     position: relative; overflow: hidden;
     border-radius: 12px;
     aspect-ratio: 285 / 400;
     display: flex; flex-direction: column; justify-content: flex-end;
-    transition: transform .18s, box-shadow .18s;
-    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+    cursor: pointer; outline: 0;
   }
-  .cc:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(217,70,239,.16); }
   /* Реальные фото и видео-превью ботов с lovix.ai/ru (assets/img/bots, assets/video/bots).
-     Фото — на всю карточку; видео лежит поверх и проявляется, когда ряд карточек
-     в экране (логика — в скрипте ниже, как на проде). */
+     Фото на всю карточку; видео лежит поверх и проявляется только у активной карточки. */
   .cc-photo, .cc-video {
     position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: cover; background: #1b171d;
+    transition: transform .5s ease, opacity .25s ease;
   }
-  .cc-video { opacity: 0; transition: opacity .22s ease-in-out; }
+  .cc-video { opacity: 0; }
   .cc-video.is-visible { opacity: 1; }
-  /* подложка под текст — как на проде: прозрачный → .4 → .8, высота 160 */
+  /* подсветка активной карточки (референс: обводка 1.5px внутрь + внутреннее свечение),
+     класс is-active ставит скрипт по hover/focus; медиа чуть приближается */
+  .cc::after {
+    content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none;
+    box-shadow: inset 0 0 0 1.5px rgba(217,70,239,.75), inset 0 0 44px rgba(217,70,239,.45);
+    opacity: 0; transition: opacity .25s ease;
+  }
+  .cc.is-active { transform: translateY(-3px); box-shadow: 0 22px 50px rgba(217,70,239,.22); }
+  .cc.is-active::after { opacity: 1; }
+  .cc.is-active .cc-photo, .cc.is-active .cc-video { transform: scale(1.04); }
+  /* подложка под текст — выше и плотнее (референс: чёрный 60 % → прозрачный на половине
+     высоты): держит белый текст даже на светлом фото */
   .cc-shade {
-    position: absolute; inset: auto 0 0 0; height: 160px;
-    background: linear-gradient(180deg, rgba(0,0,0,0), rgba(16,14,16,.4), rgba(16,14,16,.8));
+    position: absolute; inset: auto 0 0 0; height: 62%; z-index: 1;
+    background: linear-gradient(180deg, rgba(16,14,16,0) 0%, rgba(16,14,16,.45) 40%, rgba(16,14,16,.9) 100%);
   }
   .cc-meta {
-    position: relative;
-    padding: 0 16px 12px;
-    display: flex; flex-direction: column; gap: 6px;
+    position: relative; z-index: 2;
+    padding: 0 14px 14px;
+    display: flex; flex-direction: column; gap: 8px;
   }
-  .cc-text { display: flex; flex-direction: column; gap: 2px; }
-  /* des/H/h3 semi — 24/28 */
+  .cc-text { display: flex; flex-direction: column; gap: 3px; }
+  /* des/H/h3 semi — 24/28; тень отделяет текст от светлых участков фото */
   .cc-name {
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: baseline; gap: 6px;
     font-size: 24px; line-height: 28px; font-weight: 600; color: #fff;
     white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 2px 14px rgba(0,0,0,.45);
   }
   .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
-  .cc-name span { opacity: .6; }
+  .cc-name span { opacity: .7; }
   /* des/S/s1 regu — 14/16 */
   .cc-desc {
-    font-size: 14px; line-height: 16px; font-weight: 400; color: #fff; opacity: .62;
+    font-size: 14px; line-height: 17px; font-weight: 400; color: rgba(255,255,255,.85);
+    text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 1px 10px rgba(0,0,0,.4);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
-  .cc-foot { display: flex; align-items: center; gap: 12px; padding: 2px 0; }
+  /* метрики — тёмные пилюли с блюром (референс: black/75 + blur): читаются на любом фото */
+  .cc-foot { display: flex; align-items: center; gap: 6px; }
   .cc-m {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 14px; font-weight: 400; color: #fff; opacity: .9;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 9px; border-radius: 999px;
+    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    font-size: 13px; font-weight: 500; color: #fff;
   }
-  .cc-m.like { gap: 3px; }
-  .cc-ic { width: 14px; height: 14px; flex: none; }
+  .cc-ic { width: 13px; height: 13px; flex: none; opacity: .9; }
 
 
-  /* автор карточки — как на проде: отдельной строкой под метриками, аватар + «Lovix» + галочка */
-  .cc-auth { display: flex; align-items: center; gap: 6px; padding-top: 2px; }
+  /* автор — бейдж сверху слева (как бейдж у референса): тёмная пилюля с блюром,
+     аватар + «Lovix» + галочка; внизу остаются только имя, описание и метрики */
+  .cc-auth {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 9px 4px 4px; border-radius: 999px;
+    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
   .cc-av {
-    width: 18px; height: 18px; flex: none; border-radius: 5px;
+    width: 18px; height: 18px; flex: none; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 11px; font-weight: 800; color: #fff;
     background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
   }
-  .cc-auth b { font-size: 13px; font-weight: 400; color: #fff; opacity: .9; }
-  .cc-ver { width: 13px; height: 13px; color: rgb(var(--primary)); flex: none; }
+  .cc-auth b { font-size: 12px; font-weight: 600; color: #fff; }
+  .cc-ver { width: 12px; height: 12px; color: rgb(var(--primary)); flex: none; }
 
   /* плитка «создать компаньона», макет 461:6709 */
   .cc.newcard { display: flex; align-items: center; justify-content: center; }
   /* фон плитки — продовый create-template-bg (уже размыт в самом файле) */
   .cc.newcard .cc-photo { transform: scale(1.04); }
   .cc.newcard .veil { position: absolute; inset: 0; background: rgba(220,70,228,.25); }
+  /* подпись по центру плитки: плюс сверху, текст под ним, всё выровнено по центру */
   .cc.newcard .lbl {
-    position: relative; z-index: 2; display: flex; align-items: center; gap: 10px;
-    font-size: 1.6rem; font-weight: 800; color: #fff;
+    position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px;
+    padding: 0 18px; text-align: center; text-wrap: balance;
+    font-size: 1.5rem; line-height: 1.2; font-weight: 800; color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.35);
   }
-  .cc.newcard .lbl .ic { width: 30px; height: 30px; }
+  .cc.newcard .lbl .ic { width: 34px; height: 34px; }
 
   /* ── SEO-текст и FAQ ── */
   .cat-about { margin-top: 64px; max-width: 900px; margin-left: auto; margin-right: auto; }
@@ -984,11 +1009,12 @@
   ];
 
   const cards = BOTS.map(([name, age, desc, talks, rate], i) => `
-    <article class="cc">
+    <article class="cc" tabindex="0">
       <img class="cc-photo" src="../assets/img/bots/${MEDIA[i]}" alt="${name}" loading="${i < 7 ? 'eager' : 'lazy'}">
       <video class="cc-video" data-src="../assets/video/bots/${MEDIA[i].replace(/\.\w+$/, '.mp4')}"
              muted loop playsinline preload="none" aria-hidden="true"></video>
       <div class="cc-shade"></div>
+      <div class="cc-auth"><span class="cc-av">L</span><b>Lovix</b><svg class="cc-ver"><use href="#i-verified"/></svg></div>
       <div class="cc-meta">
         <div class="cc-text">
           <div class="cc-name"><b>${name},</b><span>${age}</span></div>
@@ -998,7 +1024,6 @@
           <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
           <span class="cc-m like"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${rate}</span>
         </div>
-        <div class="cc-auth"><span class="cc-av">L</span><b>Lovix</b><svg class="cc-ver"><use href="#i-verified"/></svg></div>
       </div>
     </article>`).join('');
 
@@ -1024,94 +1049,74 @@
     addEventListener('resize', fits); fits();
   })();
 
-  /* Видео-превью — по логике прода (blade.js): играют только ряды, видимые хотя бы
-     наполовину (на мобильном — на 20%), не больше 3 рядов сразу; ролики ряда стартуют
-     с одной точки, чтобы не «дёргались» вразнобой; видео проявляется поверх фото,
-     когда реально пошло. Файл грузится только когда ряд подошёл к экрану. */
+  /* Видео-превью — по референсу secrets.ai: в покое все карточки статичные, ролик
+     играет только у карточки под курсором (или в фокусе с клавиатуры), она же
+     подсвечивается классом is-active. Ничего не стартует само — ничто не «разбегается»
+     и не лагает от десятка одновременных декодеров. Файл прогревается заранее (только
+     метаданные), когда карточка подошла к экрану, чтобы старт по наведению был быстрым. */
   (function () {
     var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var vids = Array.prototype.slice.call(document.querySelectorAll('.cc-video'));
-    if (!vids.length || calm) return;
-    var MAX_ROWS = 3, TOL = 8, raf = null;
+    var hoverable = window.matchMedia('(hover: hover)').matches;
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.cc'));
+    var active = null;
 
-    function rows() {
-      var map = [];
-      vids.forEach(function (v) {
-        var top = v.closest('.cc').offsetTop;
-        var r = map.find(function (x) { return Math.abs(x.top - top) <= TOL; });
-        if (!r) { r = { top: top, vids: [] }; map.push(r); }
-        r.vids.push(v);
-      });
-      return map.sort(function (a, b) { return a.top - b.top; });
-    }
-    function ratio(row) {
-      var el = row.vids[0].closest('.cc'), r = el.getBoundingClientRect(), h = innerHeight;
-      var vis = Math.min(r.bottom, h) - Math.max(r.top, 0);
-      return vis <= 0 ? 0 : Math.min(1, vis / r.height);
-    }
-    function load(v) { if (!v.src) { v.src = v.dataset.src; v.preload = 'metadata'; v.load(); } }
-    function stop(v) { v.classList.remove('is-visible'); v.pause(); }
-    /* play() у немого ролика без аудиодорожки может отклониться (AbortError: Chrome ставит
-       «фоновое» видео на паузу ради экономии энергии, или play() перебит seek/pause).
-       Поэтому: пробуем ещё несколько раз, пока ряд «включён», а видео показываем не по
-       промису play(), а по событию playing — когда кадры реально пошли. */
-    function tryPlay(v) {
-      if (v.dataset.on !== '1' || !v.paused) return;
-      var n = +v.dataset.tries || 0;
-      if (n >= 8) return;
-      v.dataset.tries = n + 1;
+    function video(card) { return card.querySelector('.cc-video'); }
+    function warm(v) { if (v && !v.src) { v.src = v.dataset.src; v.preload = 'metadata'; v.load(); } }
+    function attempt(v) {
       var p = v.play();
-      if (p && p.catch) p.catch(function () { setTimeout(function () { tryPlay(v); }, 150 + 120 * n); });
+      if (p && p.catch) p.catch(function () { retry(v); });   // AbortError при быстром уходе курсора — норма
     }
-    vids.forEach(function (v) {
-      v.addEventListener('playing', function () { if (v.dataset.on === '1') v.classList.add('is-visible'); });
-      v.addEventListener('pause', function () { if (v.dataset.on === '1') setTimeout(function () { tryPlay(v); }, 200); });
+    /* Chrome может отклонить play() или сам поставить немой ролик на паузу (энергосбережение
+       для «фонового» видео) — пока карточка активна, пробуем ещё, но не больше 5 раз */
+    function retry(v) {
+      if (v.dataset.on !== '1') return;
+      var n = +v.dataset.tries || 0; if (n >= 5) return;
+      v.dataset.tries = n + 1;
+      setTimeout(function () { if (v.dataset.on === '1' && v.paused) attempt(v); }, 200 + 150 * n);
+    }
+    function play(card) {
+      var v = video(card); if (!v || calm) return;
+      warm(v);
+      v.dataset.on = '1'; v.dataset.tries = '0';
+      attempt(v);
+    }
+    function stop(card) {
+      var v = video(card); if (!v) return;
+      v.dataset.on = '0'; v.classList.remove('is-visible'); v.pause();
+    }
+    function enter(card) {
+      if (active === card) return;
+      if (active) leave(active);                    // активная всегда одна
+      active = card; card.classList.add('is-active'); play(card);
+    }
+    function leave(card) {
+      card.classList.remove('is-active'); stop(card);
+      if (active === card) active = null;
+    }
+
+    cards.forEach(function (card) {
+      var v = video(card);
+      // видео проявляется по событию playing — когда кадры реально пошли, а не по промису play()
+      if (v) {
+        v.addEventListener('playing', function () { if (v.dataset.on === '1') v.classList.add('is-visible'); });
+        v.addEventListener('pause', function () { retry(v); });   // своя остановка ставит on=0 раньше — повтора не будет
+      }
+      if (hoverable) {
+        card.addEventListener('mouseenter', function () { enter(card); });
+        card.addEventListener('mouseleave', function () { leave(card); });
+      }
+      card.addEventListener('focus', function () { enter(card); });
+      card.addEventListener('blur', function () { leave(card); });
     });
-    function ready(v) {
-      return v.readyState >= 1 ? Promise.resolve() : new Promise(function (res) {
-        var t = setTimeout(res, 1500);
-        ['loadedmetadata', 'error'].forEach(function (e) { v.addEventListener(e, function () { clearTimeout(t); res(); }, { once: true }); });
-      });
+    document.addEventListener('visibilitychange', function () { if (document.hidden && active) leave(active); });
+
+    /* прогрев: метаданные ролика подтягиваются, когда карточка в 200px от экрана */
+    if (hoverable && !calm && 'IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { warm(video(e.target)); io.unobserve(e.target); } });
+      }, { rootMargin: '200px 0px' });
+      cards.forEach(function (c) { if (video(c)) io.observe(c); });
     }
-    function start(row) {
-      // пока ряд грузится, tick() на каждом скролле не должен запускать его повторно
-      if (row.vids[0].dataset.starting === '1') return;
-      row.vids.forEach(function (v) { v.dataset.starting = '1'; load(v); });
-      Promise.all(row.vids.map(ready)).then(function () {
-        var live = row.vids.filter(function (v) { return v.dataset.on === '1'; });
-        var t0 = (live.find(function (v) { return v.readyState >= 1; }) || {}).currentTime || 0;
-        live.forEach(function (v) {
-          try { v.currentTime = t0; } catch (e) {}   // ряд стартует с одной точки
-          v.dataset.tries = '0';
-          tryPlay(v);
-        });
-        row.vids.forEach(function (v) { v.dataset.starting = '0'; });
-      });
-    }
-    function tick() {
-      raf = null;
-      var need = innerWidth < 640 ? .2 : .5;
-      var all = rows(), on = all.filter(function (r) { return ratio(r) >= need; }).slice(0, MAX_ROWS);
-      // подгружаем ряд заранее — как только он показался хотя бы краем
-      all.forEach(function (r) { if (ratio(r) > 0) r.vids.forEach(load); });
-      all.forEach(function (r) {
-        var keep = on.indexOf(r) !== -1;
-        r.vids.forEach(function (v) {
-          if (keep) { if (v.dataset.on !== '1') { v.dataset.on = '1'; v.dataset.tries = '0'; } }
-          else { v.dataset.on = '0'; stop(v); }
-        });
-        if (keep && !r.vids.some(function (v) { return !v.paused; })) start(r);
-      });
-    }
-    function ask() { if (raf === null) raf = requestAnimationFrame(tick); }
-    addEventListener('scroll', ask, { passive: true });
-    addEventListener('resize', ask);
-    document.addEventListener('visibilitychange', function () {
-      // вкладка ушла в фон — выключаем ряды целиком, чтобы pause-обработчик не дёргал play()
-      if (document.hidden) vids.forEach(function (v) { v.dataset.on = '0'; stop(v); });
-      else ask();
-    });
-    ask();
   })();
 </script>
 

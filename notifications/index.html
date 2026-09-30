@@ -209,7 +209,13 @@
     display: flex; align-items: center; gap: 6px; padding-right: 20px;
   }
   .lw-name::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
-  .lw-text { font-size: .87rem; font-style: italic; margin-top: 3px; line-height: 1.35; }
+  /* Баббл — превью, а не место для чтения: длинная реплика обрезается на 3 строках
+     с многоточием, полный текст — в чате (туда ведут «Ответить» и клик по реплике). */
+  .lw-text {
+    font-size: .87rem; font-style: italic; margin-top: 3px; line-height: 1.35;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+    cursor: pointer;
+  }
   .lw-act { margin-top: 9px; }
   .lw-act .btn { padding: .42rem .9rem; font-size: .78rem; border-radius: .5rem; }
   .lw-x {
@@ -432,7 +438,7 @@ function renderProactive() {
     html += '<div class="lw"><div class="lw-bubble">' +
       '<button class="lw-x" aria-label="Скрыть"><svg class="ic"><use href="#i-x"/></svg></button>' +
       '<div class="lw-name">' + exp.name + '</div>' +
-      '<div class="lw-text">' + exp.text + '</div>' +
+      '<div class="lw-text" data-answer="' + exp.name + '" title="' + exp.text + '">' + exp.text + '</div>' +
       '<div class="lw-act"><button class="btn btn-grad" data-answer="' + exp.name + '">Ответить</button></div>' +
       '</div><div class="lw-ava" data-answer="' + exp.name + '"><div class="ph"><img src="' + exp.img + '" alt="' + exp.name + '"></div></div></div>';
   }

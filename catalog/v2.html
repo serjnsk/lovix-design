@@ -506,6 +506,64 @@
   .cat-intro.open .cat-intro-more::after { transform: rotate(-135deg); margin-top: 4px; }
   .cat-intro-more:hover { color: #f0abfc; }
   .cat-intro.fits .cat-intro-more { display: none; }
+  /* ── фильтры перед сеткой — по референсу secrets.ai/browse: две строки.
+       1-я: четыре выпадающих списка (пол, стиль, сортировка, авторы) — 40px, r14,
+       иконка + значение + шеврон. 2-я: чипы-ссылки на разделы, 36px, пилюли, без
+       переноса (на узком экране прокручивается по горизонтали), последний — «Ещё»
+       с раскрывающимся списком с прокруткой. Поля поиска нет — по решению. ── */
+  .flt { display: flex; flex-direction: column; gap: 12px; margin: 0 0 22px; }
+  .flt-dd { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dd { position: relative; }
+  .dd-btn {
+    height: 40px; padding: 0 12px 0 14px; border-radius: 14px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,.08); background: rgba(255,255,255,.05);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: #fff; font: inherit; font-size: 14px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+    transition: background .15s, border-color .15s;
+  }
+  .dd-btn:hover { background: rgba(255,255,255,.09); }
+  .dd-btn .ic { width: 16px; height: 16px; opacity: .85; }
+  .dd-btn .chev { width: 14px; height: 14px; opacity: .7; transform: rotate(90deg); transition: transform .15s; }
+  .dd.open .dd-btn { background: rgba(255,255,255,.1); border-color: rgba(217,70,239,.45); }
+  .dd.open .dd-btn .chev { transform: rotate(-90deg); }
+  .dd-menu {
+    position: absolute; top: calc(100% + 6px); left: 0; z-index: 30; min-width: 100%;
+    list-style: none; margin: 0; padding: 6px; border-radius: 14px;
+    background: rgba(18,14,20,.96); border: 1px solid rgba(255,255,255,.1);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    box-shadow: 0 16px 44px rgba(0,0,0,.5);
+    display: none;
+  }
+  .dd.open > .dd-menu, .dd-menu.show { display: block; }
+  .dd-menu li, .dd-menu a {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 9px 12px; border-radius: 9px; cursor: pointer; white-space: nowrap;
+    font-size: 14px; font-weight: 500; color: #d7d7e0;
+  }
+  .dd-menu li:hover, .dd-menu a:hover { background: rgba(255,255,255,.07); color: #fff; }
+  .dd-menu li[aria-selected="true"] { color: #fff; }
+  .dd-menu li[aria-selected="true"]::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+  /* чипы разделов */
+  .flt-tagsrow { position: relative; }
+  .flt-tags { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+  .flt-tags::-webkit-scrollbar { display: none; }
+  .tag {
+    flex: none; height: 36px; padding: 0 16px; border-radius: 999px; border: 0; cursor: pointer;
+    background: rgba(255,255,255,.05); color: #d5d5d9; font: inherit; font-size: 14px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .tag:hover { background: rgba(255,255,255,.09); color: #fff; }
+  .tag.on { background: rgba(255,255,255,.12); color: #fff; }
+  .tag.more { padding-right: 12px; }
+  .tag.more .chev { width: 14px; height: 14px; opacity: .7; transform: rotate(90deg); transition: transform .15s; }
+  .tag.more[aria-expanded="true"] { background: rgba(255,255,255,.12); color: #fff; }
+  .tag.more[aria-expanded="true"] .chev { transform: rotate(-90deg); }
+  /* список «Ещё» — вне прокручиваемого ряда (иначе обрежется), прижат к правому краю, с прокруткой */
+  .dd-scroll { left: auto; right: 0; min-width: 230px; max-height: 300px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.2) transparent; }
+  @media (max-width: 560px) { .dd-scroll { right: auto; left: 0; } }
+
   /* ── сетка ── */
   .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
   /* «Увидеть всех» — по центру под сеткой, как на проде */
@@ -758,6 +816,8 @@
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-heart-o" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
     <symbol id="i-heart-f" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="currentColor"/></symbol>
+    <symbol id="i-gender" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 14v7M9 18h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1.2 3.2 4.5 5.4 4.5 9.5a4.5 4.5 0 0 1-9 0c0-1.6.6-2.9 1.6-4 .2 1.3 1 2.3 2.2 2.8C11 9.4 11.4 6.2 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cc-chat" viewBox="0 0 12.375 11.5"><path d="M4.21875 4.4375C4.21875 4.55831 4.12081 4.65625 4 4.65625C3.87919 4.65625 3.78125 4.55831 3.78125 4.4375C3.78125 4.31669 3.87919 4.21875 4 4.21875C4.12081 4.21875 4.21875 4.31669 4.21875 4.4375ZM4.21875 4.4375H4M6.40625 4.4375C6.40625 4.55831 6.30831 4.65625 6.1875 4.65625C6.06669 4.65625 5.96875 4.55831 5.96875 4.4375C5.96875 4.31669 6.06669 4.21875 6.1875 4.21875C6.30831 4.21875 6.40625 4.31669 6.40625 4.4375ZM6.40625 4.4375H6.1875M8.59375 4.4375C8.59375 4.55831 8.49581 4.65625 8.375 4.65625C8.25419 4.65625 8.15625 4.55831 8.15625 4.4375C8.15625 4.31669 8.25419 4.21875 8.375 4.21875C8.49581 4.21875 8.59375 4.31669 8.59375 4.4375ZM8.59375 4.4375H8.375M0.5 6.19295C0.5 7.12691 1.15532 7.93986 2.07935 8.07573C2.71291 8.16888 3.35338 8.24082 4 8.29079V11L6.44037 8.55963C6.56096 8.43904 6.72378 8.37048 6.89427 8.36626C8.04668 8.33772 9.18181 8.23955 10.2956 8.0758C11.2197 7.93994 11.875 7.12699 11.875 6.19302V2.68199C11.875 1.74802 11.2197 0.935065 10.2956 0.799212C8.95485 0.602091 7.58318 0.5 6.18767 0.5C4.79203 0.5 3.42023 0.602109 2.07936 0.799265C1.15533 0.935128 0.5 1.74808 0.5 2.68204V6.19295Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cc-like" viewBox="0 0 11.5 10.625"><path d="M11 3.125C11 1.67525 9.77578 0.5 8.26562 0.5C7.13651 0.5 6.16725 1.157 5.75 2.09449C5.33275 1.157 4.36349 0.5 3.23438 0.5C1.72422 0.5 0.5 1.67525 0.5 3.125C0.5 7.33699 5.75 10.125 5.75 10.125C5.75 10.125 11 7.33699 11 3.125Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></symbol>
@@ -999,6 +1059,64 @@
       <button class="cat-intro-more" type="button" aria-expanded="false" aria-controls="intro" aria-label="Развернуть описание"></button>
     </div>
 
+    <div class="flt" id="flt">
+      <div class="flt-dd">
+        <div class="dd" data-dd>
+          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-gender"/></svg><span class="dd-val">Девушки</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
+          <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Девушки</li><li role="option">Парни</li><li role="option">Все</li></ul>
+        </div>
+        <div class="dd" data-dd>
+          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-star"/></svg><span class="dd-val">Реалистичные</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
+          <ul class="dd-menu" role="listbox"><li role="option">Любой стиль</li><li role="option" aria-selected="true">Реалистичные</li><li role="option">Аниме</li></ul>
+        </div>
+        <div class="dd" data-dd>
+          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-flame"/></svg><span class="dd-val">Популярные</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
+          <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Популярные</li><li role="option">В тренде</li><li role="option">Новые</li></ul>
+        </div>
+        <div class="dd" data-dd>
+          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-users"/></svg><span class="dd-val">Все авторы</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
+          <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Все авторы</li><li role="option">Официальные</li><li role="option">От пользователей</li></ul>
+        </div>
+      </div>
+      <div class="flt-tagsrow">
+        <div class="flt-tags">
+          <a class="tag on" href="?tag=all">Все</a>
+          <a class="tag" href="?tag=official">Официальные</a>
+          <a class="tag" href="?tag=mature">Зрелые</a>
+          <a class="tag" href="?tag=petite">Миниатюрные</a>
+          <a class="tag" href="?tag=curvy">Пышные</a>
+          <a class="tag" href="?tag=blonde">Блондинки</a>
+          <a class="tag" href="?tag=brunette">Брюнетки</a>
+          <a class="tag" href="?tag=asian">Азиатки</a>
+          <button class="tag more" type="button" data-more aria-haspopup="menu" aria-expanded="false" aria-controls="more-menu">Ещё<svg class="ic chev"><use href="#i-chevr"/></svg></button>
+        </div>
+        <ul class="dd-menu dd-scroll" id="more-menu" role="menu">
+          <li><a href="?tag=latina" role="menuitem">Латина</a></li>
+          <li><a href="?tag=goth" role="menuitem">Гот и альт</a></li>
+          <li><a href="?tag=romantic" role="menuitem">Романтичные</a></li>
+          <li><a href="?tag=dominant" role="menuitem">Доминантные</a></li>
+          <li><a href="?tag=submissive" role="menuitem">Покорные</a></li>
+          <li><a href="?tag=shy" role="menuitem">Скромные</a></li>
+          <li><a href="?tag=athletic" role="menuitem">Спортивные</a></li>
+          <li><a href="?tag=redhead" role="menuitem">Рыжие</a></li>
+          <li><a href="?tag=tattooed" role="menuitem">С татуировками</a></li>
+          <li><a href="?tag=black" role="menuitem">Темнокожие</a></li>
+          <li><a href="?tag=middle-east" role="menuitem">Ближний Восток</a></li>
+          <li><a href="?tag=college" role="menuitem">Студентки</a></li>
+          <li><a href="?tag=gamer" role="menuitem">Геймерши</a></li>
+          <li><a href="?tag=cosplay" role="menuitem">Косплей</a></li>
+          <li><a href="?tag=fantasy" role="menuitem">Фэнтези</a></li>
+          <li><a href="?tag=teacher" role="menuitem">Учительницы</a></li>
+          <li><a href="?tag=nurse" role="menuitem">Медсёстры</a></li>
+          <li><a href="?tag=office" role="menuitem">Офис</a></li>
+          <li><a href="?tag=model" role="menuitem">Модели</a></li>
+          <li><a href="?tag=singer" role="menuitem">Певицы</a></li>
+          <li><a href="?tag=neighbor" role="menuitem">Соседки</a></li>
+          <li><a href="?tag=stranger" role="menuitem">Незнакомки</a></li>
+        </ul>
+      </div>
+    </div>
+
     <div class="cat-grid" id="grid"></div>
 
     <div class="cat-more"><button type="button">Увидеть всех <span style="font-size:1.15em">→</span></button></div>
@@ -1123,6 +1241,50 @@
     </article>`;
 
   document.getElementById('grid').innerHTML = newCard + cards;
+
+  /* Фильтры: выпадающие списки (открытие/закрытие, выбор пункта → подпись кнопки),
+     чипы разделов (в прототипе — только активное состояние, без перехода),
+     «Ещё» — список с прокруткой; выбранный в нём тег встаёт в подпись кнопки.
+     Закрытие — клик вне, Esc. Сетка на выбор пока не реагирует (данных мало). */
+  (function () {
+    var dds = Array.prototype.slice.call(document.querySelectorAll('[data-dd]'));
+    var moreBtn = document.querySelector('[data-more]'), moreMenu = document.getElementById('more-menu');
+    var tags = Array.prototype.slice.call(document.querySelectorAll('.flt-tags .tag'));
+    function closeAll(except) {
+      dds.forEach(function (d) { if (d !== except) { d.classList.remove('open'); d.querySelector('.dd-btn').setAttribute('aria-expanded', 'false'); } });
+      if (except !== 'more') { moreMenu.classList.remove('show'); moreBtn.setAttribute('aria-expanded', 'false'); }
+    }
+    dds.forEach(function (d) {
+      var btn = d.querySelector('.dd-btn'), val = d.querySelector('.dd-val');
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = !d.classList.contains('open');
+        closeAll(d); d.classList.toggle('open', open); btn.setAttribute('aria-expanded', open);
+      });
+      d.querySelectorAll('li').forEach(function (li) {
+        li.addEventListener('click', function (e) {
+          e.stopPropagation();
+          d.querySelectorAll('li').forEach(function (x) { x.setAttribute('aria-selected', 'false'); });
+          li.setAttribute('aria-selected', 'true'); val.textContent = li.textContent; closeAll();
+        });
+      });
+    });
+    moreBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = !moreMenu.classList.contains('show');
+      closeAll('more'); moreMenu.classList.toggle('show', open); moreBtn.setAttribute('aria-expanded', open);
+    });
+    function pick(el) {
+      tags.forEach(function (t) { t.classList.remove('on'); });
+      if (el.classList.contains('tag')) { el.classList.add('on'); moreBtn.firstChild.nodeValue = 'Ещё'; }
+      else { moreBtn.classList.add('on'); moreBtn.firstChild.nodeValue = el.textContent; }   // тег из «Ещё» — в подпись кнопки
+      closeAll();
+    }
+    tags.forEach(function (t) { if (t.tagName === 'A') t.addEventListener('click', function (e) { e.preventDefault(); pick(t); }); });
+    moreMenu.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); pick(a); }); });
+    document.addEventListener('click', function () { closeAll(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+  })();
 
   /* вводный абзац: свёрнут до первой строки, «ещё» раскрывает; если текст и так
      помещается в строку (очень широкий экран) — переключатель не нужен */

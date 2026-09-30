@@ -213,18 +213,26 @@
     .pb-dots { margin-top: 10px; }
     .pb-anime .pb-art { width: 48%; }
   }
+  /* ── телефон: доли первого экрана (375×812) — баннер ≈ 33%, заголовок с абзацем
+       ≈ 11%, каталог (фильтры + первый ряд карточек) ≈ 50%. Карточка баннера
+       выше (5:4) и почти во всю ширину, текст под ней ужат, фильтры — в одну
+       прокручиваемую строку, чтобы карточки каталога начинались до середины экрана. ── */
   @media (max-width: 560px) {
-    .pb-card::before { padding-bottom: 60%; }      /* 5:3 */
-    .pb-txt { width: 62%; padding: 16px 0 16px 16px; }
-    .pb-h { font-size: 17px; }
-    .pb-sub { display: none; }
+    .content { padding-top: 12px; }
+    .pb-track { grid-auto-columns: 90%; }
+    .pb-card::before { padding-bottom: 80%; }      /* 5:4 */
+    .pb-txt { width: 60%; padding: 16px 0 16px 16px; gap: 6px; }
+    .pb-h { font-size: 19px; }
+    .pb-sub { display: -webkit-box; font-size: 13px; }   /* на высокой карточке абзац помещается */
+    .pb-price { display: flex; }
     .pb-cta { font-size: 12px; padding: 8px 13px; margin-top: 2px; }
-    .pb-art { width: 44%; }
+    .pb-art { width: 46%; }
     .pb-art > img { height: 100%; }
     .pb-pill, .pb-creator, .pb-duo { font-size: 11px; }
     .pb-pill .txt, .pb-creator span { display: none; }
     .pb-tag { font-size: 16px; padding: 5px 9px; }
     .pb-price b { font-size: 18px; }
+    .pb-dots { margin-top: 8px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .pb-pill, .pb-tag, .pb-eq i, .pb-play::before { animation: none !important; }
@@ -310,6 +318,21 @@
   @media (max-width: 640px) {
     .flt-tags { overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 2px; }
     .flt-tags::-webkit-scrollbar { display: none; }
+  }
+  /* телефон: заголовок и абзац компактнее, выпадающие списки — одной прокручиваемой
+     строкой (как чипы), их меню открываются снизу экрана шитом, чтобы не резаться
+     прокруткой ряда; чипы и кнопки ниже — 32/36px */
+  @media (max-width: 560px) {
+    .cat-h1 { font-size: 18px; line-height: 1.2; margin-top: 12px; }
+    .cat-intro { font-size: 14px; margin: 4px 0 12px; }
+    .flt { gap: 8px; margin-bottom: 12px; }
+    .flt-dd { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; margin: 0 -14px; padding: 0 14px; }
+    .flt-dd::-webkit-scrollbar { display: none; }
+    .dd { flex: none; }
+    .dd-btn { height: 36px; font-size: 13px; padding: 0 10px 0 12px; border-radius: 12px; }
+    .dd-menu { position: fixed; left: 12px; right: 12px; top: auto; bottom: 12px; min-width: 0; padding: 8px; border-radius: 18px; }
+    .dd-menu li, .dd-menu a { padding: 12px 14px; font-size: 15px; }
+    .tag { height: 32px; font-size: 13px; padding: 0 13px; }
   }
   .tag {
     flex: none; height: 36px; padding: 0 16px; border-radius: 999px; border: 0; cursor: pointer;

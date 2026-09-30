@@ -1286,7 +1286,10 @@
       more.classList.toggle('on', hiddenActive);
       if (narrow()) {                                   // телефон: подвезти ряд к выбранному чипу
         var t = chips.filter(function (c) { return c.dataset.cat === active; })[0];
-        if (t) row.scrollTo({ left: Math.max(0, t.offsetLeft - 12), behavior: 'smooth' });
+        if (t) {   // позиция чипа внутри ряда — через rect, offsetLeft здесь считается от другого предка
+          var x = t.getBoundingClientRect().left - row.getBoundingClientRect().left + row.scrollLeft;
+          row.scrollTo({ left: Math.max(0, x - 12), behavior: 'smooth' });
+        }
       }
     }
     /* показать столько чипов, сколько влезает вместе с «Ещё» до конца ряда */
@@ -1306,7 +1309,7 @@
     }
     function pick(cat) { active = cat; paint(); closeModal(); }
     function openModal() { modal.hidden = false; more.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; modal.querySelector('.modal-x').focus(); }
-    function closeModal() { if (modal.hidden) return; modal.hidden = true; more.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; more.focus(); }
+    function closeModal() { if (modal.hidden) return; modal.hidden = true; more.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; more.focus({ preventScroll: true }); }   // без preventScroll фокус на «Ещё» прокрутил бы ряд в конец
 
     document.querySelectorAll('[data-cat]').forEach(function (t) { t.addEventListener('click', function (e) { e.preventDefault(); pick(t.dataset.cat); }); });
     more.addEventListener('click', function (e) { e.stopPropagation(); closeDds(); openModal(); });

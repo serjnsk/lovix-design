@@ -190,7 +190,7 @@
   .pb-arr.prev { left: -18px; opacity: 0; pointer-events: none; }
   .pb:hover .pb-arr.prev, .pb-arr.prev:focus-visible { opacity: 1; pointer-events: auto; }
   .pb-arr:focus-visible { outline: 2px solid #ff9ed1; outline-offset: 2px; }
-  .pb-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+  .pb-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
   .pb-dot { width: 6px; height: 6px; border-radius: 999px; border: 0; padding: 0; cursor: pointer; background: rgba(255,255,255,.22); transition: width .3s, background .3s; }
   .pb-dot.on { width: 18px; background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
   .pb-dot:focus-visible { outline: 2px solid #ff9ed1; outline-offset: 3px; }
@@ -229,13 +229,15 @@
     .pb-track { scroll-behavior: auto; }
   }
 
-  /* ── заголовок + вводный абзац (как на проде: по центру, акцент во второй части) ── */
-  /* Текстовая часть под баннером — компактная: заголовок в одну строку на десктопе
-     (на мобильном переносится), вводный абзац свёрнут до первой строки. */
+  /* ── заголовок + вводный абзац: акцент во второй части, как на проде.
+       Ритм блока — по референсу secrets.ai (замер на 1707px): баннер → 34px →
+       заголовок 32px → 8px → подзаголовок 16px → ~22px → фильтры → ~24px → карточки.
+       Выравнивание по левому краю, как у референса; вводный абзац свёрнут до
+       первой строки, стрелка-переключатель стоит в той же строке. ── */
   .cat-h1 {
-    text-align: center; font-weight: 800; letter-spacing: -.01em;
-    font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1.2;
-    margin: 32px auto 0; text-wrap: balance;
+    text-align: left; font-weight: 800; letter-spacing: -.015em;
+    font-size: clamp(1.4rem, 2.1vw, 2rem); line-height: 1.15;
+    margin: 22px 0 0;
   }
   /* акцент заголовка — градиент фуксия → роза, как на проде */
   .cat-h1 span {
@@ -243,15 +245,17 @@
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
   .cat-intro {
-    text-align: center; color: rgb(var(--muted)); font-size: .95rem; line-height: 1.55;
-    max-width: 74ch; margin: 8px auto 24px;
+    display: flex; align-items: flex-end; gap: 4px;
+    color: rgb(var(--muted)); font-size: 1rem; line-height: 1.5;
+    max-width: 880px; margin: 6px 0 20px;
   }
-  .cat-intro p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden; }
+  .cat-intro p { flex: 1 1 auto; min-width: 0; margin: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden; }
   .cat-intro.open p { display: block; }
-  /* переключатель — только маленькая стрелка вниз, без подписи; зона клика 28×20 */
+  /* переключатель — только маленькая стрелка вниз, без подписи; зона клика 28×24,
+     стоит в конце строки (в раскрытом виде — у последней строки) */
   .cat-intro-more {
-    display: inline-flex; align-items: center; justify-content: center; margin-top: 2px;
-    width: 28px; height: 20px; padding: 0; border: 0; background: none; cursor: pointer;
+    flex: none; display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer;
     color: rgb(var(--muted2));
   }
   .cat-intro-more::after { content: ""; width: 7px; height: 7px; margin-top: -4px; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); transition: transform .15s, margin .15s; }
@@ -263,7 +267,7 @@
        иконка + значение + шеврон. 2-я: чипы-ссылки на разделы, 36px, пилюли, без
        переноса (на узком экране прокручивается по горизонтали), последний — «Ещё»
        с раскрывающимся списком с прокруткой. Поля поиска нет — по решению. ── */
-  .flt { display: flex; flex-direction: column; gap: 12px; margin: 0 0 22px; }
+  .flt { display: flex; flex-direction: column; gap: 10px; margin: 0 0 20px; }
   .flt-dd { display: flex; flex-wrap: wrap; gap: 8px; }
   .dd { position: relative; }
   .dd-btn {

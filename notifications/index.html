@@ -216,6 +216,21 @@
     display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
     cursor: pointer;
   }
+  /* Явный признак обрезки (класс ставит JS, только если текст не влез в 3 строки):
+     последняя строка гаснет, под текстом — ссылка «Читать полностью» в чат. */
+  .lw-bubble.is-cut .lw-text {
+    -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 1.35em), rgba(0,0,0,.3));
+            mask-image: linear-gradient(180deg, #000 calc(100% - 1.35em), rgba(0,0,0,.3));
+  }
+  .lw-more {
+    display: none; align-items: center; gap: 4px; margin-top: 6px;
+    padding: 0; border: 0; background: none; cursor: pointer;
+    font-family: inherit; font-size: .78rem; font-weight: 700; color: #f0abfc;
+  }
+  .lw-more:hover { color: #fff; }
+  .lw-more span { transition: transform .15s; }
+  .lw-more:hover span { transform: translateX(2px); }
+  .lw-bubble.is-cut .lw-more { display: inline-flex; }
   .lw-act { margin-top: 9px; }
   .lw-act .btn { padding: .42rem .9rem; font-size: .78rem; border-radius: .5rem; }
   .lw-x {
@@ -430,6 +445,15 @@ function updateChatBadge() {
   b.textContent = chatUnread;
   b.style.display = chatUnread ? 'flex' : 'none';
 }
+/* Реплика не влезла в 3 строки → баббл получает is-cut (затухание + «Читать полностью»).
+   Перемеряем после загрузки шрифта и на ресайзе: ширина баббла на мобильном другая. */
+function markCut() {
+  const t = document.querySelector('#lwdock .lw-text');
+  if (t) t.closest('.lw-bubble').classList.toggle('is-cut', t.scrollHeight > t.clientHeight + 1);
+}
+window.addEventListener('resize', markCut);
+if (document.fonts) document.fonts.ready.then(markCut);
+
 function renderProactive() {
   const dock = document.getElementById('lwdock');
   const exp = proStack.find(p => p.name === proExpanded);
@@ -439,6 +463,7 @@ function renderProactive() {
       '<button class="lw-x" aria-label="Скрыть"><svg class="ic"><use href="#i-x"/></svg></button>' +
       '<div class="lw-name">' + exp.name + '</div>' +
       '<div class="lw-text" data-answer="' + exp.name + '" title="' + exp.text + '">' + exp.text + '</div>' +
+      '<button class="lw-more" data-answer="' + exp.name + '">Читать полностью <span>→</span></button>' +
       '<div class="lw-act"><button class="btn btn-grad" data-answer="' + exp.name + '">Ответить</button></div>' +
       '</div><div class="lw-ava" data-answer="' + exp.name + '"><div class="ph"><img src="' + exp.img + '" alt="' + exp.name + '"></div></div></div>';
   }
@@ -462,6 +487,7 @@ function renderProactive() {
     html += '<div class="lw-stack">' + stack + '</div>';
   }
   dock.innerHTML = html;
+  markCut();
   updateChatBadge();
 }
 function pushProactive(p) {

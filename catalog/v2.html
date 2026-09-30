@@ -587,22 +587,38 @@
   .cc-ic { width: 13px; height: 13px; flex: none; opacity: .9; }
 
 
-  /* автор — бейдж сверху слева (как бейдж у референса): тёмная пилюля с блюром,
-     аватар + «Lovix» + галочка; внизу остаются только имя, описание и метрики */
+  /* автор — бейдж сверху слева, как на secrets.ai/browse: в покое только круглый аватар,
+     при наведении (или фокусе) пилюля раскрывается и показывает «@ник» с галочкой;
+     весь бейдж — ссылка на страницу автора. Внизу карточки остаются имя, описание, метрики. */
   .cc-auth {
-    position: absolute; top: 10px; left: 10px; z-index: 2;
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 4px 9px 4px 4px; border-radius: 999px;
+    position: absolute; top: 10px; left: 10px; z-index: 4;
+    display: inline-flex; align-items: center; gap: 0;
+    height: 28px; padding: 3px; border-radius: 999px;
     background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: #fff; text-decoration: none; outline: 0;
+    transition: gap .2s ease, padding .2s ease, background .2s ease;
   }
   .cc-av {
-    width: 18px; height: 18px; flex: none; border-radius: 50%;
+    width: 22px; height: 22px; flex: none; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 800; color: #fff;
+    font-size: 12px; font-weight: 800; color: #fff;
     background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
   }
-  .cc-auth b { font-size: 12px; font-weight: 600; color: #fff; }
+  .cc-nick {
+    display: inline-flex; align-items: center; gap: 4px;
+    max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap;
+    font-size: 12px; font-weight: 600;
+    transition: max-width .25s ease, opacity .2s ease;
+  }
+  .cc-auth:hover, .cc-auth:focus-visible { gap: 6px; padding-right: 10px; background: rgba(16,14,16,.82); }
+  .cc-auth:hover .cc-nick, .cc-auth:focus-visible .cc-nick { max-width: 160px; opacity: 1; }
+  .cc-auth:focus-visible { box-shadow: 0 0 0 2px rgba(240,171,252,.8); }
   .cc-ver { width: 12px; height: 12px; color: rgb(var(--primary)); flex: none; }
+  /* без наведения (touch) ник виден сразу — иначе до него не добраться */
+  @media (hover: none) {
+    .cc-auth { gap: 6px; padding-right: 10px; }
+    .cc-nick { max-width: 160px; opacity: 1; }
+  }
 
   /* плитка «создать компаньона», макет 461:6709 */
   .cc.newcard { display: flex; align-items: center; justify-content: center; }
@@ -978,6 +994,8 @@
 
 <script>
   // Данные с текущего прода lovix.ai/ru. Все компаньоны — от сервиса «Lovix» (верифицирован).
+  // Бейдж автора ведёт на его страницу — здесь на черновик author/v1.html.
+  const AUTHOR = { nick: 'lovix', href: '../author/v1.html' };
   const BOTS = [
     ['Александра', 20, 'Я кам-модель, которая стримит гейминг и косплей нон-стоп. Мой флирт бьёт точнее хедшотов, но я всегда респавнюсь с подмигиванием.', '834.7k', '4.8'],
     ['Олеся', 24, 'Я инструктор по йоге, для которой сила и баланс важны не только на коврике, но и на тропах. Прямо сейчас думаю о том, как приятно растянуться после долгого подъёма.', '800.8k', '4.5'],
@@ -1014,7 +1032,10 @@
       <video class="cc-video" data-src="../assets/video/bots/${MEDIA[i].replace(/\.\w+$/, '.mp4')}"
              muted loop playsinline preload="none" aria-hidden="true"></video>
       <div class="cc-shade"></div>
-      <div class="cc-auth"><span class="cc-av">L</span><b>Lovix</b><svg class="cc-ver"><use href="#i-verified"/></svg></div>
+      <a class="cc-auth" href="${AUTHOR.href}" title="@${AUTHOR.nick}" aria-label="Автор: @${AUTHOR.nick}">
+        <span class="cc-av">L</span>
+        <span class="cc-nick">@${AUTHOR.nick}<svg class="cc-ver"><use href="#i-verified"/></svg></span>
+      </a>
       <div class="cc-meta">
         <div class="cc-text">
           <div class="cc-name"><b>${name},</b><span>${age}</span></div>

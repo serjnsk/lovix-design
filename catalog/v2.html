@@ -12,7 +12,7 @@
 <style>
   /* ── Главная lovix.ai с новым hero-слайдером. Контент-зона повторяет
        текущий прод (lovix.ai/ru): H1 + вводный абзац, сетка карточек с
-       авторством сервиса «Lovix», кнопка «Увидеть всех», две SEO-секции и
+       авторством сервиса «Lovix», бесконечная прокрутка, две SEO-секции и
        FAQ из трёх вопросов. Отличие от прода — только баннер (hs-*).
        Фича «авторы компаньонов» (ники, подписки) здесь НЕ применяется —
        её черновики лежат в catalog/v1.html и review/. ── */
@@ -588,16 +588,16 @@
 
   /* ── сетка ── */
   .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
-  /* «Увидеть всех» — по центру под сеткой, как на проде */
-  .cat-more { display: flex; justify-content: center; margin-top: 36px; }
-  .cat-more button {
-    display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-    padding: .85rem 1.9rem; border-radius: 12px;
-    border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.04);
-    color: #fff; font-weight: 600; font-size: 1.05rem;
-    transition: border-color .15s, background .15s, transform .15s;
+  /* бесконечная прокрутка: маячок под сеткой — спиннер, пока догружается порция,
+     в конце — строка «Вы посмотрели всех» */
+  .cat-sentinel { display: flex; justify-content: center; align-items: center; min-height: 64px; margin-top: 8px; }
+  .cat-spin {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.14); border-top-color: rgb(var(--primary));
+    animation: cat-spin .8s linear infinite;
   }
-  .cat-more button:hover { border-color: rgb(var(--primary)); background: rgba(217,70,239,.13); transform: translateY(-1px); }
+  @keyframes cat-spin { to { transform: rotate(360deg); } }
+  .cat-end { color: rgb(var(--muted2)); font-size: .9rem; }
 
   /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12).
      Поведение — по референсу secrets.ai: в покое у всех карточек статичное фото,
@@ -1113,8 +1113,7 @@
     </div>
 
     <div class="cat-grid" id="grid"></div>
-
-    <div class="cat-more"><button type="button">Увидеть всех <span style="font-size:1.15em">→</span></button></div>
+    <div class="cat-sentinel" id="sentinel" aria-live="polite"><span class="cat-spin" role="status" aria-label="Загрузка"></span></div>
 
     <section class="cat-about">
       <h2>Что такое ИИ девушка?</h2>
@@ -1161,9 +1160,13 @@
   // Данные ботов — общие с «Мои персонажи → Избранное»: assets/bots-data.js
   const AUTHORS = CATALOG_AUTHORS, BOTS = CATALOG_BOTS, MEDIA = CATALOG_MEDIA, fmt = fmtCount;
 
-  const cards = BOTS.map(([name, age, desc, talks, likes, by], i) => { const au = AUTHORS[by]; return `
+  // карточка бота по индексу в BOTS; data-fav = индекс, поэтому у повторов одного бота
+  // (следующие «страницы» в прототипе идут по кругу) сердечко общее
+  function cardHtml(i) {
+    const [name, age, desc, talks, likes, by] = BOTS[i], au = AUTHORS[by];
+    return `
     <article class="cc" tabindex="0">
-      <img class="cc-photo" src="../assets/img/bots/${MEDIA[i]}" alt="${name}" loading="${i < 7 ? 'eager' : 'lazy'}">
+      <img class="cc-photo" src="../assets/img/bots/${MEDIA[i]}" alt="${name}" loading="${shown < 7 ? 'eager' : 'lazy'}">
       <video class="cc-video" data-src="../assets/video/bots/${MEDIA[i].replace(/\.\w+$/, '.mp4')}"
              muted loop playsinline preload="none" aria-hidden="true"></video>
       <div class="cc-shade"></div>
@@ -1184,7 +1187,8 @@
           <span class="cc-m like" title="Лайки"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${fmt(likes)}</span>
         </div>
       </div>
-    </article>`; }).join('');
+    </article>`;
+  }
 
   const newCard = `
     <article class="cc newcard">
@@ -1193,107 +1197,40 @@
       <div class="lbl"><svg class="ic"><use href="#i-plus"/></svg>Создать компаньона</div>
     </article>`;
 
-  document.getElementById('grid').innerHTML = newCard + cards;
-
-  /* Фильтры. Выпадающие списки: открытие/закрытие, выбор пункта → подпись кнопки, Esc / клик вне.
-     Категории: один список CATS; в ряду показываем столько чипов, сколько помещается до конца
-     контентной области (пересчёт на ресайзе), остальные — в модалке «Ещё» (все категории чипами).
-     Выбранная категория, если её чип в ряду скрыт, встаёт в подпись «Ещё». В прототипе фильтры
-     держат только состояние — сетка на них не реагирует. */
-  (function () {
-    var dds = Array.prototype.slice.call(document.querySelectorAll('[data-dd]'));
-    function closeDds() { dds.forEach(function (d) { d.classList.remove('open'); d.querySelector('.dd-btn').setAttribute('aria-expanded', 'false'); }); }
-    dds.forEach(function (d) {
-      var btn = d.querySelector('.dd-btn'), val = d.querySelector('.dd-val');
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var open = !d.classList.contains('open');
-        closeDds(); d.classList.toggle('open', open); btn.setAttribute('aria-expanded', open);
-      });
-      d.querySelectorAll('li').forEach(function (li) {
-        li.addEventListener('click', function (e) {
-          e.stopPropagation();
-          d.querySelectorAll('li').forEach(function (x) { x.setAttribute('aria-selected', 'false'); });
-          li.setAttribute('aria-selected', 'true'); val.textContent = li.textContent; closeDds();
-        });
-      });
-    });
-
-    var CATS = [
-      ['all', 'Все'], ['official', 'Официальные'], ['mature', 'Зрелые'], ['petite', 'Миниатюрные'], ['curvy', 'Пышные'],
-      ['blonde', 'Блондинки'], ['brunette', 'Брюнетки'], ['asian', 'Азиатки'], ['latina', 'Латина'], ['goth', 'Гот и альт'],
-      ['romantic', 'Романтичные'], ['dominant', 'Доминантные'], ['submissive', 'Покорные'], ['playful', 'Игривые'],
-      ['shy', 'Скромные'], ['confident', 'Уверенные'], ['athletic', 'Спортивные'], ['muscular', 'Атлетичные'],
-      ['redhead', 'Рыжие'], ['tattooed', 'С татуировками'], ['black', 'Темнокожие'], ['middle-east', 'Ближний Восток'],
-      ['college', 'Студентки'], ['professional', 'Профессионалки'], ['gamer', 'Геймерши'], ['cosplay', 'Косплей'],
-      ['fantasy', 'Фэнтези'], ['supernatural', 'Сверхъестественное'], ['royalty', 'Королевские']
-    ];
-    var row = document.getElementById('cat-row'), all = document.getElementById('cat-all'), modal = document.getElementById('cat-modal');
-    var chip = function (c) { return '<a class="tag" href="?tag=' + c[0] + '" data-cat="' + c[0] + '">' + c[1] + '</a>'; };
-    row.innerHTML = CATS.map(chip).join('') +
-      '<button class="tag more" type="button" data-more aria-haspopup="dialog" aria-expanded="false" aria-controls="cat-modal">Ещё<svg class="ic chev"><use href="#i-chevr"/></svg></button>';
-    all.innerHTML = CATS.map(chip).join('');
-    var chips = Array.prototype.slice.call(row.querySelectorAll('a.tag')), more = row.querySelector('[data-more]');
-    var active = 'all', widths = null;
-
-    function paint() {
-      document.querySelectorAll('[data-cat]').forEach(function (t) { t.classList.toggle('on', t.dataset.cat === active); });
-      var hiddenActive = chips.some(function (t) { return t.dataset.cat === active && t.style.display === 'none'; });
-      var label = CATS.filter(function (c) { return c[0] === active; })[0][1];
-      more.firstChild.nodeValue = hiddenActive ? label : 'Ещё';
-      more.classList.toggle('on', hiddenActive);
-      if (narrow()) {                                   // телефон: подвезти ряд к выбранному чипу
-        var t = chips.filter(function (c) { return c.dataset.cat === active; })[0];
-        if (t) {   // позиция чипа внутри ряда — через rect, offsetLeft здесь считается от другого предка
-          var tr = t.getBoundingClientRect(), rr = row.getBoundingClientRect();
-          if (tr.left < rr.left || tr.right > rr.right)  // только если чип не виден целиком
-            row.scrollTo({ left: Math.max(0, tr.left - rr.left + row.scrollLeft - 12), behavior: 'smooth' });
-        }
-      }
-    }
-    /* показать столько чипов, сколько влезает вместе с «Ещё» до конца ряда */
-    var narrow = function () { return window.matchMedia('(max-width: 640px)').matches; };
-    function fit() {
-      chips.forEach(function (t) { t.style.display = ''; });
-      if (narrow()) { paint(); return; }               // телефон: все чипы, ряд прокручивается
-      widths = chips.map(function (t) { return t.offsetWidth; });
-      var gap = 8, avail = row.clientWidth, moreW = more.offsetWidth, used = 0, shown = 0;
-      for (var i = 0; i < chips.length; i++) {
-        var next = used + (i ? gap : 0) + widths[i];
-        if (next + gap + moreW > avail) break;
-        used = next; shown = i + 1;
-      }
-      chips.forEach(function (t, i) { t.style.display = i < shown ? '' : 'none'; });
-      paint();
-    }
-    function pick(cat) { active = cat; closeModal(); paint(); }   // сначала закрыть модалку, потом прокрутка — по устоявшейся раскладке
-    function openModal() { modal.hidden = false; more.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; modal.querySelector('.modal-x').focus(); }
-    function closeModal() { if (modal.hidden) return; modal.hidden = true; more.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; more.focus({ preventScroll: true }); }   // без preventScroll фокус на «Ещё» прокрутил бы ряд в конец
-
-    document.querySelectorAll('[data-cat]').forEach(function (t) { t.addEventListener('click', function (e) { e.preventDefault(); pick(t.dataset.cat); }); });
-    more.addEventListener('click', function (e) { e.stopPropagation(); closeDds(); openModal(); });
-    modal.querySelectorAll('[data-close]').forEach(function (x) { x.addEventListener('click', closeModal); });
-    document.addEventListener('click', closeDds);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeDds(); closeModal(); } });
-    addEventListener('resize', fit);
-    if (document.fonts) document.fonts.ready.then(fit);
-    fit();
-  })();
-
-  /* вводный абзац: свёрнут до первой строки, «ещё» раскрывает; если текст и так
-     помещается в строку (очень широкий экран) — переключатель не нужен */
-  (function () {
-    var box = document.getElementById('intro'), p = box.querySelector('p'), btn = box.querySelector('.cat-intro-more');
-    function fits() { box.classList.toggle('fits', !box.classList.contains('open') && p.scrollHeight <= p.clientHeight + 1); }
-    btn.addEventListener('click', function () {
-      var open = box.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open);
-      btn.setAttribute('aria-label', open ? 'Свернуть описание' : 'Развернуть описание');
-    });
-    addEventListener('resize', fits); fits();
-  })();
-
-  initBotCards(document.getElementById('grid'));   // поведение карточки при наведении — assets/bot-card.js
+  /* Бесконечная прокрутка вместо «Увидеть всех». Порция — 12 карточек; догружается,
+     когда маячок под сеткой в 600px от экрана (IntersectionObserver). Ботов в прототипе 18,
+     поэтому дальше они идут по кругу в другом порядке — всего до 72 карточек, затем
+     «Вы посмотрели всех». В проде порции приходят с бэкенда. */
+  const grid = document.getElementById('grid'), sentinel = document.getElementById('sentinel');
+  const PAGE = 12, MAX = 72;
+  let shown = 0, loading = false;
+  // первая страница — в продовом порядке; каждый следующий круг сдвинут на 6: при 18 ботах
+  // и порции 12 ни в одной порции бот не повторится (хвост круга и голова следующего не пересекаются)
+  const order = k => { const lap = Math.floor(k / BOTS.length), i = k % BOTS.length; return (i + lap * 6) % BOTS.length; };
+  function appendBatch() {
+    const html = [];
+    for (let n = 0; n < PAGE && shown < MAX; n++, shown++) html.push(cardHtml(order(shown)));
+    grid.insertAdjacentHTML('beforeend', html.join(''));
+    initBotCards(grid);                                      // поведение при наведении — assets/bot-card.js
+    document.dispatchEvent(new CustomEvent('catalog:append'));   // избранное перекрашивает сердечки
+    if (shown >= MAX) { sentinel.innerHTML = '<span class="cat-end">Вы посмотрели всех компаньонов</span>'; io.disconnect(); }
+  }
+  grid.innerHTML = newCard;
+  appendBatch();
+  function loadMore() {
+    if (loading || shown >= MAX) return;
+    loading = true;
+    setTimeout(() => { appendBatch(); loading = false; check(); }, 350);   // имитация ответа сервера
+  }
+  // маячок ближе 600px к низу экрана → следующая порция. Наблюдатель — основной путь,
+  // проверка по скроллу/ресайзу — резерв: IO бывает задросселен или не считает пересечения
+  function check() { if (sentinel.getBoundingClientRect().top < innerHeight + 600) loadMore(); }
+  const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) loadMore(); }, { rootMargin: '600px 0px' });
+  io.observe(sentinel);
+  let raf = null;
+  const ask = () => { if (raf === null) raf = requestAnimationFrame(() => { raf = null; check(); }); };
+  addEventListener('scroll', ask, { passive: true });
+  addEventListener('resize', ask);
 
   /* Избранное. Клик по сердечку: бот «улетает» в «Мои персонажи» (миниатюра фото летит
      к пункту меню, на нём растёт счётчик), внизу — тост со ссылкой на вкладку «Избранное».
@@ -1342,6 +1279,7 @@
       else { fav.splice(i, 1); toast('<b>' + name + '</b> убрана из избранного'); }
       save(); paint();
     });
+    document.addEventListener('catalog:append', paint);
     paint();
   })();
 </script>

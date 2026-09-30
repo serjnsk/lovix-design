@@ -485,21 +485,25 @@
     font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1.2;
     margin: 32px auto 0; text-wrap: balance;
   }
-  .cat-h1 span { color: rgb(var(--primary)); }
+  /* акцент заголовка — градиент фуксия → роза, как на проде */
+  .cat-h1 span {
+    background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
   .cat-intro {
     text-align: center; color: rgb(var(--muted)); font-size: .95rem; line-height: 1.55;
     max-width: 74ch; margin: 8px auto 24px;
   }
   .cat-intro p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden; }
   .cat-intro.open p { display: block; }
-  /* переключатель «ещё» — намеренно тихий: мелкий, приглушённый, без рамки */
+  /* переключатель — только маленькая стрелка вниз, без подписи; зона клика 28×20 */
   .cat-intro-more {
-    display: inline-flex; align-items: center; gap: 3px; margin-top: 2px;
-    padding: 2px 6px; border: 0; background: none; cursor: pointer;
-    font: inherit; font-size: .78rem; color: rgb(var(--muted2));
+    display: inline-flex; align-items: center; justify-content: center; margin-top: 2px;
+    width: 28px; height: 20px; padding: 0; border: 0; background: none; cursor: pointer;
+    color: rgb(var(--muted2));
   }
-  .cat-intro-more::after { content: ""; width: 5px; height: 5px; margin-top: -3px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); transition: transform .15s; }
-  .cat-intro.open .cat-intro-more::after { transform: rotate(-135deg); margin-top: 3px; }
+  .cat-intro-more::after { content: ""; width: 7px; height: 7px; margin-top: -4px; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg); transition: transform .15s, margin .15s; }
+  .cat-intro.open .cat-intro-more::after { transform: rotate(-135deg); margin-top: 4px; }
   .cat-intro-more:hover { color: #f0abfc; }
   .cat-intro.fits .cat-intro-more { display: none; }
   /* ── сетка ── */
@@ -901,7 +905,7 @@
     <h1 class="cat-h1">ИИ девушка: <span>онлайн-чат с виртуальной подругой</span></h1>
     <div class="cat-intro" id="intro">
       <p>Запустите ваш первый AI чат бесплатно и ощутите искренние, неподдельные эмоции. По ходу общения ваша ИИ девушка будет запоминать контекст диалогов и реагировать соответственно — все, как в реальной жизни! Результат — прочная эмоциональная связь и укрепление отношений день за днем.</p>
-      <button class="cat-intro-more" type="button" aria-expanded="false" aria-controls="intro">ещё</button>
+      <button class="cat-intro-more" type="button" aria-expanded="false" aria-controls="intro" aria-label="Развернуть описание"></button>
     </div>
 
     <div class="cat-grid" id="grid"></div>
@@ -1015,7 +1019,7 @@
     btn.addEventListener('click', function () {
       var open = box.classList.toggle('open');
       btn.setAttribute('aria-expanded', open);
-      btn.firstChild.nodeValue = open ? 'свернуть' : 'ещё';
+      btn.setAttribute('aria-label', open ? 'Свернуть описание' : 'Развернуть описание');
     });
     addEventListener('resize', fits); fits();
   })();

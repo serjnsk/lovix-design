@@ -478,16 +478,30 @@
   }
 
   /* ── заголовок + вводный абзац (как на проде: по центру, акцент во второй части) ── */
+  /* Текстовая часть под баннером — компактная: заголовок в одну строку на десктопе
+     (на мобильном переносится), вводный абзац свёрнут до первой строки. */
   .cat-h1 {
     text-align: center; font-weight: 800; letter-spacing: -.01em;
-    font-size: clamp(1.6rem, 3.2vw, 2.5rem); line-height: 1.16;
-    margin: 40px auto 0; max-width: 22ch;
+    font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1.2;
+    margin: 32px auto 0; text-wrap: balance;
   }
   .cat-h1 span { color: rgb(var(--primary)); }
   .cat-intro {
-    text-align: center; color: rgb(var(--muted)); font-size: 1rem; line-height: 1.65;
-    max-width: 74ch; margin: 16px auto 30px;
+    text-align: center; color: rgb(var(--muted)); font-size: .95rem; line-height: 1.55;
+    max-width: 74ch; margin: 8px auto 24px;
   }
+  .cat-intro p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; line-clamp: 1; overflow: hidden; }
+  .cat-intro.open p { display: block; }
+  /* переключатель «ещё» — намеренно тихий: мелкий, приглушённый, без рамки */
+  .cat-intro-more {
+    display: inline-flex; align-items: center; gap: 3px; margin-top: 2px;
+    padding: 2px 6px; border: 0; background: none; cursor: pointer;
+    font: inherit; font-size: .78rem; color: rgb(var(--muted2));
+  }
+  .cat-intro-more::after { content: ""; width: 5px; height: 5px; margin-top: -3px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); transition: transform .15s; }
+  .cat-intro.open .cat-intro-more::after { transform: rotate(-135deg); margin-top: 3px; }
+  .cat-intro-more:hover { color: #f0abfc; }
+  .cat-intro.fits .cat-intro-more { display: none; }
   /* ── сетка ── */
   .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
   /* «Увидеть всех» — по центру под сеткой, как на проде */
@@ -885,7 +899,10 @@
     </section>
 
     <h1 class="cat-h1">ИИ девушка: <span>онлайн-чат с виртуальной подругой</span></h1>
-    <p class="cat-intro">Запустите ваш первый AI чат бесплатно и ощутите искренние, неподдельные эмоции. По ходу общения ваша ИИ девушка будет запоминать контекст диалогов и реагировать соответственно — все, как в реальной жизни! Результат — прочная эмоциональная связь и укрепление отношений день за днем.</p>
+    <div class="cat-intro" id="intro">
+      <p>Запустите ваш первый AI чат бесплатно и ощутите искренние, неподдельные эмоции. По ходу общения ваша ИИ девушка будет запоминать контекст диалогов и реагировать соответственно — все, как в реальной жизни! Результат — прочная эмоциональная связь и укрепление отношений день за днем.</p>
+      <button class="cat-intro-more" type="button" aria-expanded="false" aria-controls="intro">ещё</button>
+    </div>
 
     <div class="cat-grid" id="grid"></div>
 
@@ -989,6 +1006,19 @@
     </article>`;
 
   document.getElementById('grid').innerHTML = newCard + cards;
+
+  /* вводный абзац: свёрнут до первой строки, «ещё» раскрывает; если текст и так
+     помещается в строку (очень широкий экран) — переключатель не нужен */
+  (function () {
+    var box = document.getElementById('intro'), p = box.querySelector('p'), btn = box.querySelector('.cat-intro-more');
+    function fits() { box.classList.toggle('fits', !box.classList.contains('open') && p.scrollHeight <= p.clientHeight + 1); }
+    btn.addEventListener('click', function () {
+      var open = box.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open);
+      btn.firstChild.nodeValue = open ? 'свернуть' : 'ещё';
+    });
+    addEventListener('resize', fits); fits();
+  })();
 
   /* Видео-превью — по логике прода (blade.js): играют только ряды, видимые хотя бы
      наполовину (на мобильном — на 20%), не больше 3 рядов сразу; ролики ряда стартуют

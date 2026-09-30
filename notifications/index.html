@@ -184,6 +184,15 @@
     width: 15px; height: 15px; border-radius: 50%;
     background: #4ade80; border: 2px solid #17131c; font-style: normal;
   }
+  /* плитка «+N» — старшие проактивы сверх лимита стопки */
+  .lw-stack .sava.more {
+    display: flex; align-items: center; justify-content: center;
+    padding: 0; border: 2.5px solid transparent;
+    background:
+      linear-gradient(#221a28, #221a28) padding-box,
+      linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to))) border-box;
+    color: #fff; font-weight: 800; font-size: 1.05rem; letter-spacing: -.01em;
+  }
   @keyframes lw-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
   .lw { display: flex; align-items: flex-end; gap: 10px; animation: lw-in .3s ease; }
   .lw-bubble {
@@ -429,10 +438,22 @@ function renderProactive() {
   }
   const rest = proStack.filter(p => p.name !== proExpanded);
   if (rest.length) {
-    html += '<div class="lw-stack">' + rest.map(p =>
+    // В стопке не больше STACK_MAX аватаров — самые свежие, у баббла. Старшие
+    // сворачиваются в плитку «+N» слева; клик по ней разворачивает свежайшего из скрытых.
+    const STACK_MAX = 3;
+    const overflow = Math.max(0, rest.length - STACK_MAX);
+    const hidden = rest.slice(0, overflow);
+    let stack = '';
+    if (overflow) {
+      const next = hidden[hidden.length - 1];
+      stack += '<button class="sava more" data-expand="' + next.name + '" title="Ещё ' + overflow + ': ' +
+        hidden.map(p => p.name).join(', ') + '">+' + overflow + '</button>';
+    }
+    stack += rest.slice(overflow).map(p =>
       '<button class="sava" data-expand="' + p.name + '" title="' + p.name + ': ' + p.text + '">' +
       '<span class="ph"><img src="' + p.img + '" alt="' + p.name + '"></span><i></i></button>'
-    ).join('') + '</div>';
+    ).join('');
+    html += '<div class="lw-stack">' + stack + '</div>';
   }
   dock.innerHTML = html;
   updateChatBadge();

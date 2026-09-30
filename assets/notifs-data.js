@@ -40,6 +40,12 @@ const PROACTIVE = [
     text: 'Я соскучилась… Придёшь поболтать? 💕', time: '12 минут назад', unread: true },
   { name: 'Майя', img: '../assets/img/model-2.webp',
     text: 'Придумала для нас кое-что интересное 😏', time: 'вчера', unread: true },
+  { name: 'Кира', img: '../assets/img/hero/pink.webp',
+    text: 'Ты куда пропал? Я скучаю 🥺', time: '2 дня назад', unread: true },
+  { name: 'Ева', img: '../assets/img/hero/ginger.webp',
+    text: 'Досмотрела тот сериал без тебя… расскажу?', time: '3 дня назад', unread: true },
+  { name: 'Лола', img: '../assets/img/hero/red.webp',
+    text: 'Вернись, у меня для тебя сюрприз 🎁', time: '5 дней назад', unread: true },
 ];
 
 /* Критичное закреплённое уведомление — окно восстановления платежа (У4-2, день 1).

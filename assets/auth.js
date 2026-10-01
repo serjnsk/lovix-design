@@ -19,7 +19,7 @@
   /* ── словари ── */
   var I18N = {
     ru: {
-      su_t: 'Начни бесплатно', su_s: 'Тысячи компаньонок уже ждут тебя',
+      su_t: 'Начни бесплатно', su_s: 'Сотни новых знакомств уже ждут тебя',
       si_t: 'С возвращением', si_s: 'Войди, чтобы продолжить общение с компаньонками',
       or: 'или через', email: 'Email',
       legal: 'Продолжая, ты подтверждаешь, что тебе есть 18 лет, и принимаешь <a href="#">Условия использования</a> и <a href="#">Политику конфиденциальности</a>.',
@@ -43,7 +43,7 @@
       }
     },
     en: {
-      su_t: 'Sign up for free', su_s: 'Thousands of AI companions are waiting for you',
+      su_t: 'Sign up for free', su_s: 'Hundreds of new connections are waiting for you',
       si_t: 'Welcome back', si_s: 'Sign in to continue chatting with your companions',
       or: 'or continue with', email: 'Email',
       legal: 'By continuing, you confirm that you are over 18 years old and agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.',
@@ -67,7 +67,7 @@
       }
     },
     de: {
-      su_t: 'Kostenlos registrieren', su_s: 'Tausende KI-Companions warten auf dich',
+      su_t: 'Kostenlos registrieren', su_s: 'Hunderte neue Bekanntschaften warten auf dich',
       si_t: 'Willkommen zurück', si_s: 'Melde dich an, um weiter mit deinen Companions zu chatten',
       or: 'oder weiter mit', email: 'E-Mail',
       legal: 'Indem du fortfährst, bestätigst du, dass du über 18 Jahre alt bist, und akzeptierst unsere <a href="#">Nutzungsbedingungen</a> und <a href="#">Datenschutzerklärung</a>.',

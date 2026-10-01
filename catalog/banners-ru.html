@@ -16,19 +16,25 @@
   .sheet { max-width: 1240px; margin: 0 auto; padding: 36px 44px 80px; }
   .sheet-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 24px; margin-bottom: 8px; }
   .sheet-head h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -.015em; }
+  .sheet-m { font-size: 13px; color: rgb(var(--muted)); text-decoration: none; }
+  .sheet-m:hover { color: #fff; }
   .sheet-lang { display: flex; gap: 4px; margin-left: auto; }
   .sheet-lang a { padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #d5d5d9; text-decoration: none; background: rgba(255,255,255,.06); }
   .sheet-lang a:hover { background: rgba(255,255,255,.12); color: #fff; }
   .sheet-lang a.on { background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); color: #fff; }
   .sheet-lead { margin: 0 0 28px; color: rgb(var(--muted)); font-size: .95rem; max-width: 80ch; }
-  .sheet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 24px; }
+  .sheet-grid { display: grid; gap: 28px; }
   .sheet-grid figure { margin: 0; min-width: 0; }
+  /* десктопная карточка в ширину, как на главной при 1600px (604px), рядом — фрейм телефона 340px */
+  .pair { display: grid; grid-template-columns: minmax(0, 604px) 340px; gap: 24px; align-items: start; }
+  .pair iframe { display: block; border: 0; border-radius: 16px; background: #1b1830; }
+  @media (max-width: 1100px) { .pair { grid-template-columns: minmax(0, 1fr); } .pair iframe { max-width: 100%; } }
   .sheet-grid figcaption { margin-top: 10px; font-size: 13px; color: rgb(var(--muted)); }
   .sheet-grid figcaption b { color: #fff; font-weight: 800; margin-right: 6px; }
   .sheet-grid figcaption span { color: rgb(var(--muted2)); }
   /* полный текст карточки — для сверки перевода (на узких экранах часть текста в карточке скрыта бюджетом высоты) */
   .sheet-grid figcaption small { display: block; margin-top: 4px; font-size: 12px; line-height: 1.45; color: rgb(var(--muted2)); }
-  @media (max-width: 860px) { .sheet-grid { grid-template-columns: 1fr; } .sheet { padding: 24px 20px 60px; } }
+  @media (max-width: 860px) { .sheet { padding: 24px 20px 60px; } }
   @media (max-width: 560px) { .sheet { padding: 16px 14px 48px; } }
 </style>
 </head>
@@ -37,11 +43,12 @@
 <main class="sheet">
   <div class="sheet-head">
     <h1>Промо-баннеры главной · RU</h1>
+    <a class="sheet-m" href="banners-m-ru.html">Телефон · 340px · все на телефоне →</a>
     <nav class="sheet-lang" aria-label="Language"><a href="banners-ru.html" class=on>Русский</a> <a href="banners-en.html">English</a> <a href="banners-de.html">Deutsch</a></nav>
   </div>
-  <p class="sheet-lead">Восемь карточек главной страницы, как в catalog/v2.html: одна фича — одна карточка — один CTA. Здесь без карусели, парами.</p>
+  <p class="sheet-lead">Восемь карточек главной страницы, как в catalog/v2.html: одна фича — одна карточка — один CTA. Слева десктоп, справа — телефон 340px.</p>
   <div class="sheet-grid">
-        <figure><a class="pb-card pb-calls" href="#" data-intent="calls">
+        <figure><div class="pair"><a class="pb-card pb-calls" href="#" data-intent="calls">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="solo" src="../assets/img/hero/red.webp" alt=""><span class="pb-pill"><span class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2z"/></svg></span><span class="txt">Мия</span><span class="pb-eq"><i></i><i></i><i></i><i></i><i></i></span></span></div>
           <div class="pb-txt">
@@ -50,8 +57,8 @@
             <p class="pb-sub">Живой голос, её характер и память о ваших разговорах — в реальном времени.</p>
             <span class="pb-cta">Позвонить <i>→</i></span>
           </div>
-        </a><figcaption><b>01</b> Голосовые звонки <span>· бейдж VIP — только не-VIP тарифам</span><small>Позвони ей прямо сейчас · Живой голос, её характер и память о ваших разговорах — в реальном времени. · Позвонить → · Мия</small></figcaption></figure>
-        <figure><a class="pb-card pb-video" href="#" data-intent="video">
+        </a><iframe src="banners-m-ru.html?card=calls" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Голосовые звонки"></iframe></div><figcaption><b>01</b> Голосовые звонки <span>· бейдж VIP — только не-VIP тарифам</span><small>Позвони ей прямо сейчас · Живой голос, её характер и память о ваших разговорах — в реальном времени. · Позвонить → · Мия</small></figcaption></figure>
+        <figure><div class="pair"><a class="pb-card pb-video" href="#" data-intent="video">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="solo" src="../assets/img/hero/blonde2.webp" alt=""><span class="pb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
           <div class="pb-txt">
@@ -60,8 +67,8 @@
             <p class="pb-sub">Танцует, йога, воздушный поцелуй — видео по готовым сценам прямо в чате.</p>
             <span class="pb-cta">Заказать видео <i>→</i></span>
           </div>
-        </a><figcaption><b>02</b> Видео по пресетам <span>· бейдж VIP — только не-VIP тарифам</span><small>Она станцует для тебя · Танцует, йога, воздушный поцелуй — видео по готовым сценам прямо в чате. · Заказать видео →</small></figcaption></figure>
-        <figure><a class="pb-card pb-build" href="#" data-intent="create">
+        </a><iframe src="banners-m-ru.html?card=video" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Видео по пресетам"></iframe></div><figcaption><b>02</b> Видео по пресетам <span>· бейдж VIP — только не-VIP тарифам</span><small>Она станцует для тебя · Танцует, йога, воздушный поцелуй — видео по готовым сценам прямо в чате. · Заказать видео →</small></figcaption></figure>
+        <figure><div class="pair"><a class="pb-card pb-build" href="#" data-intent="create">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="l" src="../assets/img/hero/glasses-blonde.webp" alt=""><img class="r" src="../assets/img/hero/brown2.webp" alt=""></div>
           <div class="pb-txt">
@@ -70,8 +77,8 @@
             <p class="pb-sub">Внешность, характер, голос и имя — она будет именно такой, как ты решишь.</p>
             <span class="pb-cta">Создать компаньона <i>→</i></span>
           </div>
-        </a><figcaption><b>03</b> Конструктор компаньона<small>Собери её по своему вкусу · Внешность, характер, голос и имя — она будет именно такой, как ты решишь. · Создать компаньона →</small></figcaption></figure>
-        <figure><a class="pb-card pb-spicy" href="#" data-intent="spicy">
+        </a><iframe src="banners-m-ru.html?card=create" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Конструктор компаньона"></iframe></div><figcaption><b>03</b> Конструктор компаньона<small>Собери её по своему вкусу · Внешность, характер, голос и имя — она будет именно такой, как ты решишь. · Создать компаньона →</small></figcaption></figure>
+        <figure><div class="pair"><a class="pb-card pb-spicy" href="#" data-intent="spicy">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="solo" src="../assets/img/hero/leather.webp" alt=""></div>
           <div class="pb-txt">
@@ -80,8 +87,8 @@
             <p class="pb-sub">Десятки готовых сценариев — от первого свидания до самых острых.</p>
             <span class="pb-cta">Выбрать сценарий <i>→</i></span>
           </div>
-        </a><figcaption><b>04</b> Spicy-сценарии<small>С чего начнём сегодня? · Десятки готовых сценариев — от первого свидания до самых острых. · Выбрать сценарий →</small></figcaption></figure>
-        <figure><a class="pb-card pb-group" href="#" data-intent="group">
+        </a><iframe src="banners-m-ru.html?card=spicy" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Spicy-сценарии"></iframe></div><figcaption><b>04</b> Spicy-сценарии<small>С чего начнём сегодня? · Десятки готовых сценариев — от первого свидания до самых острых. · Выбрать сценарий →</small></figcaption></figure>
+        <figure><div class="pair"><a class="pb-card pb-group" href="#" data-intent="group">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="l" src="../assets/img/hero/tanktop.webp" alt=""><img class="r" src="../assets/img/hero/pink.webp" alt=""><span class="pb-duo">2 компаньонки · 1 чат</span></div>
           <div class="pb-txt">
@@ -90,8 +97,8 @@
             <p class="pb-sub">Несколько компаньонок в одном чате, у каждой — свой характер.</p>
             <span class="pb-cta">Открыть групповой чат <i>→</i></span>
           </div>
-        </a><figcaption><b>05</b> Групповые чаты <span>· бейдж VIP — только не-VIP тарифам</span><small>Двое — это уже сцена · Несколько компаньонок в одном чате, у каждой — свой характер. · Открыть групповой чат → · 2 компаньонки · 1 чат</small></figcaption></figure>
-        <figure><a class="pb-card pb-author" href="#" data-intent="author">
+        </a><iframe src="banners-m-ru.html?card=group" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Групповые чаты"></iframe></div><figcaption><b>05</b> Групповые чаты <span>· бейдж VIP — только не-VIP тарифам</span><small>Двое — это уже сцена · Несколько компаньонок в одном чате, у каждой — свой характер. · Открыть групповой чат → · 2 компаньонки · 1 чат</small></figcaption></figure>
+        <figure><div class="pair"><a class="pb-card pb-author" href="#" data-intent="author">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="solo" src="../assets/img/hero/ginger.webp" alt=""><span class="pb-creator"><span class="av"><img src="../assets/img/hero/ginger.webp" alt=""></span><b>@nika_ai <svg><use href="#i-verified"/></svg></b><span>3,2k подписчиков</span></span></div>
           <div class="pb-txt">
@@ -100,8 +107,8 @@
             <p class="pb-sub">Публикуй персонажей в каталоге, набирай подписчиков и лайки.</p>
             <span class="pb-cta">Стать автором <i>→</i></span>
           </div>
-        </a><figcaption><b>06</b> Авторы компаньонов<small>Стань автором компаньонов · Публикуй персонажей в каталоге, набирай подписчиков и лайки. · Стать автором → · 3,2k подписчиков</small></figcaption></figure>
-        <figure><a class="pb-card pb-anime" href="#" data-intent="anime">
+        </a><iframe src="banners-m-ru.html?card=author" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Авторы компаньонов"></iframe></div><figcaption><b>06</b> Авторы компаньонов<small>Стань автором компаньонов · Публикуй персонажей в каталоге, набирай подписчиков и лайки. · Стать автором → · 3,2k подписчиков</small></figcaption></figure>
+        <figure><div class="pair"><a class="pb-card pb-anime" href="#" data-intent="anime">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="a1" src="../assets/img/hero/anime-office.webp" alt=""><img class="a2" src="../assets/img/hero/anime-blonde.webp" alt=""><img class="a3" src="../assets/img/hero/anime-elf.webp" alt=""></div>
           <div class="pb-txt">
@@ -110,8 +117,8 @@
             <p class="pb-sub">Эльфийки, тихони и строгие секретарши — в рисованном стиле.</p>
             <span class="pb-cta">Смотреть аниме <i>→</i></span>
           </div>
-        </a><figcaption><b>07</b> Аниме-раздел<small>Аниме уже в каталоге · Эльфийки, тихони и строгие секретарши — в рисованном стиле. · Смотреть аниме →</small></figcaption></figure>
-        <figure><a class="pb-card pb-sale" href="#" data-intent="sale" data-hide-for="vip">
+        </a><iframe src="banners-m-ru.html?card=anime" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Аниме-раздел"></iframe></div><figcaption><b>07</b> Аниме-раздел<small>Аниме уже в каталоге · Эльфийки, тихони и строгие секретарши — в рисованном стиле. · Смотреть аниме →</small></figcaption></figure>
+        <figure><div class="pair"><a class="pb-card pb-sale" href="#" data-intent="sale" data-hide-for="vip">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true"><img class="solo" src="../assets/img/hero/glasses.webp" alt=""><span class="pb-tag">−45%<small>vip · год</small></span></div>
           <div class="pb-txt">
@@ -120,7 +127,7 @@
             <div class="pb-price"><b>875 ₽</b><s>1 590 ₽</s><span>/ мес</span></div>
             <span class="pb-cta">Оформить на год <i>→</i></span>
           </div>
-        </a><figcaption><b>08</b> Акция: VIP на год <span>· скрывается для тарифа VIP</span><small>VIP на год выгоднее на 45% · 875 ₽ 1 590 ₽ / мес · Оформить на год → · −45% · vip · год</small></figcaption></figure>
+        </a><iframe src="banners-m-ru.html?card=sale" width="340" height="278" loading="lazy" scrolling="no" title="Телефон · 340px — Акция: VIP на год"></iframe></div><figcaption><b>08</b> Акция: VIP на год <span>· скрывается для тарифа VIP</span><small>VIP на год выгоднее на 45% · 875 ₽ 1 590 ₽ / мес · Оформить на год → · −45% · vip · год</small></figcaption></figure>
   </div>
 </main>
 </body>

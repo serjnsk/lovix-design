@@ -2,8 +2,10 @@
 """Листы промо-баннеров главной в трёх языках: catalog/banners-{ru,en,de}.html.
 
 Вёрстка карточек — та же, что в catalog/v2.html (assets/promo-banners.css),
-здесь все восемь карточек выложены сеткой парами, без карусели — чтобы
-сверять тексты. Тексты — единственный источник переводов баннеров; при
+здесь каждая из восьми карточек показана в десктопном виде и рядом — в
+мобильном (340px). Мобильная версия — тот же HTML в фрейме шириной 340px
+(catalog/banners-m-{lang}.html?card=…): медиа-запросы считают ширину
+фрейма, поэтому карточка рендерится ровно как на телефоне, без второго CSS. Тексты — единственный источник переводов баннеров; при
 правке копии в v2.html (RU) обновить и здесь, затем перегенерировать:
 
     python3 catalog/banners-build.py
@@ -38,8 +40,8 @@ CARDS = [
 TEXT = {
   'ru': dict(
     lang='ru', name='Русский', title='Промо-баннеры главной · RU',
-    lead='Восемь карточек главной страницы, как в catalog/v2.html: одна фича — одна карточка — один CTA. Здесь без карусели, парами.',
-    note_vip='скрывается для тарифа VIP', note_vipmark='бейдж VIP — только не-VIP тарифам',
+    lead='Восемь карточек главной страницы, как в catalog/v2.html: одна фича — одна карточка — один CTA. Слева десктоп, справа — телефон 340px.',
+    note_vip='скрывается для тарифа VIP', note_vipmark='бейдж VIP — только не-VIP тарифам', mobile='Телефон · 340px', mobile_all='все на телефоне',
     cards=dict(
       calls=dict(badges=[('new', 'Новое'), ('vip', 'VIP')], title='Позвони ей <em>прямо сейчас</em>', sub='Живой голос, её характер и память о ваших разговорах — в реальном времени.', cta='Позвонить', pill='Мия'),
       video=dict(badges=[('new', 'Новое'), ('vip', 'VIP')], title='Она <em>станцует</em> для тебя', sub='Танцует, йога, воздушный поцелуй — видео по готовым сценам прямо в чате.', cta='Заказать видео'),
@@ -52,8 +54,8 @@ TEXT = {
     )),
   'en': dict(
     lang='en', name='English', title='Home promo banners · EN',
-    lead='The eight home-page cards from catalog/v2.html: one feature — one card — one CTA. Laid out in pairs, no carousel.',
-    note_vip='hidden for the VIP plan', note_vipmark='VIP badge shown to non-VIP plans only',
+    lead='The eight home-page cards from catalog/v2.html: one feature — one card — one CTA. Desktop on the left, 340px phone on the right.',
+    note_vip='hidden for the VIP plan', note_vipmark='VIP badge shown to non-VIP plans only', mobile='Phone · 340px', mobile_all='all on a phone',
     cards=dict(
       calls=dict(badges=[('new', 'New'), ('vip', 'VIP')], title='Call her <em>right now</em>', sub='Her live voice, her personality and the memory of your chats — in real time.', cta='Call now', pill='Mia'),
       video=dict(badges=[('new', 'New'), ('vip', 'VIP')], title='She’ll <em>dance</em> for you', sub='Dancing, yoga, a blown kiss — videos from ready-made scenes, right in the chat.', cta='Order a video'),
@@ -66,8 +68,8 @@ TEXT = {
     )),
   'de': dict(
     lang='de', name='Deutsch', title='Promo-Banner der Startseite · DE',
-    lead='Die acht Karten der Startseite aus catalog/v2.html: ein Feature — eine Karte — ein CTA. Hier paarweise, ohne Karussell.',
-    note_vip='für den VIP-Tarif ausgeblendet', note_vipmark='VIP-Badge nur für Nicht-VIP-Tarife',
+    lead='Die acht Karten der Startseite aus catalog/v2.html: ein Feature — eine Karte — ein CTA. Links Desktop, rechts Telefon mit 340px.',
+    note_vip='für den VIP-Tarif ausgeblendet', note_vipmark='VIP-Badge nur für Nicht-VIP-Tarife', mobile='Telefon · 340px', mobile_all='alle am Telefon',
     cards=dict(
       calls=dict(badges=[('new', 'Neu'), ('vip', 'VIP')], title='Ruf sie <em>jetzt an</em>', sub='Ihre echte Stimme, ihr Charakter und die Erinnerung an eure Gespräche — in Echtzeit.', cta='Anrufen', pill='Mia'),
       video=dict(badges=[('new', 'Neu'), ('vip', 'VIP')], title='Sie <em>tanzt</em> für dich', sub='Tanz, Yoga, Kusshand — Videos aus fertigen Szenen direkt im Chat.', cta='Video bestellen'),
@@ -125,7 +127,9 @@ def page(lang):
         if 'tag' in t: copy.append('−45% · ' + t['tag'])
         cap = (f'<figcaption><b>{i:02d}</b> {names[c["key"]]}' + (f' <span>· {"; ".join(notes)}</span>' if notes else '')
                + '<small>' + ' · '.join(copy) + '</small></figcaption>')
-        items.append(f'<figure>{card_html(c, t, L=lang)}{cap}</figure>')
+        frame = (f'<iframe src="banners-m-{lang}.html?card={c["key"]}" width="340" height="278" loading="lazy" scrolling="no" '
+                 f'title="{T["mobile"]} — {names[c["key"]]}"></iframe>')
+        items.append(f'<figure><div class="pair">{card_html(c, t, L=lang)}{frame}</div>{cap}</figure>')
     cards = '\n        '.join(items)
     return f'''<!DOCTYPE html>
 <html lang="{lang}">
@@ -145,19 +149,25 @@ def page(lang):
   .sheet {{ max-width: 1240px; margin: 0 auto; padding: 36px 44px 80px; }}
   .sheet-head {{ display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 24px; margin-bottom: 8px; }}
   .sheet-head h1 {{ margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -.015em; }}
+  .sheet-m {{ font-size: 13px; color: rgb(var(--muted)); text-decoration: none; }}
+  .sheet-m:hover {{ color: #fff; }}
   .sheet-lang {{ display: flex; gap: 4px; margin-left: auto; }}
   .sheet-lang a {{ padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 700; color: #d5d5d9; text-decoration: none; background: rgba(255,255,255,.06); }}
   .sheet-lang a:hover {{ background: rgba(255,255,255,.12); color: #fff; }}
   .sheet-lang a.on {{ background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); color: #fff; }}
   .sheet-lead {{ margin: 0 0 28px; color: rgb(var(--muted)); font-size: .95rem; max-width: 80ch; }}
-  .sheet-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 28px 24px; }}
+  .sheet-grid {{ display: grid; gap: 28px; }}
   .sheet-grid figure {{ margin: 0; min-width: 0; }}
+  /* десктопная карточка в ширину, как на главной при 1600px (604px), рядом — фрейм телефона 340px */
+  .pair {{ display: grid; grid-template-columns: minmax(0, 604px) 340px; gap: 24px; align-items: start; }}
+  .pair iframe {{ display: block; border: 0; border-radius: 16px; background: #1b1830; }}
+  @media (max-width: 1100px) {{ .pair {{ grid-template-columns: minmax(0, 1fr); }} .pair iframe {{ max-width: 100%; }} }}
   .sheet-grid figcaption {{ margin-top: 10px; font-size: 13px; color: rgb(var(--muted)); }}
   .sheet-grid figcaption b {{ color: #fff; font-weight: 800; margin-right: 6px; }}
   .sheet-grid figcaption span {{ color: rgb(var(--muted2)); }}
   /* полный текст карточки — для сверки перевода (на узких экранах часть текста в карточке скрыта бюджетом высоты) */
   .sheet-grid figcaption small {{ display: block; margin-top: 4px; font-size: 12px; line-height: 1.45; color: rgb(var(--muted2)); }}
-  @media (max-width: 860px) {{ .sheet-grid {{ grid-template-columns: 1fr; }} .sheet {{ padding: 24px 20px 60px; }} }}
+  @media (max-width: 860px) {{ .sheet {{ padding: 24px 20px 60px; }} }}
   @media (max-width: 560px) {{ .sheet {{ padding: 16px 14px 48px; }} }}
 </style>
 </head>
@@ -166,6 +176,7 @@ def page(lang):
 <main class="sheet">
   <div class="sheet-head">
     <h1>{T['title']}</h1>
+    <a class="sheet-m" href="banners-m-{lang}.html">{T['mobile']} · {T['mobile_all']} →</a>
     <nav class="sheet-lang" aria-label="Language">{switch}</nav>
   </div>
   <p class="sheet-lead">{T['lead']}</p>
@@ -178,8 +189,53 @@ def page(lang):
 '''
 
 
+def mobile_page(lang):
+    """Телефонная страница: карточки столбиком во всю ширину; ?card=<key> оставляет одну —
+    так её встраивают фреймом 340px в лист. Без параметра — все восемь, для просмотра на телефоне."""
+    T = TEXT[lang]
+    cards = '\n    '.join(card_html(c, T['cards'][c['key']], L=lang) for c in CARDS)
+    return f'''<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lovix — {T['title']} · {T['mobile']}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/promo-banners.css">
+<style>
+  /* Телефонная версия листа: сгенерирована catalog/banners-build.py. Ширина карточки = ширина
+     окна минус 14px по краям — на телефоне 375px это те же ~312px, что у карточки карусели (90%). */
+  body {{ margin: 0; padding: 14px; background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); min-height: 100vh; box-sizing: border-box; }}
+  .m {{ display: grid; gap: 12px; max-width: 420px; margin: 0 auto; }}
+  body.one .m {{ max-width: none; }}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">{VERIFIED}</svg>
+<div class="m">
+    {cards}
+</div>
+<script>
+  /* ?card=calls — показать одну карточку (режим фрейма в листе) */
+  (function () {{
+    var key = new URLSearchParams(location.search).get('card');
+    if (!key) return;
+    document.body.classList.add('one');
+    document.querySelectorAll('.pb-card').forEach(function (c) {{ if (c.dataset.intent !== key) c.remove(); }});
+  }})();
+</script>
+</body>
+</html>
+'''
+
+
 if __name__ == '__main__':
     for lang in TEXT:
-        out = ROOT / f'catalog/banners-{lang}.html'
-        out.write_text(page(lang), encoding='utf-8')
-        print('wrote', out.relative_to(ROOT))
+        for name, fn in ((f'catalog/banners-{lang}.html', page), (f'catalog/banners-m-{lang}.html', mobile_page)):
+            out = ROOT / name
+            out.write_text(fn(lang), encoding='utf-8')
+            print('wrote', out.relative_to(ROOT))

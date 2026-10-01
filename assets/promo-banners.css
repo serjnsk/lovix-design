@@ -203,11 +203,21 @@
   .pb-sub { display: -webkit-box; font-size: 13px; }   /* на высокой карточке абзац помещается */
   .pb-price { display: flex; }
   .pb-cta { font-size: 12px; padding: 8px 13px; margin-top: 2px; }
-  .pb-art { width: 46%; }
-  .pb-art > img { height: 100%; }
+  .pb-art { width: 48%; }
+  /* фигуры шире узкой колонки арта и заходят под текст: на телефоне у карточки одна
+     фигура (вторая/третья уходят), а левый край каждой фигуры растворяется маской,
+     чтобы под текстом не было контрастного силуэта */
+  .pb-art > img { height: 100%; -webkit-mask-image: linear-gradient(to right, transparent, #000 40%); mask-image: linear-gradient(to right, transparent, #000 40%); }
+  .pb-sale .pb-art > img { height: 88%; right: -6%; }   /* широкий вырез с разведёнными руками — чуть меньше и правее */
+  .pb-art .l, .pb-anime .pb-art .a1, .pb-anime .pb-art .a2 { display: none; }
+  .pb-art .r, .pb-anime .pb-art .a3 { right: 4%; z-index: 1; filter: none; }
+  .pb-anime .pb-art { width: 48%; }
+  .pb-anime .pb-art > img { height: 100%; }
+  .pb-sub { -webkit-line-clamp: 3; line-clamp: 3; }   /* на высокой карточке есть место для третьей строки */
   .pb-pill, .pb-creator, .pb-duo { font-size: 11px; }
   .pb-pill .txt, .pb-creator span { display: none; }
-  .pb-tag { font-size: 16px; padding: 5px 9px; }
+  .pb-play { left: 50%; margin-left: -22px; }          /* по центру арта, не над текстом */
+  .pb-tag { left: auto; right: 4%; font-size: 16px; padding: 5px 9px; }   /* ярлык — в угол, не на лицо */
   .pb-price b { font-size: 18px; }
   .pb-dots { margin-top: 8px; }
 }

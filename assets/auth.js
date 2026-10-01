@@ -10,7 +10,7 @@
 
    Слева — слайдер фич: те же интенты и вырезы, что у промо-баннеров главной,
    смена раз в 10 с, пауза при наведении, точки. Справа — форма: сперва
-   провайдеры, email-путь вторым шагом; вход ↔ регистрация ↔ восстановление
+   провайдеры, email-путь вторым шагом (только email + пароль, без никнейма); вход ↔ регистрация ↔ восстановление
    пароля переключаются внутри модалки. Все действия в прототипе — демо:
    спиннер, модалка закрывается, в топбаре вместо кнопок появляется аватар. */
 (function () {
@@ -24,7 +24,7 @@
       or: 'или через', email: 'Email',
       legal: 'Продолжая, ты подтверждаешь, что тебе есть 18 лет, и принимаешь <a href="#">Условия использования</a> и <a href="#">Политику конфиденциальности</a>.',
       have: 'Уже есть аккаунт?', signin: 'Войти', noacc: 'Нет аккаунта?', signup: 'Зарегистрироваться',
-      nick: 'Никнейм', pass: 'Пароль', create: 'Создать бесплатный аккаунт', back: 'Назад',
+      pass: 'Пароль', create: 'Создать бесплатный аккаунт', back: 'Назад',
       forgot: 'Забыл пароль?', signin_btn: 'Войти',
       fp_t: 'Восстановить пароль', fp_s: 'Пришлём ссылку для сброса на твой email', fp_btn: 'Отправить ссылку',
       fp_done_t: 'Письмо отправлено', fp_done: 'Если этот email есть в базе, ссылка уже в пути. Не видишь — проверь «Спам».', to_login: 'Вернуться ко входу',
@@ -48,7 +48,7 @@
       or: 'or continue with', email: 'Email',
       legal: 'By continuing, you confirm that you are over 18 years old and agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.',
       have: 'Already have an account?', signin: 'Sign in', noacc: 'Don’t have an account?', signup: 'Sign up',
-      nick: 'Username', pass: 'Password', create: 'Create free account', back: 'Back',
+      pass: 'Password', create: 'Create free account', back: 'Back',
       forgot: 'Forgot password?', signin_btn: 'Sign in',
       fp_t: 'Reset your password', fp_s: 'We’ll email you a link to set a new one', fp_btn: 'Send link',
       fp_done_t: 'Check your inbox', fp_done: 'If that email is registered, the link is on its way. Check the spam folder too.', to_login: 'Back to sign in',
@@ -72,7 +72,7 @@
       or: 'oder weiter mit', email: 'E-Mail',
       legal: 'Indem du fortfährst, bestätigst du, dass du über 18 Jahre alt bist, und akzeptierst unsere <a href="#">Nutzungsbedingungen</a> und <a href="#">Datenschutzerklärung</a>.',
       have: 'Schon ein Konto?', signin: 'Anmelden', noacc: 'Noch kein Konto?', signup: 'Registrieren',
-      nick: 'Benutzername', pass: 'Passwort', create: 'Kostenloses Konto erstellen', back: 'Zurück',
+      pass: 'Passwort', create: 'Kostenloses Konto erstellen', back: 'Zurück',
       forgot: 'Passwort vergessen?', signin_btn: 'Anmelden',
       fp_t: 'Passwort zurücksetzen', fp_s: 'Wir schicken dir per E-Mail einen Link für ein neues Passwort', fp_btn: 'Link senden',
       fp_done_t: 'E-Mail gesendet', fp_done: 'Wenn diese E-Mail registriert ist, ist der Link unterwegs. Prüfe auch den Spam-Ordner.', to_login: 'Zurück zur Anmeldung',
@@ -200,7 +200,6 @@
           /* регистрация: email */
           '<form class="au-step" data-step="su-email" novalidate hidden>' +
             '<h2 class="au-t">' + T.su_t + '</h2><p class="au-s">' + T.su_s + '</p>' +
-            field('text', 'nick', 'user', T.nick, ' autocomplete="username"') +
             field('email', 'email', 'mail', T.email, ' autocomplete="email"') +
             field('password', 'pass', 'lock', T.pass, ' autocomplete="new-password"') +
             captcha() +
@@ -288,7 +287,7 @@
     var v = function (n) { var i = f.querySelector('[name="' + n + '"]'); return i ? i.value.trim() : ''; };
     var msg = '';
     if (step === 'su-email') {
-      if (!v('nick') || !v('email') || !v('pass')) msg = T.err_req;
+      if (!v('email') || !v('pass')) msg = T.err_req;
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))) msg = T.err_email;
       else if (v('pass').length < 8) msg = T.err_pass;
       else if (!f.querySelector('[name="captcha"]').checked) msg = T.err_captcha;

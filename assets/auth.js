@@ -92,21 +92,19 @@
     }
   };
 
-  /* слайды = промо-баннеры главной (catalog/v2.html, assets/promo-banners.css): тот же
-     порядок интентов, классы pb-*, вырезы и декор (пилюля звонка, play, «2 компаньонки»,
-     пилюля автора). Без акции — цена и валюта региональные. Подписи пилюль — PILL[lang]. */
+  /* слайды = промо-баннеры главной (catalog/v2.html, assets/promo-banners.css): классы pb-*,
+     вырезы и декор (пилюля звонка, «2 компаньонки», пилюля автора) те же. Набор и порядок —
+     по решению: без «видео», «конструктора» и акции (цена региональная); порядок перемешан
+     относительно баннеров. Подписи пилюль — PILL[lang]. */
   var SLIDES = [
+    { key: 'spicy',  cls: 'pb-spicy',  imgs: [['solo', 'leather']] },
     { key: 'calls',  cls: 'pb-calls',  imgs: [['solo', 'red']],
       extra: function (t) { return '<span class="pb-pill"><span class="ph">' + ICON.phone + '</span><span class="txt">' + t.calls + '</span><span class="pb-eq"><i></i><i></i><i></i><i></i><i></i></span></span>'; } },
-    { key: 'video',  cls: 'pb-video',  imgs: [['solo', 'blonde2']],
-      extra: function () { return '<span class="pb-play">' + ICON.play + '</span>'; } },
-    { key: 'create', cls: 'pb-build',  imgs: [['l', 'glasses-blonde'], ['r', 'brown2']] },
-    { key: 'spicy',  cls: 'pb-spicy',  imgs: [['solo', 'leather']] },
-    { key: 'group',  cls: 'pb-group',  imgs: [['l', 'tanktop'], ['r', 'pink']],
-      extra: function (t) { return '<span class="pb-duo">' + t.group + '</span>'; } },
     { key: 'author', cls: 'pb-author', imgs: [['solo', 'ginger']],
       extra: function (t) { return '<span class="pb-creator"><span class="av"><img src="' + IMG + 'ginger.webp" alt=""></span><b>@nika_ai ' + ICON.verified + '</b><span>' + t.author + '</span></span>'; } },
-    { key: 'anime',  cls: 'pb-anime',  imgs: [['a1', 'anime-office'], ['a2', 'anime-blonde'], ['a3', 'anime-elf']] }
+    { key: 'anime',  cls: 'pb-anime',  imgs: [['a1', 'anime-office'], ['a2', 'anime-blonde'], ['a3', 'anime-elf']] },
+    { key: 'group',  cls: 'pb-group',  imgs: [['l', 'tanktop'], ['r', 'pink']],
+      extra: function (t) { return '<span class="pb-duo">' + t.group + '</span>'; } }
   ];
   var PILL = {
     ru: { calls: 'Мия', group: '2 компаньонки · 1 чат', author: '3,2k подписчиков' },

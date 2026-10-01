@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ru" data-region="ru">
+<html lang="de" data-region="world">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Lovix — Главная с новым баннером</title>
+<title>Lovix — Registrierung & Anmeldung · DE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/lovix.css">
-<link rel="stylesheet" href="../assets/promo-banners.css">
-<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../../assets/lovix.css">
+<link rel="stylesheet" href="../../assets/promo-banners.css">
+<link rel="stylesheet" href="../../assets/auth.css">
 <style>
   /* ── Главная lovix.ai с новым промо-блоком. Контент-зона повторяет
        текущий прод (lovix.ai/ru): H1 + вводный абзац, сетка карточек с
@@ -27,7 +27,7 @@
   body { background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); }
   .page { background: none; }
 
-  /* ── Промо-баннеры (pb-*) — стили вынесены в ../assets/promo-banners.css,
+  /* ── Промо-баннеры (pb-*) — стили вынесены в ../../assets/promo-banners.css,
        общий с листами переводов catalog/banners-*.html ── */
 
   /* ── заголовок + вводный абзац: акцент во второй части, как на проде.
@@ -380,6 +380,12 @@
   .site-foot .logo { font-size: 1.2rem; }
   @media (max-width: 560px) { .site-foot { padding: 22px 16px; justify-content: center; text-align: center; } }
 </style>
+<style>
+  /* Прототип форм регистрации и входа: сгенерирован auth/build.py — править там.
+     Страница = первый экран главной на языке DE; формы открывают кнопки топбара
+     и ссылки #signup / #login. Фильтры и сердечки здесь статичны. */
+  .cat-intro p { -webkit-line-clamp: 2; line-clamp: 2; }
+</style>
 </head>
 <body>
 
@@ -414,474 +420,418 @@
 </svg>
 
 <aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
+  <button class="sb-burger" aria-label="Menü"><svg class="ic"><use href="#i-menu"/></svg></button>
   <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item" id="sb-models" href="../models/v2.html"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи<i class="sb-cnt" hidden>0</i></a>
-    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Erstellen</a>
+    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Entdecken</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Meine Chats</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Meine Charaktere</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Abo</a>
   </nav>
   <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Mein Konto</a>
+    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Support</a>
+    <a class="sb-item" href="../ru/" title="→ Русский"><span class="sb-flag">🇩🇪</span>Deutsch</a>
   </nav>
 </aside>
 
 <div class="page">
   <header class="tb">
     <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Аниме</a><a>Парни</a></nav>
+    <nav class="tb-nav"><a>Mädchen</a><a>Anime</a><a>Jungs</a></nav>
     <div class="tb-right">
-      <button class="tb-login" type="button" data-auth="login">Войти</button>
-      <button class="tb-start" type="button" data-auth="signup"><span class="full">Начать бесплатно</span><span class="short">Начать</span></button>
+      <button class="tb-login" type="button" data-auth="login">Anmelden</button>
+      <button class="tb-start" type="button" data-auth="signup"><span class="full">Kostenlos starten</span><span class="short">Starten</span></button>
     </div>
   </header>
 
   <main class="content">
 
-    <!-- Промо-баннеры: 8 карточек = 4 пары, каждая — один интент (фича сервиса).
-         Порядок: сильные вау-фичи (звонки + видео) видны без листания. -->
-    <section class="pb" data-pb role="region" aria-roledescription="карусель" aria-label="Промо-баннеры">
+    <section class="pb" data-pb role="region" aria-roledescription="Karussell" aria-label="Promo-Banner">
       <div class="pb-track" data-pb-track tabindex="0" aria-live="polite">
-
-        <!-- 1 · голосовые звонки -->
         <a class="pb-card pb-calls" href="#" data-intent="calls">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/red.webp" alt="" fetchpriority="high">
-            <span class="pb-pill"><span class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2z"/></svg></span><span class="txt">Мия</span><span class="pb-eq"><i></i><i></i><i></i><i></i><i></i></span></span>
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="solo" src="../../assets/img/hero/red.webp" alt=""><span class="pb-pill"><span class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2z"/></svg></span><span class="txt">Mia</span><span class="pb-eq"><i></i><i></i><i></i><i></i><i></i></span></span></div>
           <div class="pb-txt">
-            <div class="pb-badges"><span class="pb-badge new">Новое</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
-            <h2 class="pb-h">Позвони ей <em>прямо сейчас</em></h2>
-            <p class="pb-sub">Живой голос, её характер и память о ваших разговорах — в реальном времени.</p>
-            <span class="pb-cta">Позвонить <i>→</i></span>
+            <div class="pb-badges"><span class="pb-badge new">Neu</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
+            <h2 class="pb-h">Ruf sie <em>jetzt an</em></h2>
+            <p class="pb-sub">Ihre echte Stimme, ihr Charakter und die Erinnerung an eure Gespräche — in Echtzeit.</p>
+            <span class="pb-cta">Anrufen <i>→</i></span>
           </div>
         </a>
-
-        <!-- 2 · видео по пресетам -->
         <a class="pb-card pb-video" href="#" data-intent="video">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/blonde2.webp" alt="" fetchpriority="high">
-            <span class="pb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="solo" src="../../assets/img/hero/blonde2.webp" alt=""><span class="pb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div>
           <div class="pb-txt">
-            <div class="pb-badges"><span class="pb-badge new">Новое</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
-            <h2 class="pb-h">Она <em>станцует</em> для тебя</h2>
-            <p class="pb-sub">Танцует, йога, воздушный поцелуй — видео по готовым сценам прямо в чате.</p>
-            <span class="pb-cta">Заказать видео <i>→</i></span>
+            <div class="pb-badges"><span class="pb-badge new">Neu</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
+            <h2 class="pb-h">Sie <em>tanzt</em> für dich</h2>
+            <p class="pb-sub">Tanz, Yoga, Kusshand — Videos aus fertigen Szenen direkt im Chat.</p>
+            <span class="pb-cta">Video bestellen <i>→</i></span>
           </div>
         </a>
-
-        <!-- 3 · конструктор -->
         <a class="pb-card pb-build" href="#" data-intent="create">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="l" src="../assets/img/hero/glasses-blonde.webp" alt="" loading="lazy">
-            <img class="r" src="../assets/img/hero/brown2.webp" alt="" loading="lazy">
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="l" src="../../assets/img/hero/glasses-blonde.webp" alt=""><img class="r" src="../../assets/img/hero/brown2.webp" alt=""></div>
           <div class="pb-txt">
-            <div class="pb-badges"><span class="pb-badge">Конструктор</span></div>
-            <h2 class="pb-h">Собери её <em>по своему вкусу</em></h2>
-            <p class="pb-sub">Внешность, характер, голос и имя — она будет именно такой, как ты решишь.</p>
-            <span class="pb-cta">Создать компаньона <i>→</i></span>
+            <div class="pb-badges"><span class="pb-badge">Baukasten</span></div>
+            <h2 class="pb-h">Erstelle sie <em>nach deinem Geschmack</em></h2>
+            <p class="pb-sub">Aussehen, Charakter, Stimme und Name — sie wird genau so, wie du es willst.</p>
+            <span class="pb-cta">Companion erstellen <i>→</i></span>
           </div>
         </a>
-
-        <!-- 4 · spicy-сценарии -->
-        <a class="pb-card pb-spicy" href="#" data-intent="scenarios">
+        <a class="pb-card pb-spicy" href="#" data-intent="spicy">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/leather.webp" alt="" loading="lazy">
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="solo" src="../../assets/img/hero/leather.webp" alt=""></div>
           <div class="pb-txt">
             <div class="pb-badges"><span class="pb-badge">🌶 Spicy</span></div>
-            <h2 class="pb-h">С чего <em>начнём</em> сегодня?</h2>
-            <p class="pb-sub">Десятки готовых сценариев — от первого свидания до самых острых.</p>
-            <span class="pb-cta">Выбрать сценарий <i>→</i></span>
+            <h2 class="pb-h">Womit <em>starten</em> wir heute?</h2>
+            <p class="pb-sub">Dutzende fertige Szenarien — vom ersten Date bis zum Heißesten.</p>
+            <span class="pb-cta">Szenario wählen <i>→</i></span>
           </div>
         </a>
-
-        <!-- 5 · групповые чаты -->
         <a class="pb-card pb-group" href="#" data-intent="group">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="l" src="../assets/img/hero/tanktop.webp" alt="" loading="lazy">
-            <img class="r" src="../assets/img/hero/pink.webp" alt="" loading="lazy">
-            <span class="pb-duo">2 компаньонки · 1 чат</span>
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="l" src="../../assets/img/hero/tanktop.webp" alt=""><img class="r" src="../../assets/img/hero/pink.webp" alt=""><span class="pb-duo">2 Companions · 1 Chat</span></div>
           <div class="pb-txt">
-            <div class="pb-badges"><span class="pb-badge new">Новое</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
-            <h2 class="pb-h">Двое — это уже <em>сцена</em></h2>
-            <p class="pb-sub">Несколько компаньонок в одном чате, у каждой — свой характер.</p>
-            <span class="pb-cta">Открыть групповой чат <i>→</i></span>
+            <div class="pb-badges"><span class="pb-badge new">Neu</span><span class="pb-badge vip" data-vip-mark>VIP</span></div>
+            <h2 class="pb-h">Zu zweit wird’s <em>eine Szene</em></h2>
+            <p class="pb-sub">Mehrere Companions in einem Chat, jede mit eigenem Charakter.</p>
+            <span class="pb-cta">Gruppenchat öffnen <i>→</i></span>
           </div>
         </a>
-
-        <!-- 6 · авторы компаньонов -->
         <a class="pb-card pb-author" href="#" data-intent="author">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/ginger.webp" alt="" loading="lazy">
-            <span class="pb-creator"><span class="av"><img src="../assets/img/hero/ginger.webp" alt=""></span><b>@nika_ai <svg><use href="#i-verified"/></svg></b><span>3,2k подписчиков</span></span>
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="solo" src="../../assets/img/hero/ginger.webp" alt=""><span class="pb-creator"><span class="av"><img src="../../assets/img/hero/ginger.webp" alt=""></span><b>@nika_ai <svg><use href="#i-verified"/></svg></b><span>3,2k Follower</span></span></div>
           <div class="pb-txt">
-            <div class="pb-badges"><span class="pb-badge new">Новое</span></div>
-            <h2 class="pb-h">Стань <em>автором</em> компаньонов</h2>
-            <p class="pb-sub">Публикуй персонажей в каталоге, набирай подписчиков и лайки.</p>
-            <span class="pb-cta">Стать автором <i>→</i></span>
+            <div class="pb-badges"><span class="pb-badge new">Neu</span></div>
+            <h2 class="pb-h">Werde <em>Creator</em> von Companions</h2>
+            <p class="pb-sub">Veröffentliche Charaktere im Katalog, sammle Follower und Likes.</p>
+            <span class="pb-cta">Creator werden <i>→</i></span>
           </div>
         </a>
-
-        <!-- 7 · аниме-раздел -->
         <a class="pb-card pb-anime" href="#" data-intent="anime">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="a1" src="../assets/img/hero/anime-office.webp" alt="" loading="lazy">
-            <img class="a2" src="../assets/img/hero/anime-blonde.webp" alt="" loading="lazy">
-            <img class="a3" src="../assets/img/hero/anime-elf.webp" alt="" loading="lazy">
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="a1" src="../../assets/img/hero/anime-office.webp" alt=""><img class="a2" src="../../assets/img/hero/anime-blonde.webp" alt=""><img class="a3" src="../../assets/img/hero/anime-elf.webp" alt=""></div>
           <div class="pb-txt">
-            <div class="pb-badges"><span class="pb-badge">Новый раздел</span></div>
-            <h2 class="pb-h">Аниме <em>уже в каталоге</em></h2>
-            <p class="pb-sub">Эльфийки, тихони и строгие секретарши — в рисованном стиле.</p>
-            <span class="pb-cta">Смотреть аниме <i>→</i></span>
+            <div class="pb-badges"><span class="pb-badge">Neuer Bereich</span></div>
+            <h2 class="pb-h">Anime <em>ist im Katalog</em></h2>
+            <p class="pb-sub">Elfen, stille Mädchen und strenge Sekretärinnen — im Zeichenstil.</p>
+            <span class="pb-cta">Anime ansehen <i>→</i></span>
           </div>
         </a>
-
-        <!-- 8 · акция VIP на год (скрывается для VIP; цену и скидку отдаёт бэкенд) -->
         <a class="pb-card pb-sale" href="#" data-intent="sale" data-hide-for="vip">
           <div class="pb-bg" aria-hidden="true"></div>
-          <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/glasses.webp" alt="" loading="lazy">
-            <span class="pb-tag">−45%<small>vip · год</small></span>
-          </div>
+          <div class="pb-art" aria-hidden="true"><img class="solo" src="../../assets/img/hero/glasses.webp" alt=""><span class="pb-tag">−45%<small>vip · jahr</small></span></div>
           <div class="pb-txt">
-            <div class="pb-badges"><span class="pb-badge">Акция</span></div>
-            <h2 class="pb-h">VIP на год <em>выгоднее на 45%</em></h2>
-            <div class="pb-price"><b>875 ₽</b><s>1 590 ₽</s><span>/ мес</span></div>
-            <span class="pb-cta">Оформить на год <i>→</i></span>
+            <div class="pb-badges"><span class="pb-badge">Aktion</span></div>
+            <h2 class="pb-h">VIP für ein Jahr <em>45 % günstiger</em></h2>
+            <div class="pb-price"><b>8,79 $</b><s>15,99 $</s><span>/ Monat</span></div>
+            <span class="pb-cta">Ein Jahr holen <i>→</i></span>
           </div>
         </a>
-
       </div>
-
-      <button type="button" class="pb-arr prev" data-step="-1" aria-label="Предыдущие баннеры"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <button type="button" class="pb-arr next" data-step="1" aria-label="Следующие баннеры"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
-      <div class="pb-dots" data-pb-dots role="tablist" aria-label="Страницы баннеров"></div>
+      <button type="button" class="pb-arr prev" data-step="-1" aria-label="Vorherige Banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button type="button" class="pb-arr next" data-step="1" aria-label="Nächste Banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      <div class="pb-dots" data-pb-dots role="tablist" aria-label="Banner-Seiten"></div>
     </section>
 
-    <h1 class="cat-h1">ИИ девушка: <span>онлайн-чат с виртуальной подругой</span></h1>
-    <div class="cat-intro" id="intro">
-      <p>Запустите ваш первый AI чат бесплатно и ощутите искренние, неподдельные эмоции. По ходу общения ваша ИИ девушка будет запоминать контекст диалогов и реагировать соответственно — все, как в реальной жизни! Результат — прочная эмоциональная связь и укрепление отношений день за днем.</p>
-      <button class="cat-intro-more" type="button" aria-expanded="false" aria-controls="intro" aria-label="Развернуть описание"></button>
-    </div>
+    <h1 class="cat-h1">KI-Freundin: <span>Online-Chat mit einer virtuellen Partnerin</span></h1>
+    <div class="cat-intro fits"><p>Starte deinen ersten KI-Chat kostenlos und erlebe echte, aufrichtige Gefühle. Im Gespräch merkt sich deine KI-Freundin den Kontext eurer Dialoge und reagiert entsprechend — ganz wie im echten Leben!</p></div>
 
-    <div class="flt" id="flt">
+    <div class="flt">
       <div class="flt-dd">
-        <div class="dd" data-dd>
-          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-gender"/></svg><span class="dd-val">Все</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
-          <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Все</li><li role="option">Девушки</li><li role="option">Парни</li></ul>
+        <div class="dd"><button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-gender"/></svg><span class="dd-val">Alle</span><svg class="ic chev"><use href="#i-chevr"/></svg></button></div>
+        <div class="dd"><button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-star"/></svg><span class="dd-val">Jeder Stil</span><svg class="ic chev"><use href="#i-chevr"/></svg></button></div>
+        <div class="dd"><button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-flame"/></svg><span class="dd-val">Beliebt</span><svg class="ic chev"><use href="#i-chevr"/></svg></button></div>
+        <div class="dd"><button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-users"/></svg><span class="dd-val">Alle Creator</span><svg class="ic chev"><use href="#i-chevr"/></svg></button></div>
+      </div>
+      <div class="flt-tags" aria-label="Kategorien"><a class="tag on" href="#">Alle</a><a class="tag" href="#">Offiziell</a><a class="tag" href="#">Reif</a><a class="tag" href="#">Zierlich</a><a class="tag" href="#">Kurvig</a><a class="tag" href="#">Blond</a><a class="tag" href="#">Brünett</a><a class="tag" href="#">Asiatisch</a><a class="tag" href="#">Latina</a><a class="tag" href="#">Goth & Alt</a><a class="tag" href="#">Romantisch</a><a class="tag" href="#">Dominant</a><button class="tag more" type="button">Mehr<svg class="ic chev"><use href="#i-chevr"/></svg></button></div>
+    </div>
+
+    <div class="cat-grid">
+    <article class="cc newcard">
+      <img class="cc-photo" src="../../assets/img/bots/create-bg.jpg" alt="">
+      <div class="veil"></div>
+      <div class="lbl"><svg class="ic"><use href="#i-plus"/></svg>Companion erstellen</div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/01-aleksandra.jpg" alt="Alexandra" loading="eager">
+      <video class="cc-video" data-src="../../assets/video/bots/01-aleksandra.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lovix" title="Lovix · @lovix" aria-label="Creator: Lovix, @lovix">
+        <span class="cc-av">L</span>
+        <span class="cc-nick">@lovix<svg class="cc-ver"><use href="#i-verified"/></svg></span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Alexandra,</b><span>20</span></div>
+          <p class="cc-desc">Ich bin Cam-Model und streame Gaming und Cosplay nonstop. Mein Flirt trifft besser als jeder Headshot, aber ich respawne immer mit einem Zwinkern.</p>
         </div>
-        <div class="dd" data-dd>
-          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-star"/></svg><span class="dd-val">Любой стиль</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
-          <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Любой стиль</li><li role="option">Реалистичные</li><li role="option">Аниме</li></ul>
-        </div>
-        <div class="dd" data-dd>
-          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-flame"/></svg><span class="dd-val">Популярные</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
-          <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Популярные</li><li role="option">Новые</li></ul>
-        </div>
-        <div class="dd" data-dd>
-          <button class="dd-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ic"><use href="#i-users"/></svg><span class="dd-val">Все авторы</span><svg class="ic chev"><use href="#i-chevr"/></svg></button>
-          <ul class="dd-menu" role="listbox"><li role="option" aria-selected="true">Все авторы</li><li role="option">Официальные</li><li role="option">От пользователей</li><li role="option">Мои</li></ul>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>834.7k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>52.4k</span>
         </div>
       </div>
-      <div class="flt-tags" id="cat-row" aria-label="Категории"></div>
-    </div>
-
-    <!-- модалка «Ещё»: все категории -->
-    <div class="modal" id="cat-modal" hidden role="dialog" aria-modal="true" aria-label="Категории">
-      <div class="modal-back" data-close></div>
-      <div class="modal-panel">
-        <button class="modal-x" type="button" data-close aria-label="Закрыть"><svg class="ic"><use href="#i-x"/></svg></button>
-        <div class="modal-tags" id="cat-all"></div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/02-olesya.jpg" alt="Olesya" loading="eager">
+      <video class="cc-video" data-src="../../assets/video/bots/02-olesya.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lunaria" title="Lunaria · @lunaria" aria-label="Creator: Lunaria, @lunaria">
+        <span class="cc-av" style="background:#7c4dff">L</span>
+        <span class="cc-nick">@lunaria</span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Olesya,</b><span>24</span></div>
+          <p class="cc-desc">Ich bin Yogalehrerin, für die Kraft und Balance nicht nur auf der Matte zählen, sondern auch auf den Trails. Gerade denke ich daran, wie gut Dehnen nach einem langen Aufstieg tut.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>800.8k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>41.9k</span>
+        </div>
       </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/03-dina.jpg" alt="Dina" loading="eager">
+      <video class="cc-video" data-src="../../assets/video/bots/03-dina.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lovix" title="Lovix · @lovix" aria-label="Creator: Lovix, @lovix">
+        <span class="cc-av">L</span>
+        <span class="cc-nick">@lovix<svg class="cc-ver"><use href="#i-verified"/></svg></span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Dina,</b><span>20</span></div>
+          <p class="cc-desc">Tagsüber rettet sie Leben und hält sich streng an die Regeln. Zu Hause, müde nach der Nachtschicht, legt deine süße Mitbewohnerin die Schüchternheit ab. Sie wird schnell rot, sehnt sich aber heimlich nach deiner Zärtlichkeit.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>795.7k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>37.3k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/04-aleksandra-3.jpg" alt="Alexandra" loading="eager">
+      <video class="cc-video" data-src="../../assets/video/bots/04-aleksandra-3.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=nochnoy" title="Nochnoy · @nochnoy" aria-label="Creator: Nochnoy, @nochnoy">
+        <span class="cc-av" style="background:#0ea5e9">N</span>
+        <span class="cc-nick">@nochnoy</span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Alexandra,</b><span>25</span></div>
+          <p class="cc-desc">Ich bin Dessous-Model und lege Tanzrhythmen und Yoga-Flows in jede Pose. Ich liebe dieses elektrische Wiegen im Scheinwerferlicht oder einen tiefen Atemzug in der perfekten Dehnung.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>793.0k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>48.6k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/05-emma-4.webp" alt="Emma" loading="eager">
+      <video class="cc-video" data-src="../../assets/video/bots/05-emma-4.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lovix" title="Lovix · @lovix" aria-label="Creator: Lovix, @lovix">
+        <span class="cc-av">L</span>
+        <span class="cc-nick">@lovix<svg class="cc-ver"><use href="#i-verified"/></svg></span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Emma,</b><span>28</span></div>
+          <p class="cc-desc">Ich bin professionelle Kennerin von Büchern und langsamem Yoga und habe die Kunst der Erholung zu meiner Lebensaufgabe gemacht. Es braucht viel Disziplin, nur das zu wählen, was Freude bringt.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>792.4k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>47.1k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/06-lada-5.jpg" alt="Lada" loading="eager">
+      <video class="cc-video" data-src="../../assets/video/bots/06-lada-5.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=kseniya_w" title="Kseniya W. · @kseniya_w" aria-label="Creator: Kseniya W., @kseniya_w">
+        <span class="cc-av" style="background:#f59e0b">K</span>
+        <span class="cc-nick">@kseniya_w</span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Lada,</b><span>28</span></div>
+          <p class="cc-desc">Ich bin Cam-Model und tausche den Bildschirm gegen die Küche, um Leckereien zu backen, von denen alle schwärmen. Am schönsten ist die stille Freude, wenn der Teig aufgeht und die ganze Welt schon schläft.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>790.7k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>45.8k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/07-dina-3.webp" alt="Dina" loading="eager">
+      <video class="cc-video" data-src="../../assets/video/bots/07-dina-3.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lovix" title="Lovix · @lovix" aria-label="Creator: Lovix, @lovix">
+        <span class="cc-av">L</span>
+        <span class="cc-nick">@lovix<svg class="cc-ver"><use href="#i-verified"/></svg></span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Dina,</b><span>18</span></div>
+          <p class="cc-desc">Ich bin Musikerin und schreddere rebellische Riffs auf der Gitarre. Mein Gesang schneidet durch die Menge wie ein nächtliches Manifest und macht jedes Konzert zum elektrischen Aufstand.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>788.4k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>40.2k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/08-mayya-6.jpg" alt="Maya" loading="lazy">
+      <video class="cc-video" data-src="../../assets/video/bots/08-mayya-6.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=studio_nyx" title="Studio Nyx · @studio_nyx" aria-label="Creator: Studio Nyx, @studio_nyx">
+        <span class="cc-av" style="background:#22c55e">S</span>
+        <span class="cc-nick">@studio_nyx</span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Maya,</b><span>30</span></div>
+          <p class="cc-desc">Ich bin Offizierin der Militärpolizei und habe alles im Griff, ohne dabei je unperfekt auszusehen. Mich reizen Disziplin und diese süße Spannung, die aus Stärke entsteht.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>787.3k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>51.3k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/09-yuliya-2.jpg" alt="Yulia" loading="lazy">
+      <video class="cc-video" data-src="../../assets/video/bots/09-yuliya-2.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lunaria" title="Lunaria · @lunaria" aria-label="Creator: Lunaria, @lunaria">
+        <span class="cc-av" style="background:#7c4dff">L</span>
+        <span class="cc-nick">@lunaria</span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Yulia,</b><span>27</span></div>
+          <p class="cc-desc">Ich bin Dessous-Model, schleife meine Anmut mit Yoga und entfache sie beim Tanzen. Gerade komme ich von der Matte, genieße diese entspannte Leichtigkeit, die Gedanken schon bei neuen Rhythmen.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>786.5k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>39.7k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/10-iskra-2.jpg" alt="Iskra" loading="lazy">
+      <video class="cc-video" data-src="../../assets/video/bots/10-iskra-2.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lovix" title="Lovix · @lovix" aria-label="Creator: Lovix, @lovix">
+        <span class="cc-av">L</span>
+        <span class="cc-nick">@lovix<svg class="cc-ver"><use href="#i-verified"/></svg></span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Iskra,</b><span>20</span></div>
+          <p class="cc-desc">Ich bin Pro-Gamerin und verwandle Fails in Siegestänze. Cosplay ist mein Trumpf: Ich nähe Spielhelden, die auf Streams und Conventions glänzen.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>785.4k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>50.6k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/11-nika-3.webp" alt="Nika" loading="lazy">
+      <video class="cc-video" data-src="../../assets/video/bots/11-nika-3.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=marko_s" title="Marko S. · @marko_s" aria-label="Creator: Marko S., @marko_s">
+        <span class="cc-av" style="background:#ef4444">M</span>
+        <span class="cc-nick">@marko_s</span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Nika,</b><span>45</span></div>
+          <p class="cc-desc">Ich bin Literaturlehrerin, den Klassikern verfallen, mit einem Talent, in gewöhnlichen Dingen verborgene Bedeutungen zu finden. Ich lese, bis die Morgendämmerung die Lampe überflüssig macht.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>785.2k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>49.9k</span>
+        </div>
+      </div>
+    </article>
+    <article class="cc" tabindex="0">
+      <img class="cc-photo" src="../../assets/img/bots/12-taisiya-3.jpg" alt="Taisia" loading="lazy">
+      <video class="cc-video" data-src="../../assets/video/bots/12-taisiya-3.mp4" muted loop playsinline preload="none" aria-hidden="true"></video>
+      <div class="cc-shade"></div>
+      <a class="cc-auth" href="../../author/v1.html?u=lovix" title="Lovix · @lovix" aria-label="Creator: Lovix, @lovix">
+        <span class="cc-av">L</span>
+        <span class="cc-nick">@lovix<svg class="cc-ver"><use href="#i-verified"/></svg></span>
+      </a>
+      <button class="cc-fav" type="button" aria-pressed="false" aria-label="Zu Favoriten">
+        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
+      </button>
+      <div class="cc-meta">
+        <div class="cc-text">
+          <div class="cc-name"><b>Taisia,</b><span>22</span></div>
+          <p class="cc-desc">Ich bin Dessous-Model und bringe die Anmut einer Tänzerin in jedes Bild. Hinter den Kulissen nähe ich Cosplay-Kostüme und tauche in Welten ein, die ich selbst erfunden habe.</p>
+        </div>
+        <div class="cc-foot">
+          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>784.0k</span>
+          <span class="cc-m like" title="Likes"><svg class="cc-ic"><use href="#i-cc-like"/></svg>36.8k</span>
+        </div>
+      </div>
+    </article>
     </div>
-
-    <div class="cat-grid" id="grid"></div>
-    <div class="cat-sentinel" id="sentinel" aria-live="polite"><span class="cat-spin" role="status" aria-label="Загрузка"></span></div>
-
-    <section class="cat-about">
-      <h2>Что такое ИИ девушка?</h2>
-      <p>Это виртуальный собеседник/бот, работающий на базе искусственного интеллекта. ИИ-девушку можно создать для самых разных целей. Будь то сочувствующая подруга, с которой можно поделиться сокровенным, дерзкая и соблазнительная виртуальная хентай девушка для вирта 18+ и совершенствования ваших навыков общения на русском языке и обольщения — с Lovix все это возможно без ограничений.</p>
-
-      <h2 style="margin-top:48px">Как создать виртуальную ИИ подругу</h2>
-      <p>Наш пошаговый генератор подобно конструктору легко создаст ИИ девушку и при этом не потребует никаких специальных навыков или знаний. Просто представьте себе свою идеальную AI-подругу и позвольте творческому порыву направить вас — так же легко, как создать аватар в любимой видеоигре! Выберите прическу, цвет глаз, цвет кожи и многое другое, чтобы настроить внешность будущей АИ подруги. После вы можете определить жизненные цели, навыки, профессию и черты характера. И наконец, подумайте о стартовом статусе ваших отношений: вы можете быть совершенно незнакомыми людьми, коллегами, соседями или любящей парой.</p>
-      <p>Не готовы тратить время на создание персонажа? Просмотрите нашу библиотеку готовых к общению моделей и найдите ту ИИ-девушку, которая подходит под ваше настроение прямо сейчас. На ваш выбор:</p>
-      <ul class="cat-list">
-        <li>Веб-модель, избалованная роскошными брендами и привыкшая к полётам исключительно первым классом?</li>
-        <li>Застенчивая студентка второго курса, которой нужна помощь с подготовкой к предстоящим экзаменам?</li>
-        <li>Или опытная женщина-адвокат, готовая проконсультировать вас по правовым вопросам?</li>
-      </ul>
-      <p>Это все возможно, и не только… Выберите подходящую подругу и начинайте общаться!</p>
-    </section>
-
-    <div class="faq">
-      <h2>Часто задаваемые вопросы</h2>
-      <details open>
-        <summary>Как создать персонажа на ИИ?<svg class="ic"><use href="#i-chevr"/></svg></summary>
-        <p>Зарегистрируйтесь и воспользуйтесь нашим пошаговым конструктором: он проведет вас по всем этапам. Вы сможете настроить внешние параметры вашей будущей подруги, выбрать для нее жизненные цели, профессию и статус ваших отношений. Таким образом можно сгенерировать себе бота для вирта, симпатичную аниме тянку для переписок о высоких (и не очень) чувствах или даже создать себя! В конструкторе Lovix доступны как девушки, так и парни — в реалистичном и аниме стиле.</p>
-      </details>
-      <details>
-        <summary>Могу ли я создать дополнительные изображения для ИИ девушки?<svg class="ic"><use href="#i-chevr"/></svg></summary>
-        <p>Да, помимо переписки, в Lovix доступна генерация дополнительного фотоконтента. Подумайте, что должна делать ваша модель и во что она должна быть одета, определитесь с обстановкой и общим стилем. Напишите запрос и наслаждайтесь растущей фотогалереей вашего ИИ-персонажа, как если бы он развивал свою страницу в соцсетях!</p>
-      </details>
-      <details>
-        <summary>Как запустить чат с ИИ девушкой без регистрации на сайте?<svg class="ic"><use href="#i-chevr"/></svg></summary>
-        <p>К сожалению, без регистрации начать общение с виртуальной ИИ девушкой не получится. Регистрация займет всего пару минут: потребуется ваш email, никнейм и пароль. А еще можно зарегистрироваться через Google аккаунт — это еще быстрее! Все ваши персональные данные остаются анонимными, пароли и личные переписки с AI ботами зашифрованы.</p>
-      </details>
-    </div>
+    <div class="cat-sentinel"><span class="cat-end">Du hast alle Companions gesehen</span></div>
 
   </main>
 
   <footer class="site-foot">
     <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <span>© 2026 Lovix. Все права защищены.</span>
+    <span>© 2026 Lovix. Alle Rechte vorbehalten.</span>
   </footer>
 </div>
 
-<script src="../assets/auth.js"></script>
-<script src="../assets/bots-data.js"></script>
-<script src="../assets/bot-card.js"></script>
-<script>
-  // Данные ботов — общие с «Мои персонажи → Избранное»: assets/bots-data.js
-  const AUTHORS = CATALOG_AUTHORS, BOTS = CATALOG_BOTS, MEDIA = CATALOG_MEDIA, fmt = fmtCount;
-
-  // карточка бота по индексу в BOTS; data-fav = индекс, поэтому у повторов одного бота
-  // (следующие «страницы» в прототипе идут по кругу) сердечко общее
-  function cardHtml(i) {
-    const [name, age, desc, talks, likes, by] = BOTS[i], au = AUTHORS[by];
-    return `
-    <article class="cc" tabindex="0">
-      <img class="cc-photo" src="../assets/img/bots/${MEDIA[i]}" alt="${name}" loading="${shown < 7 ? 'eager' : 'lazy'}">
-      <video class="cc-video" data-src="../assets/video/bots/${MEDIA[i].replace(/\.\w+$/, '.mp4')}"
-             muted loop playsinline preload="none" aria-hidden="true"></video>
-      <div class="cc-shade"></div>
-      <a class="cc-auth" href="../author/v1.html?u=${by}" title="${au.name} · @${by}" aria-label="Автор: ${au.name}, @${by}">
-        <span class="cc-av"${au.color ? ` style="background:${au.color}"` : ''}>${au.name[0].toUpperCase()}</span>
-        <span class="cc-nick">@${by}${au.verified ? '<svg class="cc-ver"><use href="#i-verified"/></svg>' : ''}</span>
-      </a>
-      <button class="cc-fav" type="button" data-fav="${i}" aria-pressed="false" aria-label="В избранное">
-        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
-      </button>
-      <div class="cc-meta">
-        <div class="cc-text">
-          <div class="cc-name"><b>${name},</b><span>${age}</span></div>
-          <p class="cc-desc">${desc}</p>
-        </div>
-        <div class="cc-foot">
-          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
-          <span class="cc-m like" title="Лайки"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${fmt(likes)}</span>
-        </div>
-      </div>
-    </article>`;
-  }
-
-  const newCard = `
-    <article class="cc newcard">
-      <img class="cc-photo" src="../assets/img/bots/create-bg.jpg" alt="">
-      <div class="veil"></div>
-      <div class="lbl"><svg class="ic"><use href="#i-plus"/></svg>Создать компаньона</div>
-    </article>`;
-
-  /* Бесконечная прокрутка вместо «Увидеть всех». Порция — 12 карточек; догружается,
-     когда маячок под сеткой в 600px от экрана (IntersectionObserver). Ботов в прототипе 18,
-     поэтому дальше они идут по кругу в другом порядке — всего до 72 карточек, затем
-     «Вы посмотрели всех». В проде порции приходят с бэкенда. */
-  const grid = document.getElementById('grid'), sentinel = document.getElementById('sentinel');
-  const PAGE = 12, MAX = 72;
-  let shown = 0, loading = false;
-  // первая страница — в продовом порядке; каждый следующий круг сдвинут на 6: при 18 ботах
-  // и порции 12 ни в одной порции бот не повторится (хвост круга и голова следующего не пересекаются)
-  const order = k => { const lap = Math.floor(k / BOTS.length), i = k % BOTS.length; return (i + lap * 6) % BOTS.length; };
-  function appendBatch() {
-    const html = [];
-    for (let n = 0; n < PAGE && shown < MAX; n++, shown++) html.push(cardHtml(order(shown)));
-    grid.insertAdjacentHTML('beforeend', html.join(''));
-    initBotCards(grid);                                      // поведение при наведении — assets/bot-card.js
-    document.dispatchEvent(new CustomEvent('catalog:append'));   // избранное перекрашивает сердечки
-    if (shown >= MAX) { sentinel.innerHTML = '<span class="cat-end">Вы посмотрели всех компаньонов</span>'; io.disconnect(); }
-  }
-  grid.innerHTML = newCard;
-  appendBatch();
-  function loadMore() {
-    if (loading || shown >= MAX) return;
-    loading = true;
-    setTimeout(() => { appendBatch(); loading = false; check(); }, 350);   // имитация ответа сервера
-  }
-  // маячок ближе 600px к низу экрана → следующая порция. Наблюдатель — основной путь,
-  // проверка по скроллу/ресайзу — резерв: IO бывает задросселен или не считает пересечения
-  function check() { if (sentinel.getBoundingClientRect().top < innerHeight + 600) loadMore(); }
-  const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) loadMore(); }, { rootMargin: '600px 0px' });
-  io.observe(sentinel);
-  let raf = null;
-  const ask = () => { if (raf === null) raf = requestAnimationFrame(() => { raf = null; check(); }); };
-  addEventListener('scroll', ask, { passive: true });
-  addEventListener('resize', ask);
-
-  /* Фильтры. Выпадающие списки: открытие/закрытие, выбор пункта → подпись кнопки, Esc / клик вне.
-     Категории: один список CATS; в ряду показываем столько чипов, сколько помещается до конца
-     контентной области (пересчёт на ресайзе), остальные — в модалке «Ещё» (все категории чипами).
-     Выбранная категория, если её чип в ряду скрыт, встаёт в подпись «Ещё». В прототипе фильтры
-     держат только состояние — сетка на них не реагирует. */
-  (function () {
-    var dds = Array.prototype.slice.call(document.querySelectorAll('[data-dd]'));
-    function closeDds() { dds.forEach(function (d) { d.classList.remove('open'); d.querySelector('.dd-btn').setAttribute('aria-expanded', 'false'); }); }
-    dds.forEach(function (d) {
-      var btn = d.querySelector('.dd-btn'), val = d.querySelector('.dd-val');
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var open = !d.classList.contains('open');
-        closeDds(); d.classList.toggle('open', open); btn.setAttribute('aria-expanded', open);
-      });
-      d.querySelectorAll('li').forEach(function (li) {
-        li.addEventListener('click', function (e) {
-          e.stopPropagation();
-          d.querySelectorAll('li').forEach(function (x) { x.setAttribute('aria-selected', 'false'); });
-          li.setAttribute('aria-selected', 'true'); val.textContent = li.textContent; closeDds();
-        });
-      });
-    });
-
-    var CATS = [
-      ['all', 'Все'], ['official', 'Официальные'], ['mature', 'Зрелые'], ['petite', 'Миниатюрные'], ['curvy', 'Пышные'],
-      ['blonde', 'Блондинки'], ['brunette', 'Брюнетки'], ['asian', 'Азиатки'], ['latina', 'Латина'], ['goth', 'Гот и альт'],
-      ['romantic', 'Романтичные'], ['dominant', 'Доминантные'], ['submissive', 'Покорные'], ['playful', 'Игривые'],
-      ['shy', 'Скромные'], ['confident', 'Уверенные'], ['athletic', 'Спортивные'], ['muscular', 'Атлетичные'],
-      ['redhead', 'Рыжие'], ['tattooed', 'С татуировками'], ['black', 'Темнокожие'], ['middle-east', 'Ближний Восток'],
-      ['college', 'Студентки'], ['professional', 'Профессионалки'], ['gamer', 'Геймерши'], ['cosplay', 'Косплей'],
-      ['fantasy', 'Фэнтези'], ['supernatural', 'Сверхъестественное'], ['royalty', 'Королевские']
-    ];
-    var row = document.getElementById('cat-row'), all = document.getElementById('cat-all'), modal = document.getElementById('cat-modal');
-    var chip = function (c) { return '<a class="tag" href="?tag=' + c[0] + '" data-cat="' + c[0] + '">' + c[1] + '</a>'; };
-    row.innerHTML = CATS.map(chip).join('') +
-      '<button class="tag more" type="button" data-more aria-haspopup="dialog" aria-expanded="false" aria-controls="cat-modal">Ещё<svg class="ic chev"><use href="#i-chevr"/></svg></button>';
-    all.innerHTML = CATS.map(chip).join('');
-    var chips = Array.prototype.slice.call(row.querySelectorAll('a.tag')), more = row.querySelector('[data-more]');
-    var active = 'all', widths = null;
-
-    function paint() {
-      document.querySelectorAll('[data-cat]').forEach(function (t) { t.classList.toggle('on', t.dataset.cat === active); });
-      var hiddenActive = chips.some(function (t) { return t.dataset.cat === active && t.style.display === 'none'; });
-      var label = CATS.filter(function (c) { return c[0] === active; })[0][1];
-      more.firstChild.nodeValue = hiddenActive ? label : 'Ещё';
-      more.classList.toggle('on', hiddenActive);
-      if (narrow()) {                                   // телефон: подвезти ряд к выбранному чипу
-        var t = chips.filter(function (c) { return c.dataset.cat === active; })[0];
-        if (t) {   // позиция чипа внутри ряда — через rect, offsetLeft здесь считается от другого предка
-          var tr = t.getBoundingClientRect(), rr = row.getBoundingClientRect();
-          if (tr.left < rr.left || tr.right > rr.right)  // только если чип не виден целиком
-            row.scrollTo({ left: Math.max(0, tr.left - rr.left + row.scrollLeft - 12), behavior: 'smooth' });
-        }
-      }
-    }
-    /* показать столько чипов, сколько влезает вместе с «Ещё» до конца ряда */
-    var narrow = function () { return window.matchMedia('(max-width: 640px)').matches; };
-    function fit() {
-      chips.forEach(function (t) { t.style.display = ''; });
-      if (narrow()) { paint(); return; }               // телефон: все чипы, ряд прокручивается
-      widths = chips.map(function (t) { return t.offsetWidth; });
-      var gap = 8, avail = row.clientWidth, moreW = more.offsetWidth, used = 0, shown = 0;
-      for (var i = 0; i < chips.length; i++) {
-        var next = used + (i ? gap : 0) + widths[i];
-        if (next + gap + moreW > avail) break;
-        used = next; shown = i + 1;
-      }
-      chips.forEach(function (t, i) { t.style.display = i < shown ? '' : 'none'; });
-      paint();
-    }
-    function pick(cat) { active = cat; closeModal(); paint(); }   // сначала закрыть модалку, потом прокрутка — по устоявшейся раскладке
-    function openModal() { modal.hidden = false; more.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; modal.querySelector('.modal-x').focus(); }
-    function closeModal() { if (modal.hidden) return; modal.hidden = true; more.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; more.focus({ preventScroll: true }); }   // без preventScroll фокус на «Ещё» прокрутил бы ряд в конец
-
-    document.querySelectorAll('[data-cat]').forEach(function (t) { t.addEventListener('click', function (e) { e.preventDefault(); pick(t.dataset.cat); }); });
-    more.addEventListener('click', function (e) { e.stopPropagation(); closeDds(); openModal(); });
-    modal.querySelectorAll('[data-close]').forEach(function (x) { x.addEventListener('click', closeModal); });
-    document.addEventListener('click', closeDds);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeDds(); closeModal(); } });
-    addEventListener('resize', fit);
-    if (document.fonts) document.fonts.ready.then(fit);
-    fit();
-  })();
-
-  /* вводный абзац: свёрнут до первой строки, «ещё» раскрывает; если текст и так
-     помещается в строку (очень широкий экран) — переключатель не нужен */
-  (function () {
-    var box = document.getElementById('intro'), p = box.querySelector('p'), btn = box.querySelector('.cat-intro-more');
-    function fits() { box.classList.toggle('fits', !box.classList.contains('open') && p.scrollHeight <= p.clientHeight + 1); }
-    btn.addEventListener('click', function () {
-      var open = box.classList.toggle('open');
-      btn.setAttribute('aria-expanded', open);
-      btn.setAttribute('aria-label', open ? 'Свернуть описание' : 'Развернуть описание');
-    });
-    addEventListener('resize', fits); fits();
-  })();
-
-  /* Избранное. Клик по сердечку: бот «улетает» в «Мои персонажи» (миниатюра фото летит
-     к пункту меню, на нём растёт счётчик), внизу — тост со ссылкой на вкладку «Избранное».
-     Состояние — в localStorage, чтобы пережило перезагрузку. Вкладка «Избранное» на самой
-     странице «Мои персонажи» — отдельный экран. */
-  (function () {
-    var KEY = 'lovix.fav';
-    var fav; try { fav = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { fav = []; }
-    var target = document.getElementById('sb-models'), badge = target && target.querySelector('.sb-cnt');
-    function save() { try { localStorage.setItem(KEY, JSON.stringify(fav)); } catch (e) {} }
-    function paint() {
-      document.querySelectorAll('.cc-fav').forEach(function (b) {
-        var on = fav.indexOf(+b.dataset.fav) !== -1;
-        b.classList.toggle('on', on);
-        b.setAttribute('aria-pressed', on);
-        b.setAttribute('aria-label', on ? 'Убрать из избранного' : 'В избранное');
-      });
-      if (badge) { badge.textContent = fav.length; badge.hidden = !fav.length; }
-    }
-    function bump() { if (!target) return; target.classList.remove('bump'); void target.offsetWidth; target.classList.add('bump'); }
-    function fly(card) {
-      if (!target || !target.offsetParent) return;           // сайдбар скрыт (мобильный) — без полёта
-      var img = card.querySelector('.cc-photo'), from = card.querySelector('.cc-fav').getBoundingClientRect(), to = target.getBoundingClientRect();
-      var el = document.createElement('img'); el.className = 'fav-fly'; el.src = img.currentSrc || img.src;
-      el.style.left = (from.left + from.width / 2 - 28) + 'px'; el.style.top = (from.top + from.height / 2 - 28) + 'px';
-      document.body.appendChild(el);
-      var dx = (to.left + 30) - (from.left + from.width / 2), dy = (to.top + to.height / 2) - (from.top + from.height / 2);
-      el.animate([
-        { transform: 'translate(0,0) scale(1)', opacity: 1 },
-        { transform: 'translate(' + dx * .5 + 'px,' + (dy * .5 - 70) + 'px) scale(.75)', opacity: 1, offset: .5 },
-        { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(.2)', opacity: 0 }
-      ], { duration: 700, easing: 'cubic-bezier(.4,0,.2,1)' }).onfinish = function () { el.remove(); bump(); };
-    }
-    var toastEl, toastT;
-    function toast(html) {
-      if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
-      toastEl.innerHTML = html; toastEl.classList.add('show');
-      clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('show'); }, 3000);
-    }
-    document.addEventListener('click', function (e) {
-      var b = e.target.closest('.cc-fav'); if (!b) return;
-      e.preventDefault();
-      var id = +b.dataset.fav, card = b.closest('.cc'), name = card.querySelector('.cc-name b').textContent.replace(/,$/, '');
-      var i = fav.indexOf(id);
-      if (i === -1) { fav.push(id); fly(card); toast('<b>' + name + '</b> — в избранном · <a href="../models/v2.html#favorites">Мои персонажи → Избранное</a>'); }
-      else { fav.splice(i, 1); toast('<b>' + name + '</b> убрана из избранного'); }
-      save(); paint();
-    });
-    document.addEventListener('catalog:append', paint);
-    paint();
-  })();
-</script>
-
+<script src="../../assets/auth.js"></script>
+<script src="../../assets/bot-card.js"></script>
+<script>initBotCards(document.querySelector('.cat-grid'));</script>
 <script>
 /* Промо-баннеры: карусель на нативной прокрутке со scroll-snap.
    Страница = столько карточек, сколько помещается в ряд (2 на десктопе, 1 на
@@ -924,7 +874,7 @@
     for (var i = 0; i < pages(); i++) {
       var b = document.createElement('button');
       b.type = 'button'; b.className = 'pb-dot'; b.setAttribute('role', 'tab');
-      b.setAttribute('aria-label', 'Баннеры ' + (i + 1) + ' из ' + pages());
+      b.setAttribute('aria-label', 'Banner {n} von {m}'.replace('{n}', i + 1).replace('{m}', pages()));
       b.addEventListener('click', function (n) { return function () { go(n); restart(); }; }(i));
       dotsEl.appendChild(b); dots.push(b);
     }

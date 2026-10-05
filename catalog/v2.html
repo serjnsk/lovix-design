@@ -793,18 +793,20 @@
       </div>
     </a>`;
 
-  /* Позиции промо-карточек: явное размещение в grid, остальные карточки обтекают.
-     Колонок в сетке — по вычисленному шаблону (auto-fill), поэтому пересчёт на ресайзе:
-     на 2 колонках «создать» уходит в 2/1, акция остаётся 4/2. */
+  /* Позиции промо-карточек — по порядковому номеру в сетке: «создать» всегда 7-я,
+     акция всегда 14-я (на 4 колонках это 2-й ряд 3-я и 4-й ряд 2-я). Ряд и колонка
+     считаются от числа колонок (auto-fill), пересчёт при изменении ширины. */
+  const PROMO_POS = { 'promo-create': 7, 'promo-sale': 14 };
   function placePromo() {
-    const promos = [grid.querySelector('#promo-create'), grid.querySelector('#promo-sale')];
+    const promos = Object.keys(PROMO_POS).map(id => grid.querySelector('#' + id));
     // сначала снять размещение: явная колонка за пределами сетки добавляет неявный трек,
     // и вычисленный шаблон показал бы лишние колонки
     promos.forEach(el => { el.style.gridRow = ''; el.style.gridColumn = ''; });
     const cols = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
-    const put = (el, row, col) => { el.style.gridRow = row; el.style.gridColumn = Math.min(col, cols); };
-    put(promos[0], 2, cols >= 3 ? 3 : 1);
-    put(promos[1], 4, 2);
+    promos.forEach(el => {
+      const i = PROMO_POS[el.id] - 1;
+      el.style.gridRow = Math.floor(i / cols) + 1; el.style.gridColumn = (i % cols) + 1;
+    });
   }
 
   /* Бесконечная прокрутка вместо «Увидеть всех». Порция — 12 карточек; догружается,

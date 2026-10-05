@@ -260,11 +260,8 @@
   .cc-auth:hover .cc-nick, .cc-auth:focus-visible .cc-nick { max-width: 160px; opacity: 1; }
   .cc-auth:focus-visible { box-shadow: 0 0 0 2px rgba(240,171,252,.8); }
   .cc-ver { width: 12px; height: 12px; color: rgb(var(--primary)); flex: none; }
-  /* без наведения (touch) ник виден сразу — иначе до него не добраться */
-  @media (hover: none) {
-    .cc-auth { gap: 6px; padding-right: 10px; }
-    .cc-nick { max-width: 160px; opacity: 1; }
-  }
+  /* на сенсорных экранах бейдж тоже свёрнут до аватара, как на десктопе: раскрытый ник
+     перекрывал фото. Ник доступен по тапу — бейдж ведёт на страницу автора, он же в aria-label. */
 
   /* избранное — сердечко сверху справа (как у референса), в стиле бейджа автора.
      Клик заливает его, миниатюра фото «улетает» к пункту меню «Мои персонажи»,

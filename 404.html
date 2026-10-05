@@ -43,9 +43,8 @@
   // маршруты прода lovix.ai, которых в прототипе нет — подсказать, что это за экран
   var rel = location.pathname.slice(base.length).replace(/\/$/, '');
   var KNOWN = { 'companion-builder': 'конструктор компаньонов', 'ai-anime': 'раздел «Аниме»', 'ai-boyfriend': 'раздел «Парни»',
-    'ai-girlfriend': 'раздел «Девушки» — это главная', 'about': 'страница «О нас»', 'contacts': 'контакты', 'affiliate': 'партнёрская программа' };
-  if (rel === 'ai-girlfriend') location.replace(base);
-  else if (KNOWN[rel]) document.getElementById('why').textContent = 'На проде здесь ' + KNOWN[rel] + ' — в макетах этот экран ещё не прорисован.';
+    'ai-girlfriend': 'раздел каталога «Девушки»', 'about': 'страница «О нас»', 'contacts': 'контакты', 'affiliate': 'партнёрская программа' };
+  if (KNOWN[rel]) document.getElementById('why').textContent = 'На проде здесь ' + KNOWN[rel] + ' — в макетах этот экран ещё не прорисован.';
 </script>
 </body>
 </html>

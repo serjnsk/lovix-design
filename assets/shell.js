@@ -63,7 +63,7 @@
       todo: '«{x}» — экран ещё не прорисован в макетах', todo_map: 'Все экраны',
       guest_off: 'Как на проде: без входа «{x}» перекидывает на {y}', to_home: 'главную', to_plans: 'тарифы', user_set: 'Прототип: пользователь — <b>{u}</b>',
       tier_set: 'Демо: тариф <b>{t}</b>', bye: 'Вы вышли из аккаунта', b_create: 'Конструктор компаньонов',
-      b_support: 'Поддержка', b_anime: 'Раздел «Аниме»', b_boys: 'Раздел «Парни»' },
+      b_support: 'Поддержка', b_girls: 'Раздел каталога „Девушки“', b_anime: 'Раздел каталога „Аниме“', b_boys: 'Раздел каталога „Парни“' },
     en: { create: 'Create', explore: 'Explore', chats: 'My chats', models: 'My characters', sub: 'Subscription',
       account: 'My account', support: 'Support', lang: 'English', flag: '🇬🇧', menu: 'Menu',
       nav: ['Girls', 'Anime', 'Guys'], login: 'Sign in', start: 'Start for free', start_short: 'Start',
@@ -73,7 +73,7 @@
       todo: '“{x}” is not designed yet', todo_map: 'All screens',
       guest_off: 'As on prod: “{x}” redirects guests to {y}', to_home: 'the home page', to_plans: 'plans', user_set: 'Prototype: user — <b>{u}</b>',
       tier_set: 'Demo: <b>{t}</b> plan', bye: 'Signed out', b_create: 'Companion builder',
-      b_support: 'Support', b_anime: 'Anime section', b_boys: 'Guys section' },
+      b_support: 'Support', b_girls: 'Girls catalog section', b_anime: 'Anime catalog section', b_boys: 'Guys catalog section' },
     de: { create: 'Erstellen', explore: 'Entdecken', chats: 'Meine Chats', models: 'Meine Charaktere', sub: 'Abo',
       account: 'Mein Konto', support: 'Support', lang: 'Deutsch', flag: '🇩🇪', menu: 'Menü',
       nav: ['Frauen', 'Anime', 'Männer'], login: 'Anmelden', start: 'Kostenlos starten', start_short: 'Starten',
@@ -83,7 +83,7 @@
       todo: '„{x}“ ist noch nicht gestaltet', todo_map: 'Alle Screens',
       guest_off: 'Wie auf Prod: „{x}“ leitet Gäste auf {y} um', to_home: 'die Startseite', to_plans: 'Tarife', user_set: 'Prototyp: Nutzer — <b>{u}</b>',
       tier_set: 'Demo: Tarif <b>{t}</b>', bye: 'Abgemeldet', b_create: 'Companion-Builder',
-      b_support: 'Support', b_anime: 'Anime-Bereich', b_boys: 'Bereich „Männer“' }
+      b_support: 'Support', b_girls: 'Katalogbereich „Frauen“', b_anime: 'Katalogbereich „Anime“', b_boys: 'Katalogbereich „Männer“' }
   };
   var L = T[LANG] || T.ru;
   var TIER_NAME = { free: 'Free', premium: 'Premium', vip: 'VIP' };
@@ -207,7 +207,8 @@
     }
     return '<button class="lx-burger" type="button" aria-label="' + L.menu + '" data-lx-drawer>' + ic('menu') + '</button>' +
       '<a class="logo" href="' + u(HOME[LANG] || '') + '">' + ic('logo') + '<b>LOVI<span>X</span></b></a>' +
-      '<nav class="tb-nav"><a href="' + u(HOME[LANG] || '') + '">' + L.nav[0] + '</a><a href="#" data-todo="' + L.b_anime + '">' + L.nav[1] + '</a><a href="#" data-todo="' + L.b_boys + '">' + L.nav[2] + '</a></nav>' +
+      // разделы каталога (на проде /ai-girlfriend, /ai-anime, /ai-boyfriend) в макетах не прорисованы
+      '<nav class="tb-nav"><a href="#" data-todo="' + L.b_girls + '">' + L.nav[0] + '</a><a href="#" data-todo="' + L.b_anime + '">' + L.nav[1] + '</a><a href="#" data-todo="' + L.b_boys + '">' + L.nav[2] + '</a></nav>' +
       '<div class="tb-right' + (S.auth ? ' is-auth' : '') + '">' + right + '</div>';
   }
   function menuHtml() {

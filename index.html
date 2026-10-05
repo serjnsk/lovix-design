@@ -27,7 +27,12 @@
     border-radius: 1.1rem; padding: 26px 28px;
     transition: transform .18s, border-color .18s, box-shadow .18s;
   }
-  a.pcard:hover { transform: translateY(-2px); border-color: rgba(217,70,239,.5); box-shadow: 0 18px 50px rgba(217,70,239,.14); }
+  .pcard { position: relative; }
+  .pcard:hover { transform: translateY(-2px); border-color: rgba(217,70,239,.5); box-shadow: 0 18px 50px rgba(217,70,239,.14); }
+  /* вся карточка кликабельна: ссылка заголовка растянута на карточку, ссылки в тексте — поверх неё */
+  .pcard h2 a.t { color: inherit; text-decoration: none; }
+  .pcard h2 a.t::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+  .pcard p a { position: relative; z-index: 1; }
   .pcard h2 { font-size: 1.3rem; font-weight: 800; }
   .pcard p { color: rgb(var(--muted)); font-size: .93rem; margin-top: 6px; line-height: 1.5; }
   .pcard .status {
@@ -35,8 +40,10 @@
     padding: 6px 14px; border-radius: 999px; white-space: nowrap;
     background: rgba(217,70,239,.15); color: #f0abfc; border: 1px solid rgba(217,70,239,.4);
   }
-  .pcard.soon { border-style: dashed; background: transparent; }
-  .pcard.soon .status { background: rgba(255,255,255,.05); color: rgb(var(--muted2)); border-color: rgba(255,255,255,.12); }
+  .pcard p a { color: #f0abfc; }
+  .pcard p.more { font-size: .86rem; color: rgb(var(--muted2)); margin-top: 10px; }
+  .pcard p.more a { font-weight: 600; }
+  @media (max-width: 560px) { .wrap { padding: 36px 16px 60px; } .pcard { grid-template-columns: 1fr; gap: 12px; padding: 20px 18px; } .pcard .status { justify-self: start; } }
   .links { margin-top: 46px; color: rgb(var(--muted2)); font-size: .86rem; line-height: 1.7; }
   .links a { color: #f0abfc; }
 </style>
@@ -63,54 +70,74 @@
 
   <div class="pages">
 
-    <a class="pcard" href="price/">
+    <div class="pcard">
       <div>
-        <h2>Страница тарифов · Price</h2>
-        <p>Финальное решение: сетка Free / Premium / VIP + персонаж-слайдер, чекаут-шаг со сводкой заказа и выбором способа оплаты (карта РФ / Worldwide / крипта), FAQ. Спецификация для вёрстки — <a href="https://github.com/serjnsk/lovix-design/blob/main/price/SPEC.md" style="color:#f0abfc">SPEC.md</a>.</p>
+        <h2><a class="t" href="price/">Страница тарифов · Price</a></h2>
+        <p>Финальное решение: сетка Free / Premium / VIP + персонаж-слайдер, чекаут-шаг со сводкой заказа и выбором способа оплаты (карта РФ / Worldwide / крипта), FAQ. Спецификация для вёрстки — <a href="https://github.com/serjnsk/lovix-design/blob/main/price/SPEC.md">SPEC.md</a>.</p>
       </div>
       <span class="status">финал</span>
-    </a>
-
-    <a class="pcard" href="packages/">
+    </div>
+    <div class="pcard">
       <div>
-        <h2>Пакеты токенов · Packages</h2>
-        <p>Финальное решение: витрина трёх номиналов (100 / 300 / 700, «Популярный» выделен), чекаут с выбором способа оплаты, FAQ. Спецификация — <a href="https://github.com/serjnsk/lovix-design/blob/main/packages/SPEC.md" style="color:#f0abfc">SPEC.md</a>.</p>
+        <h2><a class="t" href="packages/">Пакеты токенов · Packages</a></h2>
+        <p>Финальное решение: витрина трёх номиналов (100 / 300 / 700, «Популярный» выделен), чекаут с выбором способа оплаты, FAQ. Спецификация — <a href="https://github.com/serjnsk/lovix-design/blob/main/packages/SPEC.md">SPEC.md</a>.</p>
       </div>
       <span class="status">финал</span>
-    </a>
-
-    <a class="pcard" href="notifications/">
+    </div>
+    <div class="pcard">
       <div>
-        <h2>Система уведомлений · Notifications</h2>
-        <p>Финальное решение: дропдаун-центр у колокольчика вместо отдельной страницы. Все юзерфлоу проработаны и кликабельны: чтение, hover-действия с undo, CTA-конверсия (Д2), критичное закреплённое (У4), настройки категорий (Д7), история, real-time. Флоу — <a href="https://github.com/serjnsk/lovix-design/blob/main/notifications/FLOWS.md" style="color:#f0abfc">FLOWS.md</a>.</p>
+        <h2><a class="t" href="notifications/">Система уведомлений · Notifications</a></h2>
+        <p>Финальное решение: дропдаун-центр у колокольчика вместо отдельной страницы. Все юзерфлоу проработаны и кликабельны: чтение, hover-действия с undo, CTA-конверсия (Д2), критичное закреплённое (У4), настройки категорий (Д7), история, real-time. Флоу — <a href="https://github.com/serjnsk/lovix-design/blob/main/notifications/FLOWS.md">FLOWS.md</a>.</p>
       </div>
       <span class="status">финал · флоу</span>
-    </a>
-
-    <a class="pcard" href="chat/">
+    </div>
+    <div class="pcard">
       <div>
-        <h2>Чат с компаньоном · Chat</h2>
+        <h2><a class="t" href="chat/">Чат с компаньоном · Chat</a></h2>
         <p>Финал: композер с действиями внутри блока (Фото / Голосовое / Видео-пресеты VIP / Сценарии), цена запроса — в кнопке отправки, единый переключатель Roleplay/Чат со сменой фона ленты, сценарии «Обычные/🌶 Spicy» с замками на Free, все виды сообщений (запрос, фото, голосовое, видео с тариф-разлочкой, ошибка с ретраем), пейволлы нехватки/VIP/подписки на месте, вычищенный профиль. Демо-циклер тарифа — кнопкой подписки в топбаре.</p>
       </div>
       <span class="status">финал</span>
-    </a>
-
-    <a class="pcard" href="auth/ru/#signup">
+    </div>
+    <div class="pcard">
       <div>
-        <h2>Регистрация и вход · Auth</h2>
-        <p>Модалка по референсу secrets.ai: слева — слайдер фич в формате промо-баннеров главной (смена раз в 10 с), справа — форма: провайдеры, email-шаг, вход, восстановление пароля. Две версии провайдеров по подпапке в URL: <a href="auth/ru/#signup" style="color:#f0abfc">ru</a> — Google + Telegram; <a href="auth/en/#signup" style="color:#f0abfc">en</a> и <a href="auth/de/#signup" style="color:#f0abfc">de</a> — Google + Apple. На главной (<a href="catalog/v2.html" style="color:#f0abfc">catalog/v2</a>) — те же кнопки «Войти» / «Начать бесплатно» в шапке.</p>
+        <h2><a class="t" href="catalog/v2.html">Главная · Catalog</a></h2>
+        <p>Текущая рабочая версия главной: промо-баннеры в формате secrets.ai (две карточки 2.7:1, восемь интентов — звонки, видео, конструктор, Spicy, групповой чат, авторы, аниме, акция; карусель парами, фильтр по тарифу), заголовок с вводным абзацем, фильтры и категории, каталог с бесконечной прокруткой, кнопки «Войти» / «Начать бесплатно». Телефон: баннер ≈ ⅓ первого экрана, одна фигура на карточку.</p>
+        <p class="more">Ранние варианты: <a href="catalog/v1.html">v1 · каталог с авторством</a> · <a href="catalog/v3.html">v3 · центрированный hero-слайдер</a></p>
       </div>
       <span class="status">в работе</span>
-    </a>
-
-    <div class="pcard soon">
-      <div>
-        <h2>Следующая страница</h2>
-        <p>Здесь появятся редизайны других страниц сайта.</p>
-      </div>
-      <span class="status">скоро</span>
     </div>
-
+    <div class="pcard">
+      <div>
+        <h2><a class="t" href="catalog/banners-ru.html">Промо-баннеры главной · RU / EN / DE</a></h2>
+        <p>Листы для сверки текстов: каждая из восьми карточек в десктопном виде и рядом — телефонная (фрейм 340px), под парой полный текст и тарифные пометки. Переводы и генератор — <a href="https://github.com/serjnsk/lovix-design/blob/main/catalog/banners-build.py">catalog/banners-build.py</a>.</p>
+        <p class="more">Листы: <a href="catalog/banners-ru.html">RU</a> · <a href="catalog/banners-en.html">EN</a> · <a href="catalog/banners-de.html">DE</a> &nbsp;·&nbsp; Только телефон: <a href="catalog/banners-m-ru.html">RU</a> · <a href="catalog/banners-m-en.html">EN</a> · <a href="catalog/banners-m-de.html">DE</a></p>
+      </div>
+      <span class="status">в работе</span>
+    </div>
+    <div class="pcard">
+      <div>
+        <h2><a class="t" href="auth/ru/#signup">Регистрация и вход · Auth</a></h2>
+        <p>Модалка по референсу secrets.ai: слева — слайдер фич в формате промо-баннеров главной (смена раз в 10 с), справа — форма: провайдеры, email-шаг, вход, восстановление пароля. Две версии провайдеров по подпапке в URL: ru — Google + Telegram; en и de — Google + Apple.</p>
+        <p class="more">Регистрация: <a href="auth/ru/#signup">RU</a> · <a href="auth/en/#signup">EN</a> · <a href="auth/de/#signup">DE</a> &nbsp;·&nbsp; Вход: <a href="auth/ru/#login">RU</a> · <a href="auth/en/#login">EN</a> · <a href="auth/de/#login">DE</a></p>
+      </div>
+      <span class="status">в работе</span>
+    </div>
+    <div class="pcard">
+      <div>
+        <h2><a class="t" href="models/v2.html">Мои персонажи · Models</a></h2>
+        <p>Текущая продовая страница «Мои ИИ-компаньоны» плюс вкладка «Избранное» — туда улетают боты по сердечку с главной (состояние общее с каталогом). Карточка бота ведёт себя при наведении так же, как на главной.</p>
+        <p class="more">Черновик: <a href="models/v1.html">v1 · статусы публикации</a></p>
+      </div>
+      <span class="status">в работе</span>
+    </div>
+    <div class="pcard">
+      <div>
+        <h2><a class="t" href="review/">Авторы компаньонов · черновики фичи</a></h2>
+        <p>Пользователи публикуют своих персонажей: ники и бейдж автора на карточках, страница автора с подписками, подписки в профиле. Обзор изменений с открытыми вопросами — на странице <a href="review/">review</a>; сами черновики — ниже.</p>
+        <p class="more">Страница автора: <a href="author/">варианты</a> (<a href="author/v1.html">v1 · шапка-баннер</a> · <a href="author/v2.html">v2 · боковая колонка</a> · <a href="author/v3.html">v3 · без подложки</a>) &nbsp;·&nbsp; <a href="bot/v1.html">страница компаньона с авторством</a> &nbsp;·&nbsp; <a href="profile/v1.html">профиль · описание автора</a> &nbsp;·&nbsp; <a href="subscriptions/v1.html">мои подписки</a> &nbsp;·&nbsp; чат с автором: <a href="chat/author-v1.html">v1</a> · <a href="chat/author-v2.html">v2</a> &nbsp;·&nbsp; <a href="notifications/author-v2.html">уведомления автора</a></p>
+      </div>
+      <span class="status">черновики</span>
+    </div>
   </div>
 
   <div class="links">

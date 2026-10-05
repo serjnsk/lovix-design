@@ -768,7 +768,9 @@
   }
 
   /* Промо-карточки сетки. Цену и скидку акции в проде отдаёт бэкенд (как у pb-sale),
-     для VIP акция скрывается. Портреты коллажа — из каталога ботов. */
+     для VIP акция скрывается.
+     Фото promo/*-trio.webp — склейка трёх аватаров моделей secrets.ai (скрипт promo/compose-trio.py),
+     временные; перед продом заменить на свои рендеры. */
   const createCard = `
     <a class="cc promo promo-create" href="#" data-intent="create" id="promo-create">
       <div class="cc-art" aria-hidden="true"><img src="../assets/img/promo/create-trio.webp" alt="" loading="eager"></div>

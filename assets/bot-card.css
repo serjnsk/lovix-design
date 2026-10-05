@@ -1,0 +1,142 @@
+/* ============================================================
+   Карточка бота — общий компонент для всех страниц прототипа: каталог главной (/, /en/, /de/),
+   «Мои персонажи» (свои модели и «Избранное»), страница автора, страница компаньона.
+   Эталон — главная (бывшая catalog/v2.html): фото на всю карточку, имя и возраст, метрики-
+   пилюли; описания на карточке нет. Разметка — botCardHtml() в assets/bot-card.js, там же
+   поведение при наведении (видео, подсветка). Промо-карточки сетки — только на главной.
+   ============================================================ */
+
+/* карточка компаньона — по макету Figma 5201:52203 (285×400, r12).
+   Поведение — по референсу secrets.ai: в покое у всех карточек статичное фото,
+   видео играет только у карточки под курсором, она же подсвечивается. */
+.cc {
+  position: relative; overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 285 / 400;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  transition: transform .2s, box-shadow .2s;
+  cursor: pointer; outline: 0;
+}
+/* Реальные фото и видео-превью ботов с lovix.ai/ru (assets/img/bots, assets/video/bots).
+   Фото на всю карточку; видео лежит поверх и проявляется только у активной карточки. */
+.cc-photo, .cc-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; background: #1b171d;
+  transition: transform .5s ease, opacity .25s ease;
+}
+.cc-video { opacity: 0; }
+/* вся карточка — ссылка в чат с ботом (как на проде: /bot/{slug}/chat); бейдж автора
+   и сердечко лежат выше и остаются отдельными кнопками */
+.cc-link { position: absolute; inset: 0; z-index: 3; border-radius: inherit; outline: 0; }
+.cc-link:focus-visible { box-shadow: inset 0 0 0 2px rgba(240,171,252,.85); }
+.cc-video.is-visible { opacity: 1; }
+/* подсветка активной карточки (референс: обводка 1.5px внутрь + внутреннее свечение),
+   класс is-active ставит скрипт по hover/focus; медиа чуть приближается */
+.cc::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 0 0 1.5px rgba(217,70,239,.75), inset 0 0 44px rgba(217,70,239,.45);
+  opacity: 0; transition: opacity .25s ease;
+}
+.cc.is-active { transform: translateY(-3px); box-shadow: 0 22px 50px rgba(217,70,239,.22); }
+.cc.is-active::after { opacity: 1; }
+.cc.is-active .cc-photo, .cc.is-active .cc-video { transform: scale(1.04); }
+/* подложка под текст — выше и плотнее (референс: чёрный 60 % → прозрачный на половине
+   высоты): держит белый текст даже на светлом фото */
+.cc-shade {
+  position: absolute; inset: auto 0 0 0; height: 48%; z-index: 1;
+  background: linear-gradient(180deg, rgba(16,14,16,0) 0%, rgba(16,14,16,.5) 45%, rgba(16,14,16,.9) 100%);
+}
+.cc-meta {
+  position: relative; z-index: 2;
+  padding: 0 14px 14px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.cc-text { display: flex; flex-direction: column; gap: 3px; }
+/* des/H/h3 semi — 24/28; тень отделяет текст от светлых участков фото */
+.cc-name {
+  display: flex; align-items: baseline; gap: 6px;
+  font-size: 24px; line-height: 28px; font-weight: 600; color: #fff;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 2px 14px rgba(0,0,0,.45);
+}
+.cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.cc-name span { opacity: .7; }
+/* метрики — тёмные пилюли с блюром (референс: black/75 + blur): читаются на любом фото */
+.cc-foot { display: flex; align-items: center; gap: 6px; }
+.cc-m {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 9px; border-radius: 999px;
+  background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  font-size: 13px; font-weight: 500; color: #fff;
+}
+.cc-ic { width: 13px; height: 13px; flex: none; opacity: .9; }
+
+
+/* автор — бейдж сверху слева, как на secrets.ai/browse: в покое только круглый аватар,
+   при наведении (или фокусе) пилюля раскрывается и показывает «@ник» с галочкой;
+   весь бейдж — ссылка на страницу автора. Внизу карточки — имя, возраст и метрики. */
+.cc-auth {
+  position: absolute; top: 10px; left: 10px; z-index: 4;
+  display: inline-flex; align-items: center; gap: 0;
+  height: 28px; padding: 3px; border-radius: 999px;
+  background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  color: #fff; text-decoration: none; outline: 0;
+  transition: gap .2s ease, padding .2s ease, background .2s ease;
+}
+.cc-av {
+  width: 22px; height: 22px; flex: none; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+}
+.cc-nick {
+  display: inline-flex; align-items: center; gap: 4px;
+  max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap;
+  font-size: 12px; font-weight: 600;
+  transition: max-width .25s ease, opacity .2s ease;
+}
+.cc-auth:hover, .cc-auth:focus-visible { gap: 6px; padding-right: 10px; background: rgba(16,14,16,.82); }
+.cc-auth:hover .cc-nick, .cc-auth:focus-visible .cc-nick { max-width: 160px; opacity: 1; }
+.cc-auth:focus-visible { box-shadow: 0 0 0 2px rgba(240,171,252,.8); }
+.cc-ver { width: 12px; height: 12px; color: rgb(var(--primary)); flex: none; }
+/* на сенсорных экранах бейдж тоже свёрнут до аватара, как на десктопе: раскрытый ник
+   перекрывал фото. Ник доступен по тапу — бейдж ведёт на страницу автора, он же в aria-label. */
+
+/* избранное — сердечко сверху справа (как у референса), в стиле бейджа автора.
+   Клик заливает его, миниатюра фото «улетает» к пункту меню «Мои персонажи»,
+   на пункте растёт бейдж-счётчик. */
+.cc-fav {
+  position: absolute; top: 10px; right: 10px; z-index: 4;
+  width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  color: #fff; transition: background .2s, transform .15s, color .2s;
+}
+.cc-fav .ic { width: 17px; height: 17px; }
+.cc-fav .f { display: none; }
+.cc-fav:hover { background: rgba(16,14,16,.82); transform: scale(1.08); }
+.cc-fav:focus-visible { box-shadow: 0 0 0 2px rgba(240,171,252,.8); }
+.cc-fav.on { color: rgb(var(--acc-to)); }
+.cc-fav.on .o { display: none; }
+.cc-fav.on .f { display: block; animation: fav-pop .35s ease; }
+@keyframes fav-pop { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
+
+/* вырез на градиентной подложке (свои модели, черновые компаньоны без фото): та же карточка,
+   фигура по центру сверху */
+.cc-bg { position: absolute; inset: 0; }
+.cc-photo.is-cut { object-fit: cover; object-position: 50% 6%; background: none; }
+
+/* действие в правом верхнем углу — в стиле сердечка: убрать из избранного (заливка), удалить модель */
+.cc-fav.cc-del:hover { background: rgba(239,68,68,.75); }
+/* статус своей модели («Активен», «Генерируется») — цветная пилюля в ряду метрик */
+.cc-m.st { background: rgba(37,99,235,.88); font-weight: 600; }
+.cc-m.st.wait { background: rgba(217,119,6,.88); }
+
+/* две колонки на телефоне (~150px): имя меньше, пилюли компактнее */
+@media (max-width: 560px) {
+  .cc-meta { padding: 0 10px 10px; gap: 8px; }
+  .cc-name { font-size: 18px; line-height: 22px; gap: 5px; }
+  .cc-foot { gap: 4px; }
+  .cc-m { padding: 3px 6px; font-size: 11.5px; gap: 3px; }
+  .cc-ic { width: 12px; height: 12px; }
+}

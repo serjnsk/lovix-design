@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../assets/shell.css">
+<link rel="stylesheet" href="../assets/bot-card.css">
 <style>
   /* ── страница автора, вариант 1. Все классы с префиксами au-/cc-, общие стили не трогаются ── */
 
@@ -67,68 +70,9 @@
   /* сетка компаньонов */
   .au-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
 
-  /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12) */
-  .cc {
-    position: relative; overflow: hidden;
-    border-radius: 12px;
-    aspect-ratio: 285 / 400;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    transition: transform .18s, box-shadow .18s;
-    cursor: pointer;
-  }
-  .cc:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(217,70,239,.16); }
-  .cc-bg { position: absolute; inset: 0; }
-  .cc-img {
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    height: 92%; width: auto; max-width: none;
-    filter: drop-shadow(0 12px 26px rgba(0,0,0,.45));
-  }
-  /* градиент из макета: прозрачный → rgba(16,14,16,.92), высота 110 */
-  .cc-shade {
-    position: absolute; inset: auto 0 0 0; height: 110px;
-    background: linear-gradient(180deg, rgba(16,14,16,0), rgba(16,14,16,.92));
-  }
-  .cc-meta {
-    position: relative;
-    padding: 0 16px 12px;
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .cc-text { display: flex; flex-direction: column; gap: 2px; }
-  /* des/H/h3 semi — 24/28 */
-  .cc-name {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 24px; line-height: 28px; font-weight: 600; color: #fff;
-    white-space: nowrap;
-  }
-  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
-  .cc-name span { opacity: .6; }
-  /* des/S/s1 regu — 14/16 */
-  .cc-desc {
-    font-size: 14px; line-height: 16px; font-weight: 400; color: #fff; opacity: .62;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  .cc-foot { display: flex; align-items: center; gap: 12px; padding: 2px 0; }
-  .cc-m {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 14px; font-weight: 400; color: #fff; opacity: .9;
-  }
-  .cc-m.like { gap: 3px; }
-  .cc-ic { width: 14px; height: 14px; flex: none; }
-
+  /* карточка бота — общий компонент assets/bot-card.css + botCardHtml() (как на главной: без описания) */
 
   /* тост — компонент из центра уведомлений, поднят к верху экрана */
-  .toast {
-    position: fixed; top: 24px; left: 50%;
-    transform: translateX(-50%) translateY(-14px);
-    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
-    border-radius: 12px; padding: 12px 18px;
-    font-size: .9rem; font-weight: 600; color: #fff;
-    opacity: 0; pointer-events: none; transition: .25s;
-    z-index: 95; box-shadow: 0 14px 40px rgba(0,0,0,.55);
-    max-width: min(92vw, 480px); text-align: center;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast b { color: #f0abfc; }
 
   /* адаптив */
   @media (max-width: 900px) {
@@ -142,6 +86,7 @@
     .au-ava { width: 68px; height: 68px; font-size: 1.7rem; }
     .au-nick { font-size: 1.5rem; }
     .au-stat { padding: 0 12px; }
+    .au-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }   /* две колонки, как каталог на телефоне */
   }
 
   /* Кнопки — по боевому lovix.ai: высота 52, радиус 12, кегль 18/600, без свечения.
@@ -178,37 +123,15 @@
   </defs>
 </svg>
 
-<aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
-  <header class="tb">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
-    <div class="tb-right">
-      <a class="promo">Летняя Распродажа до 75% 🔥</a>
-      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>1</i></button>
-      <div class="avatar">A</div>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="../assets/shell.js"></script>
 
   <main class="content">
 
-    <a class="au-back"><svg class="ic"><use href="#i-back"/></svg>Назад в каталог</a>
+    <a class="au-back" href="../"><svg class="ic"><use href="#i-back"/></svg>Назад в каталог</a>
 
     <section class="au-hero">
       <div class="au-row">
@@ -232,16 +155,19 @@
     </section>
 
     <div class="au-sec">
-      <h2>Компаньоны</h2><i>9</i>
+      <h2>Компаньоны</h2><i id="au-cnt">9</i>
     </div>
 
     <div class="au-grid" id="grid"></div>
 
   </main>
+
+  <footer class="site-foot"></footer>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
 
+<script src="../assets/bots-data.js"></script>
+<script src="../assets/bot-card.js"></script>
 <script>
   const BOTS = [
     ['Марго', 27, 'Я реставрирую старые фотографии и знаю о людях больше, чем говорю вслух.', '318k', '4.8'],
@@ -268,30 +194,24 @@
     'linear-gradient(160deg, #5e2a2a, #8b3d2d)'
   ];
 
-  // кадрировка и тон: два исходных выреза, но разная крупность и подача — карточки не выглядят одинаковыми
-  const FRAME = [
-    { h: '92%',  b: '0',     f: 'saturate(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '126%', b: '-6%',   f: 'saturate(.94) brightness(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '104%', b: '-2%',   f: 'saturate(1.08) contrast(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '138%', b: '-14%',  f: 'saturate(.9) brightness(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '88%',  b: '0',     f: 'saturate(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '116%', b: '-5%',   f: 'saturate(.96) contrast(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '98%',  b: '-1%',   f: 'saturate(1.1) brightness(.98) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '132%', b: '-10%',  f: 'saturate(.92) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '110%', b: '-3%',   f: 'saturate(1.04) contrast(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' }
-  ];
 
 
 
-  /* всплывающее уведомление о подписке */
-  let toastT;
-  function toast(html) {
-    const t = document.getElementById('toast');
-    t.innerHTML = html;
-    t.classList.add('show');
-    clearTimeout(toastT);
-    toastT = setTimeout(() => t.classList.remove('show'), 2600);
-  }
+  /* всплывающее уведомление о подписке — общий тост */
+  const toast = html => Lovix.toast(html, 2600);
+
+  /* Автор — из адреса: /creator/?u=ник (бейдж автора на карточках каталога и «Избранного»).
+     Шапка и сетка — из данных каталога (assets/bots-data.js): у автора его боты с фото,
+     клик — чат с ботом. У @lunaria (демо-пользователь, его профиль) ниже — черновые
+     компаньоны из исходного варианта страницы. */
+  const NICK = (new URLSearchParams(location.search).get('u') || 'lunaria');
+  const AU = CATALOG_AUTHORS[NICK] ? NICK : 'lunaria', AUTHOR = CATALOG_AUTHORS[AU];
+  const MINE = CATALOG_BOTS.map((b, i) => [b, i]).filter(([b]) => b[5] === AU);
+  document.title = 'Lovix — @' + AU;
+  document.querySelector('.au-nick').innerHTML = '@' + AU + (AUTHOR.verified ? '<svg aria-label="Подтверждённый автор"><use href="#i-verified"/></svg>' : '');
+  const ava = document.querySelector('.au-ava');
+  ava.textContent = AUTHOR.name[0].toUpperCase();
+  if (AUTHOR.color) ava.style.background = AUTHOR.color;
   function subToast(on, nick) {
     toast(on ? `Вы подписались на <b>@${nick}</b>` : `Вы отписались от <b>@${nick}</b>`);
   }
@@ -307,23 +227,27 @@
     };
   })();
 
-  document.getElementById('grid').innerHTML = BOTS.map(([name, age, desc, talks, rate], i) => `
-    <article class="cc">
-      <div class="cc-bg" style="background:${BG[i % BG.length]}"></div>
-      <img class="cc-img" src="../assets/img/model-${(i % 2) + 1}.webp" alt="${name}"
-           style="height:${FRAME[i % FRAME.length].h}; bottom:${FRAME[i % FRAME.length].b}; filter:${FRAME[i % FRAME.length].f}">
-      <div class="cc-shade"></div>
-      <div class="cc-meta">
-        <div class="cc-text">
-          <div class="cc-name"><b>${name},</b><span>${age}</span></div>
-          <p class="cc-desc">${desc}</p>
-        </div>
-        <div class="cc-foot">
-          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
-          <span class="cc-m like"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${rate}</span>
-        </div>
-      </div>
-    </article>`).join('');
+  // лайки черновых компаньонов (в черновике был рейтинг; на карточках, как на главной, — число лайков)
+  const likesOf = t => (parseFloat(t) * 0.065).toFixed(1).replace(/\.0$/, '') + 'k';
+  const catalogCards = MINE.map(([[name, age, desc, talks, likes], i]) => botCardHtml({
+    name, age, img: `../assets/img/bots/${CATALOG_MEDIA[i]}`, video: `../assets/video/bots/${CATALOG_MEDIA[i].replace(/\.\w+$/, '.mp4')}`,
+    href: `../chat/?bot=${i}`, label: `Чат: ${name}, ${age}`, metrics: [talks, fmtCount(likes)],
+  }));
+  const draftCards = AU !== 'lunaria' ? [] : BOTS.map(([name, age, desc, talks, rate], i) => botCardHtml({
+    name, age, img: `../assets/img/model-${(i % 2) + 1}.webp`, bg: BG[i % BG.length],
+    href: `../chat/?with=${encodeURIComponent(name)}`, linkAttrs: ` data-with="${i}"`, label: `Чат: ${name}, ${age}`,
+    metrics: [talks, likesOf(talks)],
+  }));
+  document.getElementById('grid').innerHTML = catalogCards.concat(draftCards).join('');
+  document.getElementById('au-cnt').textContent = catalogCards.length + draftCards.length;
+  initBotCards(document.getElementById('grid'));   // наведение — как в каталоге
+  // черновой компаньон — чат-заглушка с его именем и фото
+  document.getElementById('grid').addEventListener('click', e => {
+    const a = e.target.closest('[data-with]'); if (!a) return;
+    e.preventDefault();
+    const [name, age, desc] = BOTS[+a.dataset.with];
+    Lovix.chatWith({ name, age, img: Lovix.url('assets/img/model-' + (+a.dataset.with % 2 + 1) + '.webp'), text: desc });
+  });
 
   (() => {
     const b = document.getElementById('subBtn');
@@ -332,10 +256,11 @@
       const on = !b.classList.contains('subbed');
       b.classList.toggle('subbed', on);
       b.textContent = on ? '✓ Вы подписаны' : 'Подписаться';
-      subToast(on, 'lunaria');
+      subToast(on, AU);
     });
   })();
 </script>
 
+<script src="../assets/auth.js"></script>
 </body>
 </html>

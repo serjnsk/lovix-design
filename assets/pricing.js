@@ -1,27 +1,28 @@
-/* Lovix pricing — пересчёт цен по периодам.
-   Данные из токеномики: PREMIUM_PRICE_1M=990, VIP_PRICE_1M=1590,
-   PERIOD_DISCOUNT_3M=10%, PERIOD_DISCOUNT_1Y=20%.
+/* Lovix pricing — пересчёт цен по периодам. Значения — как на проде lovix.ai/ru/purchase
+   (сверено 2026-10-05): PREMIUM_PRICE_1M=990, VIP_PRICE_1M=1590,
+   PERIOD_DISCOUNT_3M=10%, PERIOD_DISCOUNT_1Y=45%. Сумма за период считается от цены
+   без округления (990 × 0,55 × 12 = 6 534), в месяц — округлённая (545).
    Транш токенов одинаков во всех периодах (правило Т10). */
 
 const PRICING = {
-  premium: { m1: { pm: 990,  total: 990   }, m3: { pm: 890,  total: 2670  }, y1: { pm: 790,  total: 9490  } },
-  vip:     { m1: { pm: 1590, total: 1590  }, m3: { pm: 1430, total: 4290  }, y1: { pm: 1272, total: 15260 } }
+  premium: { m1: { pm: 990,  total: 990   }, m3: { pm: 891,  total: 2673  }, y1: { pm: 545, total: 6534  } },
+  vip:     { m1: { pm: 1590, total: 1590  }, m3: { pm: 1431, total: 4293  }, y1: { pm: 875, total: 10494 } }
 };
 const SAVE = {
-  premium: { m3: 300, y1: 2390 },
-  vip:     { m3: 480, y1: 3820 }
+  premium: { m3: 297, y1: 5346 },
+  vip:     { m3: 477, y1: 8586 }
 };
 
 /* Мультивалютный прайс: цены НЕ пересчитываются по курсу — у каждой валюты
    свой хардкод с маркетинговыми значениями (цифры предварительные).
    Валюта привязана к способу оплаты: Карта РФ → RUB, Worldwide и Крипта → USD. */
 const PRICING_USD = {
-  premium: { m1: { pm: 9.99,  total: 9.99  }, m3: { pm: 8.99,  total: 26.99  }, y1: { pm: 7.92,  total: 94.99  } },
-  vip:     { m1: { pm: 15.99, total: 15.99 }, m3: { pm: 14.39, total: 42.99  }, y1: { pm: 12.75, total: 152.99 } }
+  premium: { m1: { pm: 9.99,  total: 9.99  }, m3: { pm: 8.99,  total: 26.99  }, y1: { pm: 5.49, total: 65.93  } },
+  vip:     { m1: { pm: 15.99, total: 15.99 }, m3: { pm: 14.39, total: 42.99  }, y1: { pm: 8.79, total: 105.53 } }
 };
 const SAVE_USD = {
-  premium: { m3: 2.98, y1: 24.89 },
-  vip:     { m3: 4.98, y1: 38.89 }
+  premium: { m3: 2.98, y1: 53.95 },
+  vip:     { m3: 4.98, y1: 86.35 }
 };
 const fmtUsd = n => '$' + n.toFixed(2);
 const PERIOD_WORD = { m3: 'за 3 месяца', y1: 'за год' };

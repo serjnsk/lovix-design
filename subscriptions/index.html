@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../assets/shell.css">
 <style>
   /* ── «Мои подписки». Классы su-, общие стили не трогаются ── */
 
@@ -89,18 +91,8 @@
 
 
   /* тост — компонент из центра уведомлений, поднят к верху экрана */
-  .toast {
-    position: fixed; top: 24px; left: 50%;
-    transform: translateX(-50%) translateY(-14px);
-    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
-    border-radius: 12px; padding: 12px 18px;
-    font-size: .9rem; font-weight: 600; color: #fff;
-    opacity: 0; pointer-events: none; transition: .25s;
-    z-index: 95; box-shadow: 0 14px 40px rgba(0,0,0,.55);
-    max-width: min(92vw, 480px); text-align: center;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast b { color: #f0abfc; }
+  .su-nick a { color: inherit; }
+  .su-nick a:hover { color: #f0abfc; }
 
   @media (max-width: 700px) {
     .su-row { grid-template-columns: auto 1fr; }
@@ -143,33 +135,11 @@
   </defs>
 </svg>
 
-<aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
-  <header class="tb">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
-    <div class="tb-right">
-      <a class="promo">Летняя Распродажа до 75% 🔥</a>
-      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>3</i></button>
-      <div class="avatar">A</div>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="../assets/shell.js"></script>
 
   <main class="content">
 
@@ -181,18 +151,19 @@
     <div class="su-list" id="list"></div>
 
   </main>
+
+  <footer class="site-foot"></footer>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
 
 <script>
   /* Подписки — на кого подписан пользователь. Подписчики — кто подписан на него как на автора. */
   const SUBS = [
-    { nick: 'lunaria',   ver: false, bots: 12, acts: '1.24 млн', fresh: 2 },
+    { nick: 'studio_nyx', ver: false, bots: 12, acts: '1.24 млн', fresh: 2 },
     { nick: 'lovix',     ver: true,  bots: 48, acts: '18.6 млн', fresh: 0 },
     { nick: 'nochnoy',   ver: false, bots: 7,  acts: '486k',     fresh: 1 },
     { nick: 'kseniya_w', ver: false, bots: 4,  acts: '212k',     fresh: 0 },
-    { nick: 'mirela',    ver: false, bots: 9,  acts: '904k',     fresh: 0 },
+    { nick: 'marko_s',   ver: false, bots: 9,  acts: '904k',     fresh: 0 },
   ];
 
   const FOLLOWERS = [
@@ -203,15 +174,8 @@
   ];
 
 
-  /* всплывающее уведомление о подписке */
-  let toastT;
-  function toast(html) {
-    const t = document.getElementById('toast');
-    t.innerHTML = html;
-    t.classList.add('show');
-    clearTimeout(toastT);
-    toastT = setTimeout(() => t.classList.remove('show'), 2600);
-  }
+  /* всплывающее уведомление о подписке — общий тост */
+  const toast = html => Lovix.toast(html, 2600);
   function subToast(on, nick) {
     toast(on ? `Вы подписались на <b>@${nick}</b>` : `Вы отписались от <b>@${nick}</b>`);
   }
@@ -226,7 +190,7 @@
     return `<div class="su-row">
       <div class="su-ava">${a.nick[0].toUpperCase()}</div>
       <div>
-        <div class="su-nick">@${a.nick}${a.ver ? '<svg class="su-ver"><use href="#i-verified"/></svg>' : ''}${a.fresh ? `<span class="su-new">${a.fresh} новых</span>` : ''}</div>
+        <div class="su-nick">${isSub ? `<a href="../creator/?u=${a.nick}">@${a.nick}</a>` : '@' + a.nick}${a.ver ? '<svg class="su-ver"><use href="#i-verified"/></svg>' : ''}${a.fresh ? `<span class="su-new">${a.fresh} новых</span>` : ''}</div>
         <div class="su-meta">
           <span><b>${a.bots}</b> компаньонов</span>
           <span><b>${a.acts}</b> взаимодействий</span>
@@ -249,7 +213,7 @@
            <div class="ibox"><svg class="ic"><use href="#i-heart-o"/></svg></div>
            <h3>Пока никого нет</h3>
            <p>Подпишитесь на авторов в каталоге — и не пропустите их новых компаньонов.</p>
-           <button class="btn btn-grad">Перейти в каталог</button>
+           <a class="btn btn-grad" href="../">Перейти в каталог</a>
          </div>`;
   }
 
@@ -269,5 +233,6 @@
   drawSeg(); render();
 </script>
 
+<script src="../assets/auth.js"></script>
 </body>
 </html>

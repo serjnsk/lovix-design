@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
-"""Листы промо-баннеров главной в трёх языках: catalog/banners-{ru,en,de}.html.
+"""Листы промо-баннеров главной в трёх языках: design/banners-{ru,en,de}.html.
 
-Вёрстка карточек — та же, что в catalog/v2.html (assets/promo-banners.css),
+Вёрстка карточек — та же, что на главной index.html (assets/promo-banners.css),
 здесь каждая из восьми карточек показана в десктопном виде и рядом — в
 мобильном (340px). Мобильная версия — тот же HTML в фрейме шириной 340px
-(catalog/banners-m-{lang}.html?card=…): медиа-запросы считают ширину
+(design/banners-m-{lang}.html?card=…): медиа-запросы считают ширину
 фрейма, поэтому карточка рендерится ровно как на телефоне, без второго CSS. Тексты — единственный источник переводов баннеров; при
-правке копии в v2.html (RU) обновить и здесь, затем перегенерировать:
+правке копии на главной index.html (RU) обновить и здесь, затем перегенерировать
+(и языковые версии главной — они берут тексты отсюда):
 
-    python3 catalog/banners-build.py
+    python3 tools/build-banners.py && python3 tools/build-locales.py
 """
 import re, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-VERIFIED = re.search(r'<symbol id="i-verified".*?</symbol>', (ROOT / 'catalog/v2.html').read_text(encoding='utf-8')).group(0)
+VERIFIED = re.search(r'<symbol id="i-verified".*?</symbol>', (ROOT / 'index.html').read_text(encoding='utf-8')).group(0)
 
 PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2z"/></svg>'
 PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
@@ -40,7 +41,7 @@ CARDS = [
 TEXT = {
   'ru': dict(
     lang='ru', name='Русский', title='Промо-баннеры главной · RU',
-    lead='Восемь карточек главной страницы, как в catalog/v2.html: одна фича — одна карточка — один CTA. Слева десктоп, справа — телефон 340px.',
+    lead='Восемь карточек главной страницы, как в главной (index.html): одна фича — одна карточка — один CTA. Слева десктоп, справа — телефон 340px.',
     note_vip='скрывается для тарифа VIP', note_vipmark='бейдж VIP — только не-VIP тарифам', mobile='Телефон · 340px', mobile_all='все на телефоне',
     cards=dict(
       calls=dict(badges=[('new', 'Новое'), ('vip', 'VIP')], title='Позвони ей <em>прямо сейчас</em>', sub='Живой голос, её характер и память о ваших разговорах — в реальном времени.', cta='Позвонить', pill='Мия'),
@@ -54,7 +55,7 @@ TEXT = {
     )),
   'en': dict(
     lang='en', name='English', title='Home promo banners · EN',
-    lead='The eight home-page cards from catalog/v2.html: one feature — one card — one CTA. Desktop on the left, 340px phone on the right.',
+    lead='The eight home-page cards from главной (index.html): one feature — one card — one CTA. Desktop on the left, 340px phone on the right.',
     note_vip='hidden for the VIP plan', note_vipmark='VIP badge shown to non-VIP plans only', mobile='Phone · 340px', mobile_all='all on a phone',
     cards=dict(
       calls=dict(badges=[('new', 'New'), ('vip', 'VIP')], title='Call her <em>right now</em>', sub='Her live voice, her personality and the memory of your chats — in real time.', cta='Call now', pill='Mia'),
@@ -68,7 +69,7 @@ TEXT = {
     )),
   'de': dict(
     lang='de', name='Deutsch', title='Promo-Banner der Startseite · DE',
-    lead='Die acht Karten der Startseite aus catalog/v2.html: ein Feature — eine Karte — ein CTA. Links Desktop, rechts Telefon mit 340px.',
+    lead='Die acht Karten der Startseite aus главной (index.html): ein Feature — eine Karte — ein CTA. Links Desktop, rechts Telefon mit 340px.',
     note_vip='für den VIP-Tarif ausgeblendet', note_vipmark='VIP-Badge nur für Nicht-VIP-Tarife', mobile='Telefon · 340px', mobile_all='alle am Telefon',
     cards=dict(
       calls=dict(badges=[('new', 'Neu'), ('vip', 'VIP')], title='Ruf sie <em>jetzt an</em>', sub='Ihre echte Stimme, ihr Charakter und die Erinnerung an eure Gespräche — in Echtzeit.', cta='Anrufen', pill='Mia'),
@@ -144,7 +145,7 @@ def page(lang):
 <link rel="stylesheet" href="../assets/lovix.css">
 <link rel="stylesheet" href="../assets/promo-banners.css">
 <style>
-  /* Лист переводов: сгенерирован catalog/banners-build.py — править данные там. */
+  /* Лист переводов: сгенерирован tools/build-banners.py — править данные там. */
   body {{ background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); min-height: 100vh; }}
   .sheet {{ max-width: 1240px; margin: 0 auto; padding: 36px 44px 80px; }}
   .sheet-head {{ display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 24px; margin-bottom: 8px; }}
@@ -157,6 +158,8 @@ def page(lang):
   .sheet-lang a.on {{ background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); color: #fff; }}
   .sheet-lead {{ margin: 0 0 28px; color: rgb(var(--muted)); font-size: .95rem; max-width: 80ch; }}
   .sheet-grid {{ display: grid; gap: 28px; }}
+  .sheet-back {{ display: inline-block; margin-bottom: 14px; font-size: 13px; font-weight: 700; color: rgb(var(--muted)); }}
+  .sheet-back:hover {{ color: #f0abfc; }}
   .sheet-grid figure {{ margin: 0; min-width: 0; }}
   /* десктопная карточка в ширину, как на главной при 1600px (604px), рядом — фрейм телефона 340px */
   .pair {{ display: grid; grid-template-columns: minmax(0, 604px) 340px; gap: 24px; align-items: start; }}
@@ -174,6 +177,7 @@ def page(lang):
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">{VERIFIED}</svg>
 <main class="sheet">
+  <a class="sheet-back" href="./">← Lovix Design · карта макетов</a>
   <div class="sheet-head">
     <h1>{T['title']}</h1>
     <a class="sheet-m" href="banners-m-{lang}.html">{T['mobile']} · {T['mobile_all']} →</a>
@@ -207,7 +211,7 @@ def mobile_page(lang):
 <link rel="stylesheet" href="../assets/lovix.css">
 <link rel="stylesheet" href="../assets/promo-banners.css">
 <style>
-  /* Телефонная версия листа: сгенерирована catalog/banners-build.py. Ширина карточки = ширина
+  /* Телефонная версия листа: сгенерирована tools/build-banners.py. Ширина карточки = ширина
      окна минус 14px по краям — на телефоне 375px это те же ~312px, что у карточки карусели (90%). */
   body {{ margin: 0; padding: 14px; background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); min-height: 100vh; box-sizing: border-box; }}
   .m {{ display: grid; gap: 12px; max-width: 420px; margin: 0 auto; }}
@@ -235,7 +239,7 @@ def mobile_page(lang):
 
 if __name__ == '__main__':
     for lang in TEXT:
-        for name, fn in ((f'catalog/banners-{lang}.html', page), (f'catalog/banners-m-{lang}.html', mobile_page)):
+        for name, fn in ((f'design/banners-{lang}.html', page), (f'design/banners-m-{lang}.html', mobile_page)):
             out = ROOT / name
             out.write_text(fn(lang), encoding='utf-8')
             print('wrote', out.relative_to(ROOT))

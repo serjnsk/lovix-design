@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../assets/shell.css">
 <style>
   .content { max-width: 1320px; padding: 34px 28px 80px; }
   .hero { text-align: center; max-width: 760px; margin: 14px auto 0; }
@@ -27,6 +29,15 @@
   .fl { gap: 9px; }
   .fl li { font-size: .88rem; }
   .plan .btn { margin-top: auto; padding: .7rem 1rem; font-size: .93rem; }
+  /* текущий тариф пользователя — как на проде: зелёная рамка, бейдж «Активный», кнопка «Ваш тариф» неактивна */
+  .plan.is-current { border: 1.5px solid rgba(52,211,153,.8); box-shadow: 0 0 44px rgba(52,211,153,.14); }
+  .plan.vip.is-current {
+    background:
+      linear-gradient(rgba(22,15,24,.93), rgba(22,15,24,.93)) padding-box,
+      linear-gradient(135deg, #34d399, #10b981) border-box;
+  }
+  .flag.cur { background: #34d399; color: #052e1f; box-shadow: 0 6px 22px rgba(52,211,153,.35); }
+  .plan .btn[disabled] { cursor: default; background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.1); color: rgb(var(--muted2)); box-shadow: none; filter: none; }
 
   /* карточка-девушка в сетке */
   .muse-card {
@@ -174,18 +185,6 @@
   .ck-note { text-align: center; color: rgb(var(--muted2)); font-size: .76rem; margin-top: 12px; }
 
   /* тост-заглушка перехода к провайдеру */
-  .toast {
-    position: fixed; bottom: 130px; left: 50%;
-    transform: translateX(-50%) translateY(14px);
-    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
-    border-radius: 12px; padding: 12px 18px;
-    font-size: .9rem; font-weight: 600;
-    opacity: 0; pointer-events: none; transition: .25s;
-    z-index: 90; box-shadow: 0 14px 40px rgba(0,0,0,.55);
-    max-width: min(92vw, 480px); text-align: center;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast b { color: #f0abfc; }
 
   /* FAQ */
   .faq { max-width: 860px; margin: 50px auto 0; }
@@ -251,45 +250,24 @@
   </defs>
 </svg>
 
-<aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
-  <header class="tb">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
-    <div class="tb-right">
-      <a class="promo">Летняя Распродажа до 75% 🔥</a>
-      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>1</i></button>
-      <div class="avatar">A</div>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="../assets/shell.js"></script>
 
   <main class="content">
 
     <div class="hero">
       <h1 class="h1">Откройте новые грани общения с&nbsp;Lovix</h1>
-      <p class="sub">Больше действий. Больше эмоций. Ещё ближе.</p>
+      <p class="sub">Больше действий. Больше эмоций. Еще ближе.</p>
     </div>
 
     <div class="seg-row">
       <div class="seg" role="group" aria-label="Период подписки">
         <button data-period="m1" class="on">1 месяц</button>
         <button data-period="m3">3 месяца <span class="off">−10%</span></button>
-        <button data-period="y1">1 год <span class="off">−20%</span></button>
+        <button data-period="y1">1 год <span class="off">−45%</span></button>
       </div>
     </div>
 
@@ -317,7 +295,7 @@
         </div>
       </aside>
 
-      <section class="plan">
+      <section class="plan" data-tier="free">
         <div>
           <div class="plan-name">Free</div>
           <div class="plan-tag">Познакомиться с компаньонами</div>
@@ -340,7 +318,7 @@
         <button class="btn btn-outline btn-block js-free">Начать бесплатно</button>
       </section>
 
-      <section class="plan">
+      <section class="plan" data-tier="premium">
         <div>
           <div class="plan-name">Premium</div>
           <div class="plan-tag">Полноценное общение и генерация фото</div>
@@ -370,7 +348,7 @@
         </div>
       </section>
 
-      <section class="plan vip">
+      <section class="plan vip" data-tier="vip">
         <div class="flag">Максимум Lovix</div>
         <div>
           <div class="plan-name">VIP</div>
@@ -429,6 +407,8 @@
     </div>
 
   </main>
+
+  <footer class="site-foot"></footer>
 </div>
 
 <!-- чекаут-шаг -->
@@ -441,7 +421,7 @@
     <div class="seg" role="group" aria-label="Период подписки">
       <button data-period="m1" class="on">1 мес</button>
       <button data-period="m3">3 мес <span class="off">−10%</span></button>
-      <button data-period="y1">1 год <span class="off">−20%</span></button>
+      <button data-period="y1">1 год <span class="off">−45%</span></button>
     </div>
 
     <div class="ck-rows">
@@ -473,7 +453,6 @@
   </div>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
 
 <script src="../assets/pricing.js"></script>
 <script src="../assets/muse-slider.js"></script>
@@ -521,31 +500,72 @@ function openCk(plan, name) {
 }
 function closeCk() { ck.classList.remove('open'); }
 
-let toastTimer;
-function toast(html) {
-  const t = document.getElementById('toast');
-  t.innerHTML = html;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
-}
+const toast = html => Lovix.toast(html);
+const TRANCHE = { premium: 300, vip: 550 };
 
 document.addEventListener('click', e => {
   const per = e.target.closest('[data-period]');
   if (per) { curPeriod = per.dataset.period; if (ck.classList.contains('open')) renderCk(); return; }
   const buy = e.target.closest('.js-buy');
-  if (buy) { openCk(buy.dataset.plan, buy.dataset.planName); return; }
-  if (e.target.closest('.js-free')) { toast('Переход к регистрации <b>Free</b>'); return; }
+  if (buy) {
+    // гость сперва регистрируется — после входа вернётся сюда с открытым чекаутом
+    if (!Lovix.session().auth) { Lovix.askAuth('?plan=' + buy.dataset.plan + '&period=' + curPeriod); return; }
+    openCk(buy.dataset.plan, buy.dataset.planName); return;
+  }
+  if (e.target.closest('.js-free')) {
+    if (!Lovix.session().auth) { window.LovixAuth && LovixAuth.open('signup'); return; }
+    Lovix.go(''); return;                                  // уже есть аккаунт — в каталог
+  }
   const opt = e.target.closest('[data-ckpay]');
   if (opt) { ckPay = opt.dataset.ckpay; renderCk(); return; }
   if (e.target.closest('#ck-go')) {
     closeCk();
-    toast('Переход к оплате: <b>' + document.getElementById('ck-plan-name').textContent + '</b> · <b>' + PAY_NAMES[ckPay] + '</b>');
+    // в проде — редирект к провайдеру; в прототипе оплата «проходит» сразу: тариф и транш токенов
+    // меняются в демо-сессии (assets/shell.js) — чат, профиль и баннеры увидят новый тариф
+    Lovix.setBalance(Lovix.session().balance + TRANCHE[ckPlan]);
+    Lovix.setTier(ckPlan);
+    toast('Оплата (демо): <b>' + document.getElementById('ck-plan-name').textContent + '</b> · ' + PAY_NAMES[ckPay] + ' — тариф активен, +' + TRANCHE[ckPlan] + ' токенов');
     return;
   }
   if (e.target.closest('#ck-x') || e.target === ck) closeCk();
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCk(); });
+/* Текущий тариф вошедшего пользователя — как на проде: на его карточке зелёная рамка,
+   бейдж «Активный» и неактивная кнопка «Ваш тариф». Анониму карточки без отметок. */
+function paintCurrent() {
+  const s = Lovix.session(), cur = s.auth ? s.tier : null;
+  document.querySelectorAll('.plan[data-tier]').forEach(card => {
+    const on = card.dataset.tier === cur, btn = card.querySelector('.btn');
+    let flag = card.querySelector('.flag');
+    card.classList.toggle('is-current', on);
+    if (on && !flag) { flag = document.createElement('div'); flag.className = 'flag'; flag.dataset.temp = '1'; card.prepend(flag); }
+    if (flag) {
+      if (!flag.dataset.text) flag.dataset.text = flag.textContent;
+      if (on) { flag.textContent = 'Активный'; flag.classList.add('cur'); }
+      else if (flag.dataset.temp) flag.remove();
+      else { flag.textContent = flag.dataset.text; flag.classList.remove('cur'); }
+    }
+    if (!btn.dataset.text) btn.dataset.text = btn.textContent;
+    btn.disabled = on;
+    btn.textContent = on ? 'Ваш тариф' : btn.dataset.text;
+  });
+}
+paintCurrent();
+// смена тарифа в демо-сессии — страница не перезагружается, только отметка текущего тарифа
+document.addEventListener('lovix:session', e => { e.preventDefault(); paintCurrent(); });
+
+/* Прямая ссылка на чекаут: ?plan=premium|vip [&period=m1|m3|y1] — из баннеров главной,
+   пейволлов чата, уведомлений и меню аккаунта */
+(() => {
+  const q = new URLSearchParams(location.search), plan = q.get('plan'), period = q.get('period');
+  if (period) { const b = document.querySelector('[data-period="' + period + '"]'); if (b) b.click(); }
+  if (plan === 'premium' || plan === 'vip') {
+    if (!Lovix.session().auth) { Lovix.askAuth(location.href); return; }   // гостю — сперва регистрация, потом сюда же
+    const btn = document.querySelector('.js-buy[data-plan="' + plan + '"]');
+    if (btn) openCk(plan, btn.dataset.planName);
+  }
+})();
 </script>
+<script src="../assets/auth.js"></script>
 </body>
 </html>

@@ -4,30 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Lovix — Главная с новым баннером</title>
+<title>Lovix — Главная</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/lovix.css">
-<link rel="stylesheet" href="../assets/promo-banners.css">
-<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="assets/lovix.css">
+<link rel="stylesheet" href="assets/promo-banners.css">
+<link rel="stylesheet" href="assets/bot-card.css">
+<link rel="stylesheet" href="assets/auth.css">
+<link rel="stylesheet" href="assets/shell.css">
 <style>
   /* ── Главная lovix.ai с новым промо-блоком. Контент-зона повторяет
        текущий прод (lovix.ai/ru): H1 + вводный абзац, сетка карточек с
        авторством сервиса «Lovix», бесконечная прокрутка, две SEO-секции и
        FAQ из трёх вопросов. Отличие от прода — только баннеры (pb-*).
        Фича «авторы компаньонов» (ники, подписки) здесь НЕ применяется —
-       её черновики лежат в catalog/v1.html и review/. ── */
+       её черновики лежат в design/ (catalog-v1.html, authors-review.html). ── */
 
   .content { max-width: 1240px; }
 
-  /* Фон страницы — как на проде (body: bg-gradient-to-br from-page-from 0% to-page-to 60%):
-     диагональ через всю высоту документа, синий слева сверху → #221f22 к 60%.
-     Верхнее свечение .page из assets/lovix.css здесь отключено. */
-  body { background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); }
-  .page { background: none; }
+  /* Фон страницы, сайдбар, топбар, футер и тост — общий хром assets/shell.css + shell.js */
 
-  /* ── Промо-баннеры (pb-*) — стили вынесены в ../assets/promo-banners.css,
+  /* ── Промо-баннеры (pb-*) — стили вынесены в assets/promo-banners.css,
        общий с листами переводов catalog/banners-*.html ── */
 
   /* ── заголовок + вводный абзац: акцент во второй части, как на проде.
@@ -114,6 +112,7 @@
      строкой (как чипы), их меню открываются снизу экрана шитом, чтобы не резаться
      прокруткой ряда; чипы и кнопки ниже — 32/36px */
   @media (max-width: 560px) {
+    .content { padding-top: 12px; }   /* баннер вплотную к топбару, как у secrets.ai на телефоне */
     .cat-h1 { font-size: 18px; line-height: 1.2; margin-top: 12px; }
     .cat-intro { font-size: 14px; margin: 4px 0 12px; }
     .flt { gap: 8px; margin-bottom: 12px; }
@@ -171,146 +170,14 @@
   @keyframes cat-spin { to { transform: rotate(360deg); } }
   .cat-end { color: rgb(var(--muted2)); font-size: .9rem; }
 
-  /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12).
-     Поведение — по референсу secrets.ai: в покое у всех карточек статичное фото,
-     видео играет только у карточки под курсором, она же подсвечивается. */
-  .cc {
-    position: relative; overflow: hidden;
-    border-radius: 12px;
-    aspect-ratio: 285 / 400;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    transition: transform .2s, box-shadow .2s;
-    cursor: pointer; outline: 0;
-  }
-  /* Реальные фото и видео-превью ботов с lovix.ai/ru (assets/img/bots, assets/video/bots).
-     Фото на всю карточку; видео лежит поверх и проявляется только у активной карточки. */
-  .cc-photo, .cc-video {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; background: #1b171d;
-    transition: transform .5s ease, opacity .25s ease;
-  }
-  .cc-video { opacity: 0; }
-  .cc-video.is-visible { opacity: 1; }
-  /* подсветка активной карточки (референс: обводка 1.5px внутрь + внутреннее свечение),
-     класс is-active ставит скрипт по hover/focus; медиа чуть приближается */
-  .cc::after {
-    content: ""; position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none;
-    box-shadow: inset 0 0 0 1.5px rgba(217,70,239,.75), inset 0 0 44px rgba(217,70,239,.45);
-    opacity: 0; transition: opacity .25s ease;
-  }
-  .cc.is-active { transform: translateY(-3px); box-shadow: 0 22px 50px rgba(217,70,239,.22); }
-  .cc.is-active::after { opacity: 1; }
-  .cc.is-active .cc-photo, .cc.is-active .cc-video { transform: scale(1.04); }
-  /* подложка под текст — выше и плотнее (референс: чёрный 60 % → прозрачный на половине
-     высоты): держит белый текст даже на светлом фото */
-  .cc-shade {
-    position: absolute; inset: auto 0 0 0; height: 48%; z-index: 1;
-    background: linear-gradient(180deg, rgba(16,14,16,0) 0%, rgba(16,14,16,.5) 45%, rgba(16,14,16,.9) 100%);
-  }
-  .cc-meta {
-    position: relative; z-index: 2;
-    padding: 0 14px 14px;
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .cc-text { display: flex; flex-direction: column; gap: 3px; }
-  /* des/H/h3 semi — 24/28; тень отделяет текст от светлых участков фото */
-  .cc-name {
-    display: flex; align-items: baseline; gap: 6px;
-    font-size: 24px; line-height: 28px; font-weight: 600; color: #fff;
-    white-space: nowrap;
-    text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 2px 14px rgba(0,0,0,.45);
-  }
-  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  .cc-name span { opacity: .7; }
-  /* метрики — тёмные пилюли с блюром (референс: black/75 + blur): читаются на любом фото */
-  .cc-foot { display: flex; align-items: center; gap: 6px; }
-  .cc-m {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 9px; border-radius: 999px;
-    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    font-size: 13px; font-weight: 500; color: #fff;
-  }
-  .cc-ic { width: 13px; height: 13px; flex: none; opacity: .9; }
+  /* карточка бота — общий компонент assets/bot-card.css (разметка — botCardHtml() в assets/bot-card.js) */
 
-
-  /* автор — бейдж сверху слева, как на secrets.ai/browse: в покое только круглый аватар,
-     при наведении (или фокусе) пилюля раскрывается и показывает «@ник» с галочкой;
-     весь бейдж — ссылка на страницу автора. Внизу карточки остаются имя, описание, метрики. */
-  .cc-auth {
-    position: absolute; top: 10px; left: 10px; z-index: 4;
-    display: inline-flex; align-items: center; gap: 0;
-    height: 28px; padding: 3px; border-radius: 999px;
-    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    color: #fff; text-decoration: none; outline: 0;
-    transition: gap .2s ease, padding .2s ease, background .2s ease;
-  }
-  .cc-av {
-    width: 22px; height: 22px; flex: none; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 800; color: #fff;
-    background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
-  }
-  .cc-nick {
-    display: inline-flex; align-items: center; gap: 4px;
-    max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap;
-    font-size: 12px; font-weight: 600;
-    transition: max-width .25s ease, opacity .2s ease;
-  }
-  .cc-auth:hover, .cc-auth:focus-visible { gap: 6px; padding-right: 10px; background: rgba(16,14,16,.82); }
-  .cc-auth:hover .cc-nick, .cc-auth:focus-visible .cc-nick { max-width: 160px; opacity: 1; }
-  .cc-auth:focus-visible { box-shadow: 0 0 0 2px rgba(240,171,252,.8); }
-  .cc-ver { width: 12px; height: 12px; color: rgb(var(--primary)); flex: none; }
-  /* на сенсорных экранах бейдж тоже свёрнут до аватара, как на десктопе: раскрытый ник
-     перекрывал фото. Ник доступен по тапу — бейдж ведёт на страницу автора, он же в aria-label. */
-
-  /* избранное — сердечко сверху справа (как у референса), в стиле бейджа автора.
-     Клик заливает его, миниатюра фото «улетает» к пункту меню «Мои персонажи»,
-     на пункте растёт бейдж-счётчик. */
-  .cc-fav {
-    position: absolute; top: 10px; right: 10px; z-index: 4;
-    width: 32px; height: 32px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(16,14,16,.62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-    color: #fff; transition: background .2s, transform .15s, color .2s;
-  }
-  .cc-fav .ic { width: 17px; height: 17px; }
-  .cc-fav .f { display: none; }
-  .cc-fav:hover { background: rgba(16,14,16,.82); transform: scale(1.08); }
-  .cc-fav:focus-visible { box-shadow: 0 0 0 2px rgba(240,171,252,.8); }
-  .cc-fav.on { color: rgb(var(--acc-to)); }
-  .cc-fav.on .o { display: none; }
-  .cc-fav.on .f { display: block; animation: fav-pop .35s ease; }
-  @keyframes fav-pop { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
   /* летящая миниатюра */
   .fav-fly {
     position: fixed; z-index: 100; width: 56px; height: 56px; border-radius: 50%;
     object-fit: cover; border: 2px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,.5);
     pointer-events: none;
   }
-  /* бейдж-счётчик на пункте меню и его «вздрагивание» при прилёте */
-  .sb-cnt {
-    margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
-    background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
-    color: #fff; font-size: .7rem; font-weight: 800; font-style: normal;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .sb-cnt[hidden] { display: none; }
-  .sb-item.bump { animation: sb-bump .4s ease; }
-  @keyframes sb-bump { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
-  /* тост подтверждения */
-  .toast {
-    position: fixed; left: 50%; bottom: 28px; z-index: 100;
-    transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
-    padding: 12px 18px; border-radius: 12px;
-    background: rgba(18,14,20,.94); border: 1px solid rgba(217,70,239,.35);
-    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-    box-shadow: 0 12px 40px rgba(0,0,0,.5);
-    font-size: .92rem; color: #fff; white-space: nowrap;
-    transition: opacity .2s, transform .2s;
-  }
-  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-  .toast a { color: #f0abfc; font-weight: 700; }
-  @media (max-width: 560px) { .toast { white-space: normal; max-width: calc(100vw - 32px); text-align: center; } }
 
   /* ── Промо-карточки в сетке (референс — плитки secrets.ai/browse: одно фото с тремя
        девушками сверху, тёмный градиент снизу, курсивный заголовок капсом, подзаголовок, CTA).
@@ -414,12 +281,6 @@
 
   @media (max-width: 560px) {
     .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    /* карточка бота на двух колонках (~150px): имя меньше, пилюли метрик компактнее */
-    .cc-meta { padding: 0 10px 10px; gap: 8px; }
-    .cc-name { font-size: 18px; line-height: 22px; gap: 5px; }
-    .cc-foot { gap: 4px; }
-    .cc-m { padding: 3px 6px; font-size: 11.5px; gap: 3px; }
-    .cc-ic { width: 12px; height: 12px; }
     .cc.promo .cc-meta { padding: 0 10px 10px; gap: 8px; }
     .cc-promo-h { font-size: 17px; }
     .cc.promo-sale .cc-promo-h { font-size: 13.5px; }
@@ -443,16 +304,6 @@
   .btn-grad { box-shadow: none; }
   .btn-grad:hover { box-shadow: none; filter: brightness(1.1); }
 
-  /* Кнопки топбара «Войти» / «Начать бесплатно» и формы входа — assets/auth.css + auth.js */
-
-  /* Футер сайта */
-  .site-foot {
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
-    padding: 26px 44px; border-top: 1px solid rgba(255,255,255,.08);
-    color: rgb(var(--muted2)); font-size: .9rem;
-  }
-  .site-foot .logo { font-size: 1.2rem; }
-  @media (max-width: 560px) { .site-foot { padding: 22px 16px; justify-content: center; text-align: center; } }
 </style>
 </head>
 <body>
@@ -487,31 +338,11 @@
   </defs>
 </svg>
 
-<aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item" id="sb-models" href="../models/v2.html"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи<i class="sb-cnt" hidden>0</i></a>
-    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
-  <header class="tb">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Аниме</a><a>Парни</a></nav>
-    <div class="tb-right">
-      <button class="tb-login" type="button" data-auth="login">Войти</button>
-      <button class="tb-start" type="button" data-auth="signup"><span class="full">Начать бесплатно</span><span class="short">Начать</span></button>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="assets/shell.js"></script>
 
   <main class="content">
 
@@ -521,10 +352,10 @@
       <div class="pb-track" data-pb-track tabindex="0" aria-live="polite">
 
         <!-- 1 · голосовые звонки -->
-        <a class="pb-card pb-calls" href="#" data-intent="calls">
+        <a class="pb-card pb-calls" href="chat/?bot=0" data-intent="calls">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/red.webp" alt="" fetchpriority="high">
+            <img class="solo" src="assets/img/hero/red.webp" alt="" fetchpriority="high">
             <span class="pb-pill"><span class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2z"/></svg></span><span class="txt">Мия</span><span class="pb-eq"><i></i><i></i><i></i><i></i><i></i></span></span>
           </div>
           <div class="pb-txt">
@@ -536,10 +367,10 @@
         </a>
 
         <!-- 2 · видео по пресетам -->
-        <a class="pb-card pb-video" href="#" data-intent="video">
+        <a class="pb-card pb-video" href="chat/?bot=3" data-intent="video">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/blonde2.webp" alt="" fetchpriority="high">
+            <img class="solo" src="assets/img/hero/blonde2.webp" alt="" fetchpriority="high">
             <span class="pb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
           </div>
           <div class="pb-txt">
@@ -551,11 +382,11 @@
         </a>
 
         <!-- 3 · конструктор -->
-        <a class="pb-card pb-build" href="#" data-intent="create">
+        <a class="pb-card pb-build" href="#" data-todo="Конструктор компаньонов" data-intent="create">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="l" src="../assets/img/hero/glasses-blonde.webp" alt="" loading="lazy">
-            <img class="r" src="../assets/img/hero/brown2.webp" alt="" loading="lazy">
+            <img class="l" src="assets/img/hero/glasses-blonde.webp" alt="" loading="lazy">
+            <img class="r" src="assets/img/hero/brown2.webp" alt="" loading="lazy">
           </div>
           <div class="pb-txt">
             <div class="pb-badges"><span class="pb-badge">Конструктор</span></div>
@@ -566,10 +397,10 @@
         </a>
 
         <!-- 4 · spicy-сценарии -->
-        <a class="pb-card pb-spicy" href="#" data-intent="scenarios">
+        <a class="pb-card pb-spicy" href="chat/?bot=2" data-intent="scenarios">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/leather.webp" alt="" loading="lazy">
+            <img class="solo" src="assets/img/hero/leather.webp" alt="" loading="lazy">
           </div>
           <div class="pb-txt">
             <div class="pb-badges"><span class="pb-badge">🌶 Spicy</span></div>
@@ -580,11 +411,11 @@
         </a>
 
         <!-- 5 · групповые чаты -->
-        <a class="pb-card pb-group" href="#" data-intent="group">
+        <a class="pb-card pb-group" href="#" data-todo="Групповой чат" data-intent="group">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="l" src="../assets/img/hero/tanktop.webp" alt="" loading="lazy">
-            <img class="r" src="../assets/img/hero/pink.webp" alt="" loading="lazy">
+            <img class="l" src="assets/img/hero/tanktop.webp" alt="" loading="lazy">
+            <img class="r" src="assets/img/hero/pink.webp" alt="" loading="lazy">
             <span class="pb-duo">2 компаньонки · 1 чат</span>
           </div>
           <div class="pb-txt">
@@ -596,11 +427,11 @@
         </a>
 
         <!-- 6 · авторы компаньонов -->
-        <a class="pb-card pb-author" href="#" data-intent="author">
+        <a class="pb-card pb-author" href="profile/" data-need-auth data-intent="author">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/ginger.webp" alt="" loading="lazy">
-            <span class="pb-creator"><span class="av"><img src="../assets/img/hero/ginger.webp" alt=""></span><b>@nika_ai <svg><use href="#i-verified"/></svg></b><span>3,2k подписчиков</span></span>
+            <img class="solo" src="assets/img/hero/ginger.webp" alt="" loading="lazy">
+            <span class="pb-creator"><span class="av"><img src="assets/img/hero/ginger.webp" alt=""></span><b>@nika_ai <svg><use href="#i-verified"/></svg></b><span>3,2k подписчиков</span></span>
           </div>
           <div class="pb-txt">
             <div class="pb-badges"><span class="pb-badge new">Новое</span></div>
@@ -611,12 +442,12 @@
         </a>
 
         <!-- 7 · аниме-раздел -->
-        <a class="pb-card pb-anime" href="#" data-intent="anime">
+        <a class="pb-card pb-anime" href="#" data-todo="Раздел «Аниме»" data-intent="anime">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="a1" src="../assets/img/hero/anime-office.webp" alt="" loading="lazy">
-            <img class="a2" src="../assets/img/hero/anime-blonde.webp" alt="" loading="lazy">
-            <img class="a3" src="../assets/img/hero/anime-elf.webp" alt="" loading="lazy">
+            <img class="a1" src="assets/img/hero/anime-office.webp" alt="" loading="lazy">
+            <img class="a2" src="assets/img/hero/anime-blonde.webp" alt="" loading="lazy">
+            <img class="a3" src="assets/img/hero/anime-elf.webp" alt="" loading="lazy">
           </div>
           <div class="pb-txt">
             <div class="pb-badges"><span class="pb-badge">Новый раздел</span></div>
@@ -627,10 +458,10 @@
         </a>
 
         <!-- 8 · акция VIP на год (скрывается для VIP; цену и скидку отдаёт бэкенд) -->
-        <a class="pb-card pb-sale" href="#" data-intent="sale" data-hide-for="vip">
+        <a class="pb-card pb-sale" href="purchase/?plan=vip&amp;period=y1" data-intent="sale" data-hide-for="vip">
           <div class="pb-bg" aria-hidden="true"></div>
           <div class="pb-art" aria-hidden="true">
-            <img class="solo" src="../assets/img/hero/glasses.webp" alt="" loading="lazy">
+            <img class="solo" src="assets/img/hero/glasses.webp" alt="" loading="lazy">
             <span class="pb-tag">−45%<small>vip · год</small></span>
           </div>
           <div class="pb-txt">
@@ -721,15 +552,12 @@
 
   </main>
 
-  <footer class="site-foot">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <span>© 2026 Lovix. Все права защищены.</span>
-  </footer>
+  <footer class="site-foot"></footer>
 </div>
 
-<script src="../assets/auth.js"></script>
-<script src="../assets/bots-data.js"></script>
-<script src="../assets/bot-card.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/bots-data.js"></script>
+<script src="assets/bot-card.js"></script>
 <script>
   // Данные ботов — общие с «Мои персонажи → Избранное»: assets/bots-data.js
   const AUTHORS = CATALOG_AUTHORS, BOTS = CATALOG_BOTS, MEDIA = CATALOG_MEDIA, fmt = fmtCount;
@@ -738,27 +566,12 @@
   // (следующие «страницы» в прототипе идут по кругу) сердечко общее
   function cardHtml(i) {
     const [name, age, desc, talks, likes, by] = BOTS[i], au = AUTHORS[by];
-    return `
-    <article class="cc" tabindex="0">
-      <img class="cc-photo" src="../assets/img/bots/${MEDIA[i]}" alt="${name}" loading="${shown < 7 ? 'eager' : 'lazy'}">
-      <video class="cc-video" data-src="../assets/video/bots/${MEDIA[i].replace(/\.\w+$/, '.mp4')}"
-             muted loop playsinline preload="none" aria-hidden="true"></video>
-      <div class="cc-shade"></div>
-      <a class="cc-auth" href="../author/v1.html?u=${by}" title="${au.name} · @${by}" aria-label="Автор: ${au.name}, @${by}">
-        <span class="cc-av"${au.color ? ` style="background:${au.color}"` : ''}>${au.name[0].toUpperCase()}</span>
-        <span class="cc-nick">@${by}${au.verified ? '<svg class="cc-ver"><use href="#i-verified"/></svg>' : ''}</span>
-      </a>
-      <button class="cc-fav" type="button" data-fav="${i}" aria-pressed="false" aria-label="В избранное">
-        <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
-      </button>
-      <div class="cc-meta">
-        <div class="cc-name"><b>${name},</b><span>${age}</span></div>
-        <div class="cc-foot">
-          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
-          <span class="cc-m like" title="Лайки"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${fmt(likes)}</span>
-        </div>
-      </div>
-    </article>`;
+    return botCardHtml({
+      name, age, img: `assets/img/bots/${MEDIA[i]}`, video: `assets/video/bots/${MEDIA[i].replace(/\.\w+$/, '.mp4')}`,
+      href: `chat/?bot=${i}`, label: `Чат: ${name}, ${age}`, eager: shown < 7,
+      author: { nick: by, name: au.name, color: au.color, verified: au.verified, href: `creator/?u=${by}` },
+      action: { kind: 'fav', attrs: ` data-fav="${i}"` }, metrics: [talks, fmt(likes)],
+    });
   }
 
   /* Промо-карточки сетки. Цену и скидку акции в проде отдаёт бэкенд (как у pb-sale),
@@ -766,8 +579,8 @@
      Фото promo/*-trio.webp — групповой снимок из трёх вырезанных аватаров моделей secrets.ai (скрипт promo/compose-group.py),
      временные; перед продом заменить на свои рендеры. */
   const createCard = `
-    <a class="cc promo promo-create" href="#" data-intent="create" id="promo-create">
-      <div class="cc-art" aria-hidden="true"><img src="../assets/img/promo/create-trio.webp" alt="" loading="eager"></div>
+    <a class="cc promo promo-create" href="#" data-todo="Конструктор компаньонов" data-intent="create" id="promo-create">
+      <div class="cc-art" aria-hidden="true"><img src="assets/img/promo/create-trio.webp" alt="" loading="eager"></div>
       <div class="cc-meta">
         <div class="cc-text">
           <div class="cc-promo-h">Создай<br>свою</div>
@@ -777,8 +590,8 @@
       </div>
     </a>`;
   const saleCard = `
-    <a class="cc promo promo-sale" href="../price/index.html" data-intent="sale" data-hide-for="vip" id="promo-sale">
-      <div class="cc-art" aria-hidden="true"><img src="../assets/img/promo/sale-trio.webp" alt="" loading="lazy"></div>
+    <a class="cc promo promo-sale" href="purchase/?plan=vip&amp;period=y1" data-intent="sale" data-hide-for="vip" id="promo-sale">
+      <div class="cc-art" aria-hidden="true"><img src="assets/img/promo/sale-trio.webp" alt="" loading="lazy"></div>
       <span class="cc-promo-tag">Акция</span>
       <div class="cc-meta">
         <div class="cc-text">
@@ -798,7 +611,7 @@
      считаются от числа колонок (auto-fill), пересчёт при изменении ширины. */
   const PROMO_POS = { 'promo-create': 7, 'promo-sale': 14 };
   function placePromo() {
-    const promos = Object.keys(PROMO_POS).map(id => grid.querySelector('#' + id));
+    const promos = Object.keys(PROMO_POS).map(id => grid.querySelector('#' + id)).filter(Boolean);
     // сначала снять размещение: явная колонка за пределами сетки добавляет неявный трек,
     // и вычисленный шаблон показал бы лишние колонки
     promos.forEach(el => { el.style.gridRow = ''; el.style.gridColumn = ''; });
@@ -827,7 +640,8 @@
     document.dispatchEvent(new CustomEvent('catalog:append'));   // избранное перекрашивает сердечки
     if (shown >= MAX) { sentinel.innerHTML = '<span class="cat-end">Вы посмотрели всех компаньонов</span>'; io.disconnect(); }
   }
-  grid.innerHTML = createCard + saleCard;
+  // акция «VIP на год» — не для VIP (тариф демо-сессии: <html data-tariff>, ставит assets/shell.js)
+  grid.innerHTML = createCard + (document.documentElement.dataset.tariff === 'vip' ? '' : saleCard);
   placePromo();
   appendBatch();
   function loadMore() {
@@ -978,20 +792,15 @@
         { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(.2)', opacity: 0 }
       ], { duration: 700, easing: 'cubic-bezier(.4,0,.2,1)' }).onfinish = function () { el.remove(); bump(); };
     }
-    var toastEl, toastT;
-    function toast(html) {
-      if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
-      toastEl.innerHTML = html; toastEl.classList.add('show');
-      clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove('show'); }, 3000);
-    }
+    var toast = function (html) { Lovix.toast(html, 3000); };
     document.addEventListener('click', function (e) {
       var b = e.target.closest('.cc-fav'); if (!b) return;
       e.preventDefault();
       var id = +b.dataset.fav, card = b.closest('.cc'), name = card.querySelector('.cc-name b').textContent.replace(/,$/, '');
       var i = fav.indexOf(id);
-      if (i === -1) { fav.push(id); fly(card); toast('<b>' + name + '</b> — в избранном · <a href="../models/v2.html#favorites">Мои персонажи → Избранное</a>'); }
+      if (i === -1) { fav.push(id); fly(card); toast('<b>' + name + '</b> — в избранном · <a href="models/#favorites">Мои персонажи → Избранное</a>'); }
       else { fav.splice(i, 1); toast('<b>' + name + '</b> убрана из избранного'); }
-      save(); paint();
+      save(); paint(); Lovix.favBadge();
     });
     document.addEventListener('catalog:append', paint);
     paint();

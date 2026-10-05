@@ -4,146 +4,328 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Lovix Design — редизайны страниц</title>
+<title>Lovix Design — карта макетов</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/lovix.css">
+<link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/shell.css">
 <style>
+  /* Разводная проекта: всё, что не является экраном продукта (листы баннеров, черновики,
+     документация), плюс карта экранов прототипа, прямые ссылки на модалки и переключатель
+     демо-состояния. Сам прототип живёт по URL-структуре lovix.ai от корня. */
   body { background: rgb(var(--page)); }
   .wrap {
-    max-width: 980px; margin: 0 auto; padding: 60px 24px 90px;
+    max-width: 1080px; margin: 0 auto; padding: 56px 24px 90px;
     background: radial-gradient(800px 360px at 55% -160px, rgba(var(--page-from), .7), transparent 70%);
     min-height: 100vh;
   }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.5rem; letter-spacing: .04em; margin-bottom: 44px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.5rem; letter-spacing: .04em; margin-bottom: 36px; }
   .brand .ic { width: 30px; height: 30px; }
+  .brand b span { color: #d946ef; }
   .brand em { font-style: normal; color: rgb(var(--muted)); font-weight: 600; font-size: 1rem; letter-spacing: 0; margin-left: 4px; }
-  .pages { display: grid; gap: 20px; margin-top: 40px; }
+  .hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .hero .sub { max-width: 62ch; line-height: 1.55; }
+  .go {
+    display: inline-flex; align-items: center; gap: 10px; flex: none;
+    padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 1.05rem;
+    background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); color: #fff;
+  }
+  .go:hover { filter: brightness(1.1); }
+
+  h2.sec { font-size: 1.25rem; font-weight: 800; margin: 52px 0 6px; }
+  p.sec-sub { color: rgb(var(--muted)); font-size: .92rem; margin-bottom: 18px; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .84em; color: #f0abfc; background: rgba(217,70,239,.1); padding: 1px 6px; border-radius: 6px; white-space: nowrap; }
+
+  /* демо-состояние */
+  .state {
+    display: flex; align-items: center; gap: 14px 20px; flex-wrap: wrap;
+    padding: 18px 20px; border-radius: 16px;
+    background: rgba(16,14,16,.55); border: 1px dashed rgba(217,70,239,.45);
+  }
+  .state .now { font-size: .9rem; color: rgb(var(--muted)); }
+  .state .now b { color: #fff; }
+  .state .seg button { padding: .55rem 1.05rem; font-size: .88rem; }
+  .state .resets { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  .mini { border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.04); color: #d7d7e0; border-radius: 10px; padding: 8px 12px; font: inherit; font-size: .82rem; font-weight: 700; cursor: pointer; }
+  .mini:hover { border-color: rgba(217,70,239,.55); color: #fff; }
+
+  /* карточки экранов */
+  .pages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
   .pcard {
-    display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;
-    background: rgba(16,14,16,.55);
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 1.1rem; padding: 26px 28px;
+    position: relative; display: flex; flex-direction: column; gap: 8px;
+    background: rgba(16,14,16,.55); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 1.1rem; padding: 20px 22px;
     transition: transform .18s, border-color .18s, box-shadow .18s;
   }
-  .pcard { position: relative; }
   .pcard:hover { transform: translateY(-2px); border-color: rgba(217,70,239,.5); box-shadow: 0 18px 50px rgba(217,70,239,.14); }
-  /* вся карточка кликабельна: ссылка заголовка растянута на карточку, ссылки в тексте — поверх неё */
-  .pcard h2 a.t { color: inherit; text-decoration: none; }
-  .pcard h2 a.t::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
-  .pcard p a { position: relative; z-index: 1; }
-  .pcard h2 { font-size: 1.3rem; font-weight: 800; }
-  .pcard p { color: rgb(var(--muted)); font-size: .93rem; margin-top: 6px; line-height: 1.5; }
-  .pcard .status {
-    font-size: .78rem; font-weight: 800; letter-spacing: .04em;
-    padding: 6px 14px; border-radius: 999px; white-space: nowrap;
-    background: rgba(217,70,239,.15); color: #f0abfc; border: 1px solid rgba(217,70,239,.4);
+  .pcard .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .pcard h3 { font-size: 1.08rem; font-weight: 800; }
+  .pcard h3 a.t { color: inherit; }
+  .pcard h3 a.t::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+  .pcard p { color: rgb(var(--muted)); font-size: .88rem; line-height: 1.5; }
+  .pcard p.more { font-size: .83rem; color: rgb(var(--muted2)); }
+  .pcard p a, .pcard .url a { position: relative; z-index: 1; color: #f0abfc; font-weight: 600; }
+  .pcard .url { font-size: .82rem; }
+  .status { font-size: .7rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; white-space: nowrap; flex: none; }
+  .st-final { background: rgba(74,222,128,.13); color: #86efac; }
+  .st-work { background: rgba(217,70,239,.15); color: #f0abfc; }
+  .st-draft { background: rgba(255,255,255,.08); color: #c9c9d4; }
+
+  /* списки ссылок */
+  .links { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+  .lk {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 13px 16px; border-radius: 12px;
+    background: rgba(16,14,16,.45); border: 1px solid rgba(255,255,255,.08);
+    transition: border-color .15s, background .15s;
   }
-  .pcard p a { color: #f0abfc; }
-  .pcard p.more { font-size: .86rem; color: rgb(var(--muted2)); margin-top: 10px; }
-  .pcard p.more a { font-weight: 600; }
-  @media (max-width: 560px) { .wrap { padding: 36px 16px 60px; } .pcard { grid-template-columns: 1fr; gap: 12px; padding: 20px 18px; } .pcard .status { justify-self: start; } }
-  .links { margin-top: 46px; color: rgb(var(--muted2)); font-size: .86rem; line-height: 1.7; }
-  .links a { color: #f0abfc; }
+  .lk:hover { border-color: rgba(217,70,239,.5); background: rgba(217,70,239,.06); }
+  .lk b { font-size: .92rem; font-weight: 700; }
+  .lk small { display: block; color: rgb(var(--muted2)); font-size: .78rem; margin-top: 2px; }
+  .lk code { flex: none; }
+  .lk > span { min-width: 0; }
+
+  details.old { margin-top: 10px; border-radius: 14px; background: rgba(16,14,16,.45); border: 1px solid rgba(255,255,255,.08); }
+  details.old summary { cursor: pointer; padding: 14px 18px; font-weight: 700; font-size: .92rem; }
+  .map { width: 100%; border-collapse: collapse; font-size: .84rem; }
+  .map td { padding: 7px 18px; border-top: 1px solid rgba(255,255,255,.06); color: rgb(var(--muted)); vertical-align: top; }
+  .map td:last-child { color: #fff; }
+  .map-wrap { overflow-x: auto; }
+  .foot { margin-top: 56px; color: rgb(var(--muted2)); font-size: .86rem; line-height: 1.7; }
+  .foot a { color: #f0abfc; }
+
+  @media (max-width: 760px) { .pages { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 560px) {
+    .wrap { padding: 32px 16px 60px; }
+    .brand { margin-bottom: 26px; }
+    .go { width: 100%; justify-content: center; }
+    .pcard { padding: 18px; }
+    .links { grid-template-columns: minmax(0, 1fr); }
+    .lk { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .state { padding: 16px; }
+    .state .seg { width: 100%; }
+    .state .seg button { flex: 1; justify-content: center; padding: .55rem .4rem; }
+    .state .resets { margin-left: 0; }
+    .map td { padding: 7px 12px; }
+  }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/>
-    </linearGradient>
+    <linearGradient id="g-acc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d946ef"/><stop offset="1" stop-color="#f43f5e"/></linearGradient>
     <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21C7 16.5 2 12.8 2 8.5 2 5.4 4.4 3 7.5 3c1.7 0 3.4.8 4.5 2.1C13.1 3.8 14.8 3 16.5 3 19.6 3 22 5.4 22 8.5c0 4.3-5 8-10 12.5z" fill="url(#g-acc)"/><path d="m12.5 4.5-2 4.2 3.2 2.6-2.2 4.5" fill="none" stroke="rgba(20,10,20,.55)" stroke-width="1.4" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
 
 <div class="wrap">
 
-  <div class="brand">
-    <svg class="ic"><use href="#i-heart"/></svg>
-    <b>LOVI<span style="color:#d946ef">X</span></b><em>· Design</em>
+  <a class="brand" href="../"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b><em>· Design</em></a>
+
+  <div class="hero">
+    <div>
+      <h1 class="h1">Карта макетов</h1>
+      <p class="sub">Кликабельный прототип lovix.ai: экраны связаны общим сайдбаром, топбаром и центром уведомлений, адреса и доступ к экранам — как на проде. Над сайтом — панель прототипа: тип пользователя (аноним / Free / платный) и устройство (десктоп во всю ширину / мобилка 360). Здесь — всё остальное: прямые ссылки на модалки и состояния, листы баннеров, черновики и документация.</p>
+    </div>
+    <a class="go" href="../">Открыть прототип →</a>
   </div>
 
-  <h1 class="h1">Редизайны страниц lovix.ai</h1>
-  <p class="sub">Рабочее пространство редизайна. Каждая страница — отдельный раздел с вариантами, собранными на дизайн-токенах текущего сайта.</p>
+  <h2 class="sec">Демо-состояние</h2>
+  <p class="sec-sub">Одно на все страницы (хранится в браузере). В прототипе переключается панелью сверху; вход — кнопками в топбаре, выход — в меню аватара. Любую ссылку можно открыть в нужном состоянии параметром <code>?as=guest</code> · <code>free</code> · <code>premium</code> · <code>vip</code>.</p>
+  <div class="state">
+    <div class="seg" id="st-seg" role="group" aria-label="Демо-состояние">
+      <button type="button" data-as="guest">Аноним</button>
+      <button type="button" data-as="free">Free</button>
+      <button type="button" data-as="premium">Premium</button>
+      <button type="button" data-as="vip">VIP</button>
+    </div>
+    <div class="now" id="st-now"></div>
+    <div class="resets">
+      <button class="mini" type="button" data-reset="fav">Очистить избранное</button>
+      <button class="mini" type="button" data-reset="notifs">Сбросить уведомления</button>
+      <button class="mini" type="button" data-reset="all">Сбросить всё</button>
+    </div>
+  </div>
 
+  <h2 class="sec">Экраны прототипа</h2>
+  <p class="sec-sub">URL и доступ — как у lovix.ai. Анониму открыты каталог, чат с ботом (писать — после регистрации), страницы бота и автора, тарифы; «Мои чаты», «Мои персонажи», аккаунт, уведомления и подписки перекидывают его на главную, пакеты — на тарифы. Ссылки на личные разделы отсюда, если вы аноним, входят как Premium.</p>
   <div class="pages">
-
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="price/">Страница тарифов · Price</a></h2>
-        <p>Финальное решение: сетка Free / Premium / VIP + персонаж-слайдер, чекаут-шаг со сводкой заказа и выбором способа оплаты (карта РФ / Worldwide / крипта), FAQ. Спецификация для вёрстки — <a href="https://github.com/serjnsk/lovix-design/blob/main/price/SPEC.md">SPEC.md</a>.</p>
-      </div>
-      <span class="status">финал</span>
+      <div class="top"><h3><a class="t" href="../">Главная · каталог</a></h3><span class="status st-work">в работе</span></div>
+      <div class="url"><code>/</code> · <a href="../en/">/en/</a> · <a href="../de/">/de/</a></div>
+      <p>Промо-баннеры в формате secrets.ai (8 интентов, карусель парами, фильтр по тарифу), заголовок с вводным абзацем, фильтры и категории с модалкой «Ещё», каталог с бесконечной прокруткой и промо-карточками. Карточка ведёт в чат, бейдж — к автору, сердечко — в «Избранное». EN / DE — первый экран на своём языке.</p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="packages/">Пакеты токенов · Packages</a></h2>
-        <p>Финальное решение: витрина трёх номиналов (100 / 300 / 700, «Популярный» выделен), чекаут с выбором способа оплаты, FAQ. Спецификация — <a href="https://github.com/serjnsk/lovix-design/blob/main/packages/SPEC.md">SPEC.md</a>.</p>
-      </div>
-      <span class="status">финал</span>
+      <div class="top"><h3><a class="t" href="../purchase/">Тарифы</a></h3><span class="status st-final">финал</span></div>
+      <div class="url"><code>/purchase/</code></div>
+      <p>Free / Premium / VIP + персонаж-слайдер, пересчёт периодов, чекаут со сводкой и выбором способа оплаты (карта РФ / Worldwide / крипта), FAQ. Демо-оплата сразу меняет тариф во всём прототипе.</p>
+      <p class="more"><a href="https://github.com/serjnsk/lovix-design/blob/main/purchase/SPEC.md">SPEC.md</a></p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="notifications/">Система уведомлений · Notifications</a></h2>
-        <p>Финальное решение: дропдаун-центр у колокольчика вместо отдельной страницы. Все юзерфлоу проработаны и кликабельны: чтение, hover-действия с undo, CTA-конверсия (Д2), критичное закреплённое (У4), настройки категорий (Д7), история, real-time. Флоу — <a href="https://github.com/serjnsk/lovix-design/blob/main/notifications/FLOWS.md">FLOWS.md</a>.</p>
-      </div>
-      <span class="status">финал · флоу</span>
+      <div class="top"><h3><a class="t" href="../packages/">Пакеты токенов</a></h3><span class="status st-final">финал</span></div>
+      <div class="url"><code>/packages/</code></div>
+      <p>Витрина 100 / 300 / 700 («Популярный» выделен), чекаут, FAQ. Покупка пополняет баланс в топбаре — его тратит чат.</p>
+      <p class="more"><a href="https://github.com/serjnsk/lovix-design/blob/main/packages/SPEC.md">SPEC.md</a></p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="chat/">Чат с компаньоном · Chat</a></h2>
-        <p>Финал: композер с действиями внутри блока (Фото / Голосовое / Видео-пресеты VIP / Сценарии), цена запроса — в кнопке отправки, единый переключатель Roleplay/Чат со сменой фона ленты, сценарии «Обычные/🌶 Spicy» с замками на Free, все виды сообщений (запрос, фото, голосовое, видео с тариф-разлочкой, ошибка с ретраем), пейволлы нехватки/VIP/подписки на месте, вычищенный профиль. Демо-циклер тарифа — кнопкой подписки в топбаре.</p>
-      </div>
-      <span class="status">финал</span>
+      <div class="top"><h3><a class="t" href="../chat/" data-login>Чат с компаньоном</a></h3><span class="status st-final">финал</span></div>
+      <div class="url"><code>/chat/</code> — мои чаты · <a href="../chat/?bot=0">/chat/?bot=N</a> — чат с ботом каталога (≈ <code>/bot/{slug}/chat</code>), открыт анониму</div>
+      <p>Композер с Фото / Голосовым / Видео-пресетами / Сценариями, цена запроса в кнопке отправки, Roleplay/Чат, пейволлы — теперь ведут в чекауты тарифа и пакетов. Гейты — по тарифу демо-сессии.</p>
+      <p class="more"><a href="https://github.com/serjnsk/lovix-design/blob/main/chat/SPEC.md">SPEC.md</a> · <a href="https://github.com/serjnsk/lovix-design/blob/main/chat/CHANGES.md">отличия от прода</a></p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="catalog/v2.html">Главная · Catalog</a></h2>
-        <p>Текущая рабочая версия главной: промо-баннеры в формате secrets.ai (две карточки 2.7:1, восемь интентов — звонки, видео, конструктор, Spicy, групповой чат, авторы, аниме, акция; карусель парами, фильтр по тарифу), заголовок с вводным абзацем, фильтры и категории, каталог с бесконечной прокруткой, кнопки «Войти» / «Начать бесплатно». Телефон: одна карточка во всю ширину в той же пропорции, как у secrets.ai на мобильном.</p>
-        <p class="more">Ранние варианты: <a href="catalog/v1.html">v1 · каталог с авторством</a> · <a href="catalog/v3.html">v3 · центрированный hero-слайдер</a></p>
-      </div>
-      <span class="status">в работе</span>
+      <div class="top"><h3><a class="t" href="../models/" data-login>Мои персонажи</a></h3><span class="status st-work">в работе</span></div>
+      <div class="url"><code>/models/</code> · <a href="../models/#favorites">#favorites</a></div>
+      <p>Продовая страница «Мои ИИ-компаньоны» + вкладка «Избранное»: туда улетают боты по сердечку с главной, счётчик — на пункте сайдбара.</p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="catalog/banners-ru.html">Промо-баннеры главной · RU / EN / DE</a></h2>
-        <p>Листы для сверки текстов: каждая из восьми карточек в десктопном виде и рядом — телефонная (фрейм 340px), под парой полный текст и тарифные пометки. Переводы и генератор — <a href="https://github.com/serjnsk/lovix-design/blob/main/catalog/banners-build.py">catalog/banners-build.py</a>.</p>
-        <p class="more">Листы: <a href="catalog/banners-ru.html">RU</a> · <a href="catalog/banners-en.html">EN</a> · <a href="catalog/banners-de.html">DE</a> &nbsp;·&nbsp; Только телефон: <a href="catalog/banners-m-ru.html">RU</a> · <a href="catalog/banners-m-en.html">EN</a> · <a href="catalog/banners-m-de.html">DE</a></p>
-      </div>
-      <span class="status">в работе</span>
+      <div class="top"><h3><a class="t" href="../notifications/" data-login>Центр уведомлений</a></h3><span class="status st-final">финал</span></div>
+      <div class="url">колокольчик на всех страницах · стенд <code>/notifications/</code></div>
+      <p>Дропдаун у колокольчика со всеми флоу (чтение, undo, CTA → «Готово», критичное, настройки) и виджет проактива компаньона. На стенде — панель симуляции событий.</p>
+      <p class="more"><a href="https://github.com/serjnsk/lovix-design/blob/main/notifications/FLOWS.md">FLOWS.md</a></p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="auth/ru/#signup">Регистрация и вход · Auth</a></h2>
-        <p>Модалка по референсу secrets.ai: слева — слайдер фич в формате промо-баннеров главной (смена раз в 10 с), справа — форма: провайдеры, email-шаг, вход, восстановление пароля. Две версии провайдеров по подпапке в URL: ru — Google + Telegram; en и de — Google + Apple.</p>
-        <p class="more">Регистрация: <a href="auth/ru/#signup">RU</a> · <a href="auth/en/#signup">EN</a> · <a href="auth/de/#signup">DE</a> &nbsp;·&nbsp; Вход: <a href="auth/ru/#login">RU</a> · <a href="auth/en/#login">EN</a> · <a href="auth/de/#login">DE</a></p>
-      </div>
-      <span class="status">в работе</span>
+      <div class="top"><h3><a class="t" href="../creator/?u=lunaria">Страница автора</a></h3><span class="status st-draft">черновик</span></div>
+      <div class="url"><code>/creator/?u=ник</code></div>
+      <p>Вариант 1 «шапка-баннер» из трёх (остальные — ниже, в черновиках). Автор берётся из адреса: бейдж на карточке каталога открывает именно его, с его ботами.</p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="models/v2.html">Мои персонажи · Models</a></h2>
-        <p>Текущая продовая страница «Мои ИИ-компаньоны» плюс вкладка «Избранное» — туда улетают боты по сердечку с главной (состояние общее с каталогом). Карточка бота ведёт себя при наведении так же, как на главной.</p>
-        <p class="more">Черновик: <a href="models/v1.html">v1 · статусы публикации</a></p>
-      </div>
-      <span class="status">в работе</span>
+      <div class="top"><h3><a class="t" href="../bot/">Страница компаньона</a></h3><span class="status st-draft">черновик</span></div>
+      <div class="url"><code>/bot/</code></div>
+      <p>Профиль бота с авторством: факты, автор с подпиской, «Где её найти», другие компаньоны автора. «Начать общение» открывает чат.</p>
     </div>
     <div class="pcard">
-      <div>
-        <h2><a class="t" href="review/">Авторы компаньонов · черновики фичи</a></h2>
-        <p>Пользователи публикуют своих персонажей: ники и бейдж автора на карточках, страница автора с подписками, подписки в профиле. Обзор изменений с открытыми вопросами — на странице <a href="review/">review</a>; сами черновики — ниже.</p>
-        <p class="more">Страница автора: <a href="author/">варианты</a> (<a href="author/v1.html">v1 · шапка-баннер</a> · <a href="author/v2.html">v2 · боковая колонка</a> · <a href="author/v3.html">v3 · без подложки</a>) &nbsp;·&nbsp; <a href="bot/v1.html">страница компаньона с авторством</a> &nbsp;·&nbsp; <a href="profile/v1.html">профиль · описание автора</a> &nbsp;·&nbsp; <a href="subscriptions/v1.html">мои подписки</a> &nbsp;·&nbsp; чат с автором: <a href="chat/author-v1.html">v1</a> · <a href="chat/author-v2.html">v2</a> &nbsp;·&nbsp; <a href="notifications/author-v2.html">уведомления автора</a></p>
-      </div>
-      <span class="status">черновики</span>
+      <div class="top"><h3><a class="t" href="../profile/" data-login>Мой аккаунт</a></h3><span class="status st-draft">черновик</span></div>
+      <div class="url"><code>/profile/</code></div>
+      <p>Профиль с описанием автора и модалкой редактирования; тариф и баланс — из демо-сессии, «Сменить тариф» / «Купить токены» ведут в чекауты.</p>
+    </div>
+    <div class="pcard">
+      <div class="top"><h3><a class="t" href="../subscriptions/" data-login>Мои подписки</a></h3><span class="status st-draft">черновик</span></div>
+      <div class="url"><code>/subscriptions/</code> · из меню аватара</div>
+      <p>Авторы, на которых подписан пользователь, и его подписчики. Ник ведёт на страницу автора.</p>
     </div>
   </div>
 
+  <h2 class="sec">Модалки и состояния</h2>
+  <p class="sec-sub">Прямые ссылки — для ревью и обсуждений.</p>
   <div class="links">
-    Исходные материалы: <a href="https://serjnsk.github.io/lovix-tokenomics/">токеномика проекта</a> · <a href="https://lovix.ai">lovix.ai</a> · <a href="https://github.com/serjnsk/lovix-design/blob/main/HANDOFF.md">передача в вёрстку</a>
+    <a class="lk" href="../register/"><span><b>Регистрация</b><small>модалка на главной</small></span><code>/register/</code></a>
+    <a class="lk" href="../login/"><span><b>Вход</b><small>модалка на главной</small></span><code>/login/</code></a>
+    <a class="lk" href="../forgot-password/"><span><b>Восстановление пароля</b><small>шаг модалки входа</small></span><code>/forgot-password/</code></a>
+    <a class="lk" href="../en/#signup"><span><b>Регистрация · EN / DE</b><small>Google + Apple, Turnstile</small></span><code>/en/#signup</code></a>
+    <a class="lk" href="../purchase/?plan=premium&amp;as=free"><span><b>Чекаут Premium</b><small>месяц, способ оплаты</small></span><code>?plan=premium</code></a>
+    <a class="lk" href="../purchase/?plan=vip&amp;period=y1&amp;as=free"><span><b>Чекаут VIP на год</b><small>из акции −45%</small></span><code>?plan=vip&amp;period=y1</code></a>
+    <a class="lk" href="../packages/?pack=300&amp;as=premium"><span><b>Чекаут пакета токенов</b><small>300 токенов</small></span><code>/packages/?pack=300</code></a>
+    <a class="lk" href="../notifications/?as=premium"><span><b>Центр уведомлений открыт</b><small>с панелью симуляции</small></span><code>/notifications/</code></a>
+    <a class="lk" href="../models/?as=premium#favorites"><span><b>Избранное</b><small>боты по сердечку</small></span><code>/models/#favorites</code></a>
+    <a class="lk" href="../chat/?bot=2&amp;as=premium"><span><b>Новый чат с ботом каталога</b><small>приветствие и сценарии</small></span><code>/chat/?bot=2</code></a>
+    <a class="lk" href="../chat/?as=free"><span><b>Чат на Free</b><small>замки, spicy-гейт, без баланса</small></span><code>/chat/?as=free</code></a>
+    <a class="lk" href="../chat/?as=vip"><span><b>Чат на VIP</b><small>видео-пресеты, звонок</small></span><code>/chat/?as=vip</code></a>
+    <a class="lk" href="../?as=vip"><span><b>Главная для VIP</b><small>без VIP-предложений и акции</small></span><code>/?as=vip</code></a>
+    <a class="lk" href="../creator/?u=kseniya_w"><span><b>Автор из каталога</b><small>@kseniya_w и её боты</small></span><code>/creator/?u=kseniya_w</code></a>
   </div>
 
+  <h2 class="sec">Материалы</h2>
+  <p class="sec-sub">Листы для сверки, не экраны продукта.</p>
+  <div class="links">
+    <a class="lk" href="banners-ru.html"><span><b>Промо-баннеры главной · RU</b><small>8 карточек: десктоп + телефон 340px, полный текст</small></span><code>banners-ru</code></a>
+    <a class="lk" href="banners-en.html"><span><b>Промо-баннеры · EN</b><small>переводы</small></span><code>banners-en</code></a>
+    <a class="lk" href="banners-de.html"><span><b>Промо-баннеры · DE</b><small>переводы</small></span><code>banners-de</code></a>
+    <a class="lk" href="banners-m-ru.html"><span><b>Только телефон · RU</b><small>все карточки во фрейме 340px</small></span><code>banners-m-ru</code></a>
+    <a class="lk" href="banners-m-en.html"><span><b>Только телефон · EN</b><small>все карточки во фрейме 340px</small></span><code>banners-m-en</code></a>
+    <a class="lk" href="banners-m-de.html"><span><b>Только телефон · DE</b><small>все карточки во фрейме 340px</small></span><code>banners-m-de</code></a>
+  </div>
+
+  <h2 class="sec">Черновики и ранние варианты</h2>
+  <p class="sec-sub">Альтернативы и наброски — у них свой, неуправляемый хром: это снимки решений, а не часть прототипа.</p>
+  <div class="links">
+    <a class="lk" href="catalog-v1.html"><span><b>Главная v1</b><small>каталог с авторством компаньонов</small></span><code>catalog-v1</code></a>
+    <a class="lk" href="catalog-v3.html"><span><b>Главная v3</b><small>центрированный hero-слайдер</small></span><code>catalog-v3</code></a>
+    <a class="lk" href="creator-variants.html"><span><b>Страница автора · три варианта</b><small>v1 — в прототипе (/creator/)</small></span><code>creator-variants</code></a>
+    <a class="lk" href="creator-v2.html"><span><b>Страница автора v2</b><small>боковая колонка</small></span><code>creator-v2</code></a>
+    <a class="lk" href="creator-v3.html"><span><b>Страница автора v3</b><small>без подложки</small></span><code>creator-v3</code></a>
+    <a class="lk" href="models-v1.html"><span><b>Мои персонажи v1</b><small>статусы публикации</small></span><code>models-v1</code></a>
+    <a class="lk" href="chat-author-v1.html"><span><b>Чат с автором v1</b><small>авторство в профиле чата</small></span><code>chat-author-v1</code></a>
+    <a class="lk" href="chat-author-v2.html"><span><b>Чат с автором v2</b><small>вариант 2</small></span><code>chat-author-v2</code></a>
+    <a class="lk" href="notifications-author-v2.html"><span><b>Уведомления автора</b><small>новые компаньоны, подписчики</small></span><code>notifications-author-v2</code></a>
+    <a class="lk" href="authors-review.html"><span><b>Обзор фичи «Авторы компаньонов»</b><small>все затронутые экраны и открытые вопросы</small></span><code>authors-review</code></a>
+  </div>
+
+  <h2 class="sec">Документация</h2>
+  <div class="links">
+    <a class="lk" href="https://github.com/serjnsk/lovix-design/blob/main/HANDOFF.md"><span><b>Передача в вёрстку</b><small>компоненты, данные, чеклист приёмки</small></span><code>HANDOFF.md</code></a>
+    <a class="lk" href="https://github.com/serjnsk/lovix-design/blob/main/README.md"><span><b>Структура репозитория</b><small>что где лежит, как пересобрать</small></span><code>README.md</code></a>
+    <a class="lk" href="https://serjnsk.github.io/lovix-tokenomics/"><span><b>Токеномика</b><small>тарифы, токены, события, сценарии</small></span><code>lovix-tokenomics</code></a>
+    <a class="lk" href="https://lovix.ai"><span><b>Прод</b><small>текущий сайт</small></span><code>lovix.ai</code></a>
+  </div>
+
+  <h2 class="sec">Старые адреса</h2>
+  <p class="sec-sub">Все прежние ссылки работают — перенаправляют на новые, с сохранением параметров и якорей.</p>
+  <details class="old">
+    <summary>Показать таблицу соответствия</summary>
+    <div class="map-wrap">
+      <table class="map">
+        <tr><td>catalog/v2.html</td><td>/</td></tr>
+        <tr><td>price/</td><td>/purchase/</td></tr>
+        <tr><td>models/v2.html</td><td>/models/</td></tr>
+        <tr><td>author/v1.html?u=…</td><td>/creator/?u=…</td></tr>
+        <tr><td>bot/v1.html · profile/v1.html · subscriptions/v1.html</td><td>/bot/ · /profile/ · /subscriptions/</td></tr>
+        <tr><td>auth/ru/#signup · auth/en/ · auth/de/</td><td>/#signup · /en/ · /de/</td></tr>
+        <tr><td>catalog/banners-*.html</td><td>/design/banners-*.html</td></tr>
+        <tr><td>catalog/v1.html · catalog/v3.html</td><td>/design/catalog-v1.html · catalog-v3.html</td></tr>
+        <tr><td>author/ · author/v2.html · author/v3.html</td><td>/design/creator-variants.html · creator-v2 · creator-v3</td></tr>
+        <tr><td>models/v1.html</td><td>/design/models-v1.html</td></tr>
+        <tr><td>chat/author-v1.html · author-v2.html</td><td>/design/chat-author-v1.html · v2</td></tr>
+        <tr><td>notifications/author-v2.html</td><td>/design/notifications-author-v2.html</td></tr>
+        <tr><td>review/</td><td>/design/authors-review.html</td></tr>
+        <tr><td>старый хаб (корень)</td><td>/design/ — эта страница</td></tr>
+      </table>
+    </div>
+  </details>
+
+  <div class="foot">
+    Репозиторий — <a href="https://github.com/serjnsk/lovix-design">github.com/serjnsk/lovix-design</a>. История всех вариантов — в git.
+  </div>
 </div>
+
+<script src="../assets/shell.js"></script>
+<script>
+  /* Переключатель демо-состояния: те же действия, что в прототипе (assets/shell.js) */
+  const NAMES = { guest: 'аноним', free: 'Free', premium: 'Premium', vip: 'VIP' };
+  function paint() {
+    const s = Lovix.session(), cur = s.auth ? s.tier : 'guest';
+    document.querySelectorAll('[data-as]').forEach(b => b.classList.toggle('on', b.dataset.as === cur));
+    let fav = 0; try { fav = (JSON.parse(localStorage.getItem('lovix.fav') || '[]') || []).length; } catch (e) {}
+    document.getElementById('st-now').innerHTML = s.auth
+      ? `Сейчас: <b>${NAMES[cur]}</b> · баланс <b>${s.balance}</b> токенов · в избранном <b>${fav}</b>`
+      : `Сейчас: <b>аноним</b> — в топбаре «Войти» и «Начать бесплатно» · в избранном <b>${fav}</b>`;
+  }
+  document.addEventListener('lovix:session', e => { e.preventDefault(); paint(); });
+  // личный раздел из карты макетов: анониму — сразу вход как Premium (иначе, как на проде, редирект на главную)
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[data-login]');
+    if (a && !Lovix.session().auth) a.href = a.href.split('#')[0] + (a.href.includes('?') ? '&' : '?') + 'as=premium';
+  }, true);
+  document.getElementById('st-seg').addEventListener('click', e => {
+    const b = e.target.closest('[data-as]'); if (!b) return;
+    if (b.dataset.as === 'guest') { if (Lovix.session().auth) Lovix.logout(); }
+    else Lovix.setTier(b.dataset.as);
+    paint();
+  });
+  document.addEventListener('click', e => {
+    const r = e.target.closest('[data-reset]'); if (!r) return;
+    const k = r.dataset.reset;
+    try {
+      if (k === 'fav' || k === 'all') localStorage.removeItem('lovix.fav');
+      if (k === 'notifs' || k === 'all') localStorage.removeItem('lovix.notifs');
+      if (k === 'all') { localStorage.removeItem('lovix.session'); sessionStorage.clear(); }
+    } catch (err) {}
+    if (k === 'all') { location.reload(); return; }
+    Lovix.toast(k === 'fav' ? 'Избранное очищено' : 'Уведомления и проактивы вернутся к исходным');
+    paint();
+  });
+  paint();
+</script>
 </body>
 </html>

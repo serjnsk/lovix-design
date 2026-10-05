@@ -22,7 +22,7 @@
       su_t: 'Начни бесплатно', su_s: 'Сотни новых знакомств уже ждут тебя',
       si_t: 'С возвращением', si_s: 'Войди, чтобы продолжить общение с компаньонками',
       or: 'или через', email: 'Email',
-      legal: 'Продолжая, ты подтверждаешь, что тебе есть 18 лет, и принимаешь <a href="#">Условия использования</a> и <a href="#">Политику конфиденциальности</a>.',
+      legal: 'Продолжая, ты подтверждаешь, что тебе есть 18 лет, и принимаешь <a href="#" data-todo="Условия использования">Условия использования</a> и <a href="#" data-todo="Политика конфиденциальности">Политику конфиденциальности</a>.',
       have: 'Уже есть аккаунт?', signin: 'Войти', noacc: 'Нет аккаунта?', signup: 'Зарегистрироваться',
       pass: 'Пароль', create: 'Создать бесплатный аккаунт', back: 'Назад',
       forgot: 'Забыл пароль?', signin_btn: 'Войти',
@@ -46,7 +46,7 @@
       su_t: 'Sign up for free', su_s: 'Hundreds of new connections are waiting for you',
       si_t: 'Welcome back', si_s: 'Sign in to continue chatting with your companions',
       or: 'or continue with', email: 'Email',
-      legal: 'By continuing, you confirm that you are over 18 years old and agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.',
+      legal: 'By continuing, you confirm that you are over 18 years old and agree to our <a href="#" data-todo="Terms of Service">Terms of Service</a> and <a href="#" data-todo="Privacy Policy">Privacy Policy</a>.',
       have: 'Already have an account?', signin: 'Sign in', noacc: 'Don’t have an account?', signup: 'Sign up',
       pass: 'Password', create: 'Create free account', back: 'Back',
       forgot: 'Forgot password?', signin_btn: 'Sign in',
@@ -70,7 +70,7 @@
       su_t: 'Kostenlos registrieren', su_s: 'Hunderte neue Bekanntschaften warten auf dich',
       si_t: 'Willkommen zurück', si_s: 'Melde dich an, um weiter mit deinen Companions zu chatten',
       or: 'oder weiter mit', email: 'E-Mail',
-      legal: 'Indem du fortfährst, bestätigst du, dass du über 18 Jahre alt bist, und akzeptierst unsere <a href="#">Nutzungsbedingungen</a> und <a href="#">Datenschutzerklärung</a>.',
+      legal: 'Indem du fortfährst, bestätigst du, dass du über 18 Jahre alt bist, und akzeptierst unsere <a href="#" data-todo="Nutzungsbedingungen">Nutzungsbedingungen</a> und <a href="#" data-todo="Datenschutzerklärung">Datenschutzerklärung</a>.',
       have: 'Schon ein Konto?', signin: 'Anmelden', noacc: 'Noch kein Konto?', signup: 'Registrieren',
       pass: 'Passwort', create: 'Kostenloses Konto erstellen', back: 'Zurück',
       forgot: 'Passwort vergessen?', signin_btn: 'Anmelden',
@@ -92,7 +92,7 @@
     }
   };
 
-  /* слайды = промо-баннеры главной (catalog/v2.html, assets/promo-banners.css): классы pb-*,
+  /* слайды = промо-баннеры главной (index.html, assets/promo-banners.css): классы pb-*,
      вырезы и декор (пилюля звонка, «2 компаньонки», пилюля автора) те же. Набор и порядок —
      по решению: без «видео», «конструктора» и акции (цена региональная); порядок перемешан
      относительно баннеров. Подписи пилюль — PILL[lang]. */
@@ -140,6 +140,13 @@
   var T = I18N[lang], R = REGION[region];
   var src = document.currentScript ? document.currentScript.src : 'assets/auth.js';
   var IMG = src.replace(/auth\.js(\?.*)?$/, '') + 'img/hero/';
+  // слайды свёрстаны классами промо-баннеров главной (pb-*): на страницах без баннеров
+  // (тарифы, чат, профиль…) их стили подключаются отсюда, иначе арт и текст слайда разъезжаются
+  if (!document.querySelector('link[href*="promo-banners.css"]')) {
+    var pbCss = document.createElement('link');
+    pbCss.rel = 'stylesheet'; pbCss.href = src.replace(/auth\.js(\?.*)?$/, '') + 'promo-banners.css';
+    document.head.appendChild(pbCss);
+  }
   var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var root = null, side = null, form = null, lastFocus = null, mode = 'signup';
@@ -304,9 +311,11 @@
       signedIn(step === 'su-email' ? T.toast_created : T.toast_in);
     });
   }
-  /* демо-вход: закрыть, в топбаре — аватар вместо кнопок */
+  /* демо-вход: закрыть; дальше — общая демо-сессия assets/shell.js (топбар вошедшего,
+     переход туда, куда шёл гость). Без shell.js — просто аватар вместо кнопок. */
   function signedIn(msg) {
-    close();
+    close(true);
+    if (window.Lovix) { window.Lovix.login(msg); return; }
     document.querySelectorAll('.tb-right').forEach(function (r) {
       if (!r.querySelector('.tb-ava')) { var a = document.createElement('div'); a.className = 'tb-ava'; a.textContent = 'A'; a.title = 'demo'; r.appendChild(a); }
       r.classList.add('is-auth');
@@ -327,9 +336,14 @@
   function restart() { clearInterval(timer); if (!calm) timer = setInterval(tick, INTERVAL); }
 
   /* ── открытие / закрытие ── */
-  function open(m, trigger) {
+  /* opts.title / opts.sub — заголовок регистрации под повод (регвол чата: «Зарегистрируйтесь,
+     чтобы написать Александре»); без opts — стандартные «Начни бесплатно» */
+  function open(m, trigger, opts) {
     if (!root) build();
     mode = m === 'login' ? 'login' : 'signup';
+    var o = opts || {};
+    root.querySelectorAll('[data-step^="su"] .au-t').forEach(function (h) { h.textContent = o.title || T.su_t; });
+    root.querySelectorAll('[data-step^="su"] .au-s').forEach(function (p) { p.textContent = o.sub || T.su_s; });
     lastFocus = trigger || document.activeElement;
     root.hidden = false; document.body.style.overflow = 'hidden';
     void root.offsetWidth;                       // зафиксировать стартовый кадр, чтобы сработал переход
@@ -338,8 +352,9 @@
     goSlide(idx); restart();
     try { history.replaceState(null, '', '#' + mode); } catch (e) {}
   }
-  function close() {
+  function close(signed) {
     if (!root || root.hidden) return;
+    if (!signed) document.dispatchEvent(new CustomEvent('lovix:auth-close'));   // закрыли без входа
     root.classList.remove('show'); clearInterval(timer);
     document.body.style.overflow = '';
     setTimeout(function () { root.hidden = true; }, calm ? 0 : 200);
@@ -364,11 +379,15 @@
   }
 
   document.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-auth]'); if (!b) return;
+    var b = e.target.closest('[data-auth]'); if (!b || b === document.documentElement) return;
     e.preventDefault(); open(b.dataset.auth, b);
   });
   document.addEventListener('visibilitychange', function () { if (root && !root.hidden && !document.hidden) restart(); });
-  function fromHash() { var h = location.hash.replace('#', ''); if (h === 'signup' || h === 'login') open(h); }
+  function fromHash() {
+    var h = location.hash.replace('#', '');
+    if (h === 'signup' || h === 'login') open(h);
+    if (h === 'forgot') { open('login'); show('fp'); }
+  }
   window.addEventListener('hashchange', fromHash);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fromHash); else fromHash();
 

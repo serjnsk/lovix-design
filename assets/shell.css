@@ -1,0 +1,457 @@
+/* ============================================================
+   Lovix · общий хром прототипа (к assets/shell.js)
+   Базовые сайдбар/топбар — в assets/lovix.css, кнопки входа — в assets/auth.css.
+   Здесь — то, что раньше было продублировано по страницам и расходилось:
+   эталон — главная (бывшая catalog/v2.html).
+   ============================================================ */
+
+/* ---------- фон страницы — как на проде: диагональ через всю высоту документа,
+   синий слева сверху → #221f22 к 60 %. Верхнее свечение .page из lovix.css отключено ---------- */
+body { background: linear-gradient(to bottom right, rgb(var(--page-from)) 0%, rgb(var(--page)) 60%); }
+.page { background: none; }
+
+/* ---------- сайдбар: бейджи пунктов ---------- */
+/* «Мои персонажи» — сколько ботов в избранном (градиент бренда) */
+.sb-cnt {
+  margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+  background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+  color: #fff; font-size: .7rem; font-weight: 800; font-style: normal;
+  display: flex; align-items: center; justify-content: center;
+}
+/* «Мои чаты» — непрочитанные проактивы компаньонов (красный, как на проде) */
+.sbcnt {
+  margin-left: auto; font-style: normal;
+  background: #ef4444; color: #fff;
+  font-size: .66rem; font-weight: 800;
+  min-width: 18px; height: 18px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center; padding: 0 5px;
+}
+.sb-cnt[hidden], .sbcnt[hidden] { display: none; }
+.sb-item { white-space: nowrap; }   /* счётчик рядом с «Мои персонажи» не переносит подпись на вторую строку */
+.sb-item.bump { animation: sb-bump .4s ease; }
+@keyframes sb-bump { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
+.sb-item:focus-visible, .tb-nav a:focus-visible, .logo:focus-visible { outline: 2px solid #f0abfc; outline-offset: 2px; }
+
+/* ---------- топбар ---------- */
+.tb .logo { flex: none; }
+.lx-burger {
+  display: none; flex: none; width: 40px; height: 40px; margin-left: -8px; border-radius: 10px;
+  border: 0; background: none; color: #fff; cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.lx-burger:hover { background: rgba(255,255,255,.08); }
+.lx-burger .ic { width: 22px; height: 22px; }
+
+/* баланс токенов (Premium / VIP) — ведёт на пакеты */
+.lx-bal {
+  display: flex; align-items: center; gap: 7px; flex: none;
+  font-weight: 800; font-size: .95rem; color: #fff;
+  padding: 8px 15px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.04);
+  transition: background .15s, border-color .15s;
+}
+.lx-bal:hover { background: rgba(217,70,239,.12); border-color: rgba(217,70,239,.5); }
+.lx-bal .ic { width: 15px; height: 15px; color: #e879f9; }
+.lx-bal.flash { animation: lx-balf .6s; }
+.lx-bal.flash b { color: #f0abfc; }
+@keyframes lx-balf { 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
+
+button.bell { color: #fff; padding: 0; }
+.bell i[hidden] { display: none; }
+
+/* аватар → меню аккаунта */
+.lx-acc { position: relative; }
+button.avatar { color: #fff; font: inherit; font-weight: 700; padding: 0; }
+button.avatar:hover, button.avatar[aria-expanded="true"] { border-color: rgba(217,70,239,.6); }
+.lx-menu {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 70;
+  width: 270px; padding: 8px; border-radius: 16px;
+  background: #17131c; border: 1px solid rgba(255,255,255,.13);
+  box-shadow: 0 24px 70px rgba(0,0,0,.65), 0 0 40px rgba(217,70,239,.1);
+  display: none;
+}
+.lx-menu.open { display: block; animation: lx-pop .16s ease; }
+@keyframes lx-pop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.lx-menu-h { display: flex; align-items: center; gap: 10px; padding: 8px 8px 12px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 6px; }
+.lx-menu-h > div { min-width: 0; flex: 1; }
+.lx-menu-h b { display: block; font-size: .92rem; font-weight: 800; }
+.lx-menu-h small { display: block; color: rgb(var(--muted2)); font-size: .76rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lx-ava-sm {
+  width: 36px; height: 36px; border-radius: 50%; flex: none;
+  display: flex; align-items: center; justify-content: center; font-weight: 800;
+  background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+}
+.lx-chip { flex: none; font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; }
+.lx-chip.t-free { background: rgba(255,255,255,.1); color: #d7d7e0; }
+.lx-chip.t-premium { background: rgba(217,70,239,.18); color: #f0abfc; }
+.lx-chip.t-vip { background: linear-gradient(90deg, #f59e0b, #f43f5e); color: #fff; }
+.lx-menu a, .lx-menu > button {
+  display: flex; align-items: center; gap: 11px; width: 100%;
+  padding: 9px 10px; border-radius: 10px; border: 0; background: none; cursor: pointer;
+  color: #d7d7e0; font: inherit; font-size: .9rem; font-weight: 600; text-align: left;
+}
+.lx-menu a:hover, .lx-menu > button:hover { background: rgba(255,255,255,.07); color: #fff; }
+.lx-menu a .ic, .lx-menu > button .ic { width: 17px; height: 17px; color: rgb(var(--muted)); }
+
+/* ---------- мобильный хром: сайдбар — шторкой по бургеру ---------- */
+.lx-scrim {
+  position: fixed; inset: 0; z-index: 60; background: rgba(8,6,10,.6);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+@media (max-width: 1080px) {
+  .lx-burger { display: inline-flex; }
+  .sb {
+    display: flex; z-index: 61; width: min(280px, 86vw);
+    transform: translateX(-102%); box-shadow: none;
+    overflow-y: auto;
+  }
+  html.lx-drawer-anim .sb { transition: transform .25s ease; }   /* анимация — только от бургера, не при смене ширины */
+  html.lx-drawer .sb { transform: none; box-shadow: 24px 0 60px rgba(0,0,0,.5); }
+  html.lx-drawer .lx-scrim { opacity: 1; pointer-events: auto; }
+  html.lx-drawer, html.lx-drawer body { overflow: hidden; }
+}
+@media (max-width: 640px) {
+  .tb { gap: 10px; }
+  .lx-burger { width: 36px; height: 36px; margin-left: -6px; }
+  .tb .logo { font-size: 1.15rem; gap: 6px; }
+  .tb .logo .ic { width: 22px; height: 22px; }
+  .tb-right { gap: 8px; }
+  .lx-bal { padding: 6px 11px; font-size: .88rem; gap: 5px; }
+  .bell, .avatar { width: 38px; height: 38px; }
+  .lx-menu { position: fixed; top: 60px; left: 10px; right: 10px; width: auto; }
+}
+@media (max-width: 380px) {
+  .tb { padding-left: 12px; padding-right: 12px; gap: 6px; }
+  .tb .logo b { letter-spacing: .02em; }
+  .tb-right { gap: 6px; }
+  .tb-login { padding: 0 8px; }
+  .tb-start { padding: 0 12px; }
+  .lx-bal { padding: 6px 9px; }
+}
+
+/* ---------- футер ---------- */
+.site-foot {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+  padding: 26px 44px; border-top: 1px solid rgba(255,255,255,.08);
+  color: rgb(var(--muted2)); font-size: .9rem;
+}
+.site-foot .logo { font-size: 1.2rem; }
+.lx-proto { display: inline-flex; align-items: center; gap: 7px; color: rgb(var(--muted2)); font-weight: 600; font-size: .85rem; }
+.lx-proto .ic { width: 15px; height: 15px; }
+.lx-proto:hover { color: #f0abfc; }
+@media (max-width: 560px) { .site-foot { padding: 22px 16px; justify-content: center; text-align: center; } }
+
+/* ---------- тост ---------- */
+.lx-toast {
+  position: fixed; left: 50%; bottom: 28px; z-index: 120;
+  transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+  padding: 12px 18px; border-radius: 12px; max-width: min(92vw, 560px);
+  background: rgba(18,14,20,.95); border: 1px solid rgba(217,70,239,.4);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  font-size: .92rem; line-height: 1.4; color: #fff; text-align: center;
+  transition: opacity .2s, transform .2s;
+}
+.lx-toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.lx-toast a { color: #f0abfc; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.lx-toast b { color: #f0abfc; }
+.lx-toast .tundo {
+  margin-left: 10px; color: #f0abfc; background: none;
+  border: 1px solid rgba(217,70,239,.45); border-radius: 8px;
+  padding: 3px 10px; cursor: pointer; font-family: inherit; font-size: .8rem; font-weight: 700;
+}
+.lx-toast .tundo:hover { background: rgba(217,70,239,.15); }
+
+/* ============================================================
+   Центр уведомлений — дропдаун у колокольчика (assets/notifications.js).
+   Флоу и правила — notifications/FLOWS.md
+   ============================================================ */
+.bell-wrap { position: relative; }
+@keyframes bpop { 0% { transform: scale(1); } 40% { transform: scale(1.4); } 100% { transform: scale(1); } }
+.bell i.pop { animation: bpop .5s ease; }
+.npanel {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  width: 400px; max-height: min(74vh, 660px);
+  display: none; flex-direction: column;
+  background: #17131c;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 16px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.65), 0 0 40px rgba(217,70,239,.1);
+  overflow: hidden; z-index: 70; text-align: left;
+}
+.npanel.open { display: flex; }
+.npanel .vlist { display: flex; flex-direction: column; min-height: 0; }
+.npanel .ic { width: 20px; height: 20px; }
+.nhead { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; flex: none; }
+.nhead b { font-size: 1.05rem; font-weight: 800; }
+.nhead .cnt { color: rgb(var(--muted)); font-weight: 600; font-size: .85rem; margin-left: 6px; }
+.nacts { display: flex; gap: 4px; }
+.iconbtn {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: 0; cursor: pointer; color: rgb(var(--muted));
+}
+.iconbtn:hover { background: rgba(255,255,255,.07); color: #fff; }
+.npanel .iconbtn .ic { width: 16px; height: 16px; }
+.nlist { overflow-y: auto; padding: 0 8px 10px; }
+.ngroup { font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: rgb(var(--muted2)); padding: 10px 10px 6px; }
+
+/* критичное закреплённое (окно восстановления, У4) */
+.ncrit {
+  margin: 4px 2px 8px; border-radius: 12px; padding: 13px 13px 14px;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(rgba(36,17,22,.96), rgba(36,17,22,.96)) padding-box,
+    linear-gradient(135deg, #f43f5e, #f59e0b) border-box;
+}
+.ncrit .crow { display: flex; gap: 11px; align-items: flex-start; }
+.ncrit .ntext { color: #e8d9dd; }
+.ncrit .timer {
+  display: inline-flex; gap: 6px; align-items: center;
+  font-size: .74rem; font-weight: 800; color: #fcd34d;
+  background: rgba(245,158,11,.14); border: 1px solid rgba(245,158,11,.3);
+  border-radius: 999px; padding: 3px 10px; margin-top: 9px;
+}
+.npanel .ncrit .timer .ic { width: 12px; height: 12px; }
+.ncrit .ncta { margin-top: 10px; }
+
+/* уведомление */
+.nitem {
+  display: flex; gap: 11px; align-items: flex-start;
+  padding: 11px 10px; border-radius: 12px; cursor: pointer; position: relative;
+}
+.nitem:hover { background: rgba(255,255,255,.05); }
+.nitem.unread { background: rgba(217,70,239,.07); }
+.nitem.unread:hover { background: rgba(217,70,239,.11); }
+.nitem + .nitem { margin-top: 4px; }
+@keyframes flashin { from { background: rgba(217,70,239,.3); } }
+.nitem.fresh { animation: flashin 1.4s ease; }
+.nicon { width: 38px; height: 38px; border-radius: 11px; flex: none; display: flex; align-items: center; justify-content: center; }
+.npanel .nicon .ic { width: 18px; height: 18px; }
+.nc-tok  { background: rgba(147,51,234,.28); color: #e879f9; }
+.nc-lim  { background: rgba(37,99,235,.26);  color: #93c5fd; }
+.nc-fail { background: rgba(239,68,68,.2);   color: #fca5a5; }
+.nc-pay  { background: rgba(244,63,94,.2);   color: #fda4af; }
+.nc-hello{ background: rgba(217,70,239,.22); color: #f0abfc; }
+.nc-news { background: rgba(59,130,246,.2);  color: #93c5fd; }
+.nbody { min-width: 0; flex: 1; }
+.ntitle { font-size: .9rem; font-weight: 700; line-height: 1.3; padding-right: 8px; }
+.ntext { font-size: .82rem; color: rgb(var(--muted)); margin-top: 2px; line-height: 1.4; }
+.ntime { font-size: .72rem; color: rgb(var(--muted2)); margin-top: 4px; }
+.ncta { margin-top: 8px; }
+.ncta .btn { padding: .42rem .9rem; font-size: .78rem; border-radius: .5rem; box-shadow: none; }
+.donechip {
+  display: inline-flex; gap: 5px; align-items: center;
+  font-size: .76rem; font-weight: 800; color: #4ade80;
+  background: rgba(74,222,128,.12); border-radius: 999px; padding: 4px 11px;
+}
+.npanel .donechip .ic { width: 12px; height: 12px; }
+.ndot { width: 8px; height: 8px; border-radius: 50%; background: #e879f9; flex: none; margin-top: 6px; box-shadow: 0 0 8px rgba(217,70,239,.8); }
+.nitem:not(.unread) .ndot { visibility: hidden; }
+
+/* hover-действия */
+.hacts {
+  position: absolute; top: 8px; right: 8px;
+  display: none; gap: 3px;
+  background: rgba(23,19,28,.92); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 9px; padding: 2px;
+}
+.nitem:hover .hacts { display: flex; }
+.hacts .iconbtn { width: 26px; height: 26px; }
+.npanel .hacts .iconbtn .ic { width: 13px; height: 13px; }
+@media (hover: none) { .hacts { display: flex; position: static; align-self: flex-start; background: none; border: 0; } }
+
+.nmore {
+  display: block; width: calc(100% - 4px); margin: 6px 2px 2px;
+  padding: 9px; border-radius: 10px;
+  border: 1px dashed rgba(255,255,255,.18); background: none;
+  color: rgb(var(--muted)); font-family: inherit; font-size: .8rem; font-weight: 700;
+  cursor: pointer; transition: .15s;
+}
+.nmore:hover { color: #fff; border-color: rgba(217,70,239,.5); }
+.nempty { padding: 38px 20px; text-align: center; color: rgb(var(--muted2)); font-size: .88rem; }
+.npanel .nempty .ic { width: 30px; height: 30px; margin: 0 auto 10px; color: rgb(var(--muted2)); }
+
+/* настройки (подэкран, Д7) */
+.nset { padding: 4px 16px 16px; overflow-y: auto; }
+.nset .backrow {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0 12px; color: rgb(var(--muted)); font-size: .86rem; font-weight: 700;
+  cursor: pointer; background: none; border: 0; font-family: inherit;
+}
+.nset .backrow:hover { color: #fff; }
+.npanel .nset .backrow .ic { width: 15px; height: 15px; }
+.nrow-set { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; font-size: .88rem; font-weight: 600; }
+.nrow-set small { display: block; color: rgb(var(--muted2)); font-size: .72rem; font-weight: 400; margin-top: 1px; }
+.sw {
+  width: 40px; height: 22px; border-radius: 999px;
+  background: rgba(255,255,255,.15);
+  position: relative; cursor: pointer; border: 0; flex: none; transition: background .2s;
+}
+.sw::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .2s;
+}
+.sw.on { background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); }
+.sw.on::after { left: 21px; }
+.sw.lock { opacity: .45; cursor: not-allowed; }
+.nset .hint { color: rgb(var(--muted2)); font-size: .74rem; line-height: 1.5; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
+@media (max-width: 640px) {
+  .npanel { position: fixed; top: 60px; left: 10px; right: 10px; width: auto; max-height: calc(100vh - 80px); }
+}
+
+/* ============================================================
+   Виджет проактива компаньона — «онлайн-чат» справа-снизу (Флоу 8).
+   В колокольчик не попадает; непрочитанное — бейдж на «Мои чаты».
+   ============================================================ */
+.lwdock { position: fixed; right: 22px; bottom: 22px; z-index: 55; display: flex; flex-direction: column; align-items: flex-end; }
+html[data-section="chat"] .lwdock { display: none; }   /* в самом чате виджет не нужен */
+.lwdock .ic { width: 20px; height: 20px; }
+.lw-stack { display: flex; justify-content: flex-end; margin-top: 10px; }
+.lw-stack .sava {
+  width: 60px; height: 60px; border-radius: 50%;
+  padding: 2.5px; margin-left: -14px;
+  background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+  position: relative; cursor: pointer; border: 0;
+  box-shadow: 0 6px 20px rgba(0,0,0,.45);
+  transition: transform .15s;
+}
+.lw-stack .sava:hover { transform: translateY(-3px); }
+.lw-stack .sava .ph { position: absolute; inset: 2.5px; border-radius: 50%; overflow: hidden; background: #221a28; }
+.lw-stack .sava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; }
+.lw-stack .sava i {
+  position: absolute; top: -1px; right: -1px; z-index: 1;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: #4ade80; border: 2px solid #17131c; font-style: normal;
+}
+.lw-stack .sava.more {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; border: 2.5px solid transparent;
+  background:
+    linear-gradient(#221a28, #221a28) padding-box,
+    linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to))) border-box;
+  color: #fff; font-weight: 800; font-size: 1.05rem; letter-spacing: -.01em;
+}
+@keyframes lw-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.lw { display: flex; align-items: flex-end; gap: 10px; animation: lw-in .3s ease; }
+.lw-bubble {
+  position: relative;
+  background: rgba(18,14,20,.94);
+  border: 1px solid rgba(217,70,239,.35);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-radius: 14px 14px 4px 14px;
+  padding: 11px 14px; max-width: 260px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.5);
+}
+.lw-name {
+  font-size: .76rem; font-weight: 800; color: #f0abfc;
+  display: flex; align-items: center; gap: 6px; padding-right: 20px;
+}
+.lw-name::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; }
+.lw-text {
+  font-size: .87rem; font-style: italic; margin-top: 3px; line-height: 1.35;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+  cursor: pointer;
+}
+.lw-bubble.is-cut .lw-text {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 1.35em), rgba(0,0,0,.3));
+          mask-image: linear-gradient(180deg, #000 calc(100% - 1.35em), rgba(0,0,0,.3));
+}
+.lw-act { margin-top: 9px; }
+.lw-act .btn { padding: .42rem .9rem; font-size: .78rem; border-radius: .5rem; box-shadow: none; }
+.lw-x {
+  position: absolute; top: 7px; right: 7px;
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 0; background: none; color: rgb(var(--muted2)); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.lw-x:hover { background: rgba(255,255,255,.08); color: #fff; }
+.lwdock .lw-x .ic { width: 11px; height: 11px; }
+.lw-ava {
+  position: relative; width: 62px; height: 62px; flex: none;
+  border-radius: 50%; cursor: pointer;
+  background: linear-gradient(135deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
+  padding: 2.5px;
+  animation: lw-pulse 2.6s ease-in-out infinite;
+}
+@keyframes lw-pulse {
+  0%, 100% { box-shadow: 0 8px 30px rgba(217,70,239,.45); }
+  50%      { box-shadow: 0 8px 44px rgba(217,70,239,.8); }
+}
+.lw-ava .ph { position: absolute; inset: 2.5px; border-radius: 50%; overflow: hidden; background: #221a28; }
+.lw-ava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 6%; }
+@media (max-width: 640px) {
+  .lwdock { right: 12px; bottom: 12px; }
+  .lw-bubble { max-width: 210px; }
+  .lw-stack .sava { width: 48px; height: 48px; margin-left: -12px; }
+  .lw-ava { width: 52px; height: 52px; }
+}
+@media (prefers-reduced-motion: reduce) { .lw-ava { animation: none; } .lw { animation: none; } }
+
+/* ============================================================
+   Панель прототипа над сайтом (shell.js → buildViewer): тип пользователя и устройство.
+   Верхний документ показывает страницу во фрейме под строкой: десктоп — во всю ширину окна
+   (1 в 1 как настоящий сайт), мобилка — 360px. Это инструмент ревью, в прод не идёт.
+   ============================================================ */
+html.lx-viewer, html.lx-viewer body { height: 100%; overflow: hidden; }
+html.lx-viewer body { margin: 0; background: #0b0a0f; }
+html.lx-viewer body > :not(#lx-viewer) { display: none !important; }
+#lx-viewer { position: fixed; inset: 0; display: flex; flex-direction: column; font-family: var(--font); color: #e7e7ef; }
+.lxv-bar {
+  /* белая строка — сразу видно, что это управление прототипом, а не часть сайта */
+  flex: none; height: 48px; padding: 0 14px; display: flex; align-items: center; gap: 18px;
+  background: #fff; color: #1d1b22; border-bottom: 1px solid #e4e2ea; box-shadow: 0 2px 10px rgba(0,0,0,.25);
+  white-space: nowrap; overflow-x: auto; scrollbar-width: none; position: relative; z-index: 1;
+}
+.lxv-bar::-webkit-scrollbar { display: none; }
+.lxv-brand { display: flex; align-items: baseline; gap: 2px; font-weight: 800; font-size: 1rem; letter-spacing: .04em; color: #1d1b22; }
+.lxv-brand span { color: rgb(var(--primary)); }
+.lxv-brand em { font-style: normal; font-weight: 700; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: #8a8796; margin-left: 8px; }
+.lxv-grp { display: flex; align-items: center; gap: 8px; }
+.lxv-grp > small, .lx-pillbox > small { font-size: .68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: #8a8796; }
+.lxv-user { display: flex; align-items: center; gap: 6px; }
+.lxv-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 10px; background: #f1eff5; border: 1px solid #e4e2ea; }
+.lxv-seg button {
+  border: 0; background: none; cursor: pointer; padding: 5px 11px; border-radius: 7px;
+  color: #4a4756; font: inherit; font-size: .8rem; font-weight: 700;
+}
+.lxv-seg button:hover { color: #1d1b22; background: #e6e3ee; }
+.lxv-seg button.on { background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to))); color: #fff; }
+.lxv-seg.sm button { padding: 5px 9px; font-size: .74rem; }
+.lxv-seg.sm.off { opacity: .4; }
+.lxv-scale { font-size: .74rem; color: #8a8796; min-width: 70px; font-variant-numeric: tabular-nums; }
+.lxv-dev.is-desktop { background: none; }
+.lxv-path { margin-left: auto; font: .78rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: #6b6878; overflow: hidden; text-overflow: ellipsis; max-width: 26vw; }
+.lxv-link { font-size: .8rem; font-weight: 700; color: #c026d3; }
+.lxv-link:hover { color: #a21caf; }
+.lxv-x { width: 30px; height: 30px; border-radius: 8px; border: 0; background: #f1eff5; color: #4a4756; font-size: 1.1rem; cursor: pointer; }
+.lxv-x:hover { background: #e6e3ee; color: #1d1b22; }
+.lxv-stage { flex: 1; min-height: 0; display: flex; justify-content: center; align-items: flex-start; overflow: hidden; }
+.lxv-dev { position: relative; overflow: hidden; background: rgb(var(--page)); }
+.lxv-dev iframe { display: block; border: 0; transform-origin: 0 0; background: rgb(var(--page)); }
+.lxv-dev.is-mobile {
+  margin-top: 20px; border-radius: 30px;
+  box-shadow: 0 0 0 10px #050507, 0 0 0 11px rgba(255,255,255,.12), 0 30px 80px rgba(0,0,0,.6);
+}
+
+/* без панели (узкий экран или панель скрыта) — кнопка «Прототип» в левом нижнем углу */
+.lx-pillwrap { position: fixed; left: 12px; bottom: 12px; z-index: 115; }
+@media (min-width: 1081px) { .lx-pillwrap { left: calc(var(--sb-w) + 12px); } }   /* правее сайдбара */
+html[data-section="chat"] .lx-pillwrap { bottom: 104px; }                          /* над композером чата */
+@media (min-width: 1001px) { html[data-section="chat"] .lx-pillwrap { bottom: 12px; } }   /* поверх списка чатов */
+.lx-pill {
+  padding: 7px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid #e4e2ea; background: #fff; color: #1d1b22;
+  font: inherit; font-size: .74rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  box-shadow: 0 8px 24px rgba(0,0,0,.45);
+}
+.lx-pillbox {
+  display: none; position: absolute; left: 0; bottom: calc(100% + 8px); width: 280px; max-width: calc(100vw - 24px);
+  padding: 12px; border-radius: 14px; background: #fff; color: #1d1b22; border: 1px solid #e4e2ea;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+}
+.lx-pillbox.open { display: grid; gap: 8px; }
+.lx-pillbox .lxv-seg { width: 100%; }
+.lx-pillbox .lxv-seg button { flex: 1; }
+.lx-pillbox a { font-size: .82rem; font-weight: 700; color: #c026d3; }

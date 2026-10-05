@@ -9,43 +9,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../assets/shell.css">
 <style>
   html, body { height: 100%; overflow: hidden; }
   .page { display: flex; flex-direction: column; height: 100vh; }
   .tb { flex: none; }
 
-  /* топбар чат-страницы: баланс + подписка */
-  .balance {
-    display: flex; align-items: center; gap: 7px;
-    font-weight: 800; font-size: .95rem;
-    padding: 8px 15px; border-radius: 999px;
-    border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.04);
-  }
-  .balance .ic { width: 15px; height: 15px; }
-  .balance.flash { animation: balf .6s; }
-  @keyframes balf { 30% { transform: scale(1.1); } 60% { transform: scale(1); } }
-  .balance.flash b { color: #f0abfc; }
-  .subact {
-    display: flex; align-items: center; gap: 8px; position: relative;
-    padding: 9px 18px; border-radius: 999px; border: 0; cursor: pointer;
-    background: linear-gradient(90deg, rgb(var(--acc-from)), rgb(var(--acc-to)));
-    color: #fff; font-weight: 800; font-size: .88rem; white-space: nowrap;
-    box-shadow: 0 0 26px rgba(217,70,239,.4);
-  }
-  .subact .ic { width: 15px; height: 15px; }
-  .subact .demotag {
-    position: absolute; top: -7px; right: -6px;
-    font-size: .52rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
-    background: #3f3f4a; border: 1px solid rgba(255,255,255,.25);
-    border-radius: 999px; padding: 1.5px 6px; color: #e4e4ef;
-  }
-
-  .sbcnt {
-    margin-left: auto; background: #ef4444; color: #fff;
-    font-size: .68rem; font-weight: 800; font-style: normal;
-    min-width: 18px; height: 18px; border-radius: 999px; padding: 0 5px;
-    display: flex; align-items: center; justify-content: center;
-  }
+  /* топбар (баланс, колокольчик, меню аккаунта с демо-тарифом) — общий хром assets/shell.js */
 
   /* ================= каркас 3 колонок ================= */
   .chatwrap { flex: 1; min-height: 0; display: flex; }
@@ -564,21 +535,21 @@
   .lb .vov small { font-size: .88rem; font-weight: 700; color: #fff; }
   .lb .vov .btn { padding: .55rem 1.2rem; font-size: .85rem; }
 
-  .toast {
-    position: fixed; bottom: 92px; left: 50%;
-    transform: translateX(-50%) translateY(14px);
-    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
-    border-radius: 12px; padding: 12px 18px;
-    font-size: .9rem; font-weight: 600;
-    opacity: 0; pointer-events: none; transition: .25s;
-    z-index: 95; box-shadow: 0 14px 40px rgba(0,0,0,.55);
-    max-width: min(92vw, 500px); text-align: center;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast b { color: #f0abfc; }
+  /* тост — общий (assets/shell.css), в чате поднят над композером */
+  .lx-toast { bottom: 92px; }
 
   @media (max-width: 1280px) { .cp { display: none; } }
   @media (max-width: 1000px) { .cl { display: none; } }
+  /* телефон: шапка чата в одну строку — имя сжимается с многоточием, переключатель режимов компактнее */
+  @media (max-width: 480px) {
+    .cc-h { gap: 8px; padding: 8px 12px; }
+    .cc-h .ava { width: 36px; height: 36px; }
+    .cc-name { min-width: 0; flex: 1; }
+    .cc-name b { font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cc-acts { gap: 6px; flex: none; }
+    .icbtn { width: 34px; height: 34px; }
+    .mseg button { padding: .38rem .6rem; font-size: .74rem; }
+  }
 
   /* ============ чипы действий внутри композера ============ */
   .qchip {
@@ -607,7 +578,6 @@
   /* на Free медиа-запросы под замком (генерация фото и аудио — фичи подписки), баланса нет */
   .qchip .qlock { display: none; width: 12px; height: 12px; color: #fbbf24; }
   body[data-tier="free"] .qchip .qlock { display: block; }
-  body[data-tier="free"] .balance { display: none; }
 </style>
 </head>
 <body>
@@ -657,35 +627,12 @@
 </svg>
 
 <!-- сайдбар -->
-<aside class="sb">
-  <button class="sb-burger"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg> Создать</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg> Обзор</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-chat"/></svg> Мои чаты <i class="sbcnt" id="chatcnt">1</i></a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg> Мои персонажи</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-crown"/></svg> Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg> Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg> Поддержка</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-info"/></svg> Информация</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span> Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
 
-  <!-- топбар -->
-  <header class="tb">
-    <a class="logo" href="../"><svg class="ic"><use href="#i-logo"/></svg><b>LOVI<span>X</span></b></a>
-    <div class="tb-right">
-      <div class="balance" id="balw"><svg class="ic"><use href="#i-gem"/></svg><b id="bal">90</b></div>
-      <button class="subact" id="tierbtn" title="Демо: переключить тариф Free / Premium / VIP"><svg class="ic"><use href="#i-crown"/></svg> <span id="tierlabel">VIP активен</span><span class="demotag">демо</span></button>
-      <button class="bell" id="bellbtn" title="Уведомления"><svg class="ic"><use href="#i-bell"/></svg></button>
-      <div class="avatar">S</div>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="../assets/shell.js"></script>
 
   <div class="chatwrap">
 
@@ -774,8 +721,8 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
 
+<script src="../assets/bots-data.js"></script>
 <script>
 const $  = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -783,30 +730,22 @@ const esc = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;
 const md  = t => esc(t).replace(/\*([^*]+)\*/g, '<i class="rp-act">$1</i>');
 const gemI = '<svg class="ic"><use href="#i-gem"/></svg>';
 
-/* ---------- демо-тариф пользователя (клик по кнопке подписки переключает) ---------- */
-const TIERS = ['free', 'premium', 'vip'];
-const TIER_LABEL = { free: 'Тариф Free', premium: 'Подписка активна', vip: 'VIP активен' };
-let TIER = 'vip';
+/* ---------- тариф пользователя — из демо-сессии (assets/shell.js): меняется в меню аватара
+   и после «оплаты» на /purchase/; в проде приходит из профиля ---------- */
+const GUEST = !Lovix.session().auth;        // аноним: чат с ботом открыт, писать — после регистрации (регвол)
+let TIER = GUEST ? 'free' : Lovix.session().tier;
 document.body.dataset.tier = TIER;
 
 /* ---------- баланс ---------- */
-let balance = 90;
+let balance = Lovix.session().balance;     // баланс в топбаре — общий для всех страниц
 function charge(n, why) {
   balance -= n;
-  $('#bal').textContent = balance;
-  const w = $('#balw');
-  w.classList.remove('flash'); void w.offsetWidth; w.classList.add('flash');
+  Lovix.setBalance(balance, true);
   if (why) toast(`−${n} токенов · ${why}`);
 }
 
 let toastT;
-function toast(html) {
-  const t = $('#toast');
-  t.innerHTML = html;
-  t.classList.add('show');
-  clearTimeout(toastT);
-  toastT = setTimeout(() => t.classList.remove('show'), 2600);
-}
+function toast(html) { Lovix.toast(html, 2600); }
 
 /* ---------- данные ---------- */
 const IMG1 = '../assets/img/model-1.webp';
@@ -1137,7 +1076,7 @@ function openChat(id) {
       ? `<span class="init"><svg class="ic"><use href="#i-bot"/></svg></span>`
       : `<span class="init">${cur.init}</span>`;
   $('#h-ava').outerHTML = `<div class="ava ${cur.isbot ? 'pinkbot' : ''}" id="h-ava">${inner}<i class="dot"></i></div>`;
-  $('#h-name').textContent = `${cur.name}, ${cur.age}`;
+  $('#h-name').textContent = cur.age ? `${cur.name}, ${cur.age}` : cur.name;
   setMode(cur.mode, true);
 
   // лента
@@ -1199,7 +1138,7 @@ function renderProfile() {
   $('#cp').innerHTML = `
     ${photo}
     <div class="cp-body">
-      <div class="cp-name">${b.name}, ${b.age} ${b.own ? '<span class="mybadge">Мой бот</span>' : ''}</div>
+      <div class="cp-name">${b.name}${b.age ? ', ' + b.age : ''} ${b.own ? '<span class="mybadge">Мой бот</span>' : ''}</div>
       <p class="cp-bio clip" id="bio">${b.bio}</p>
       <button class="morelnk" id="biomore">читать далее</button>
       <div class="cp-sec">Медиа чата</div>
@@ -1217,9 +1156,9 @@ function renderProfile() {
   });
   $$('#cp [data-act]').forEach(btn => btn.addEventListener('click', () => {
     const a = btn.dataset.act;
-    if (a === 'regen') toast('Демо: перегенерация профиля бота');
-    if (a === 'edit') toast('Демо: редактор персонажа');
-    if (a === 'profile') toast('Демо: переход в профиль бота');
+    if (a === 'regen') Lovix.todo('Перегенерация профиля бота');
+    if (a === 'edit') Lovix.todo('Редактор персонажа');
+    if (a === 'profile') Lovix.go('bot/');
   }));
 }
 
@@ -1304,7 +1243,7 @@ function paywallSub(title, text, entry) {
       <button class="btn btn-ghost" data-pw-x>Позже</button>
     </div>`;
   feed.appendChild(el); scrollFeed();
-  el.querySelector('[data-pw-go]').addEventListener('click', () => toast(`Демо: чекаут Premium · <b>точка входа: чат, ${entry}</b>`));
+  el.querySelector('[data-pw-go]').addEventListener('click', () => Lovix.go('purchase/?plan=premium&from=chat'));   // точка входа: чат, ${entry}
   el.querySelector('[data-pw-x]').addEventListener('click', () => el.remove());
 }
 function paywallSpicy() {
@@ -1326,8 +1265,8 @@ function paywallTokens(price) {
       <button class="btn btn-ghost" data-pw-x>Позже</button>
     </div>`;
   feed.appendChild(el); scrollFeed();
-  el.querySelector('[data-pw-pack]').addEventListener('click', () => toast('Демо: чекаут пакета 100 · <b>точка входа: чат, нехватка токенов</b>'));
-  el.querySelector('[data-pw-all]').addEventListener('click', () => toast('Демо: страница пакетов — раздел <b>packages</b>'));
+  el.querySelector('[data-pw-pack]').addEventListener('click', () => Lovix.go('packages/?pack=100&from=chat'));
+  el.querySelector('[data-pw-all]').addEventListener('click', () => Lovix.go('packages/?from=chat'));
   el.querySelector('[data-pw-x]').addEventListener('click', () => el.remove());
 }
 
@@ -1389,7 +1328,7 @@ $('#pop-video').addEventListener('click', e => {
 
 /* VIP-гейт */
 $('#callbtn').addEventListener('click', () => {
-  if (TIER === 'vip') { toast('Демо: аудиозвонок компаньону'); return; }
+  if (TIER === 'vip') { Lovix.todo('Аудиозвонок компаньону'); return; }
   paywall('Аудиозвонки', `Позвонить ${cur.name === 'Персональный бот' ? 'вашему боту' : cur.name} можно на тарифе VIP.`);
 });
 function paywall(title, text) {
@@ -1404,7 +1343,7 @@ function paywall(title, text) {
       <button class="btn btn-ghost" data-pw-x>Позже</button>
     </div>`;
   feed.appendChild(el); scrollFeed();
-  el.querySelector('[data-pw-go]').addEventListener('click', () => toast('Демо: чекаут VIP · <b>точка входа: чат, VIP-гейт</b>'));
+  el.querySelector('[data-pw-go]').addEventListener('click', () => Lovix.go('purchase/?plan=vip&from=chat'));
   el.querySelector('[data-pw-x]').addEventListener('click', () => el.remove());
 }
 
@@ -1426,7 +1365,7 @@ feed.addEventListener('click', e => {
   // видео (VIP)
   const vd = e.target.closest('[data-vip]');
   if (vd) {
-    if (TIER === 'vip') toast('Демо: воспроизведение видео');
+    if (TIER === 'vip') Lovix.todo('Просмотр видео');
     else paywall('Видео от компаньона', 'Смотреть видео компаньонов можно на тарифе VIP.');
     return;
   }
@@ -1499,9 +1438,9 @@ function openLb(src) { openViewer([{ t: 'photo', img: src }], 0); }
 $('#lb').addEventListener('click', e => {
   if (e.target.closest('#lbprev')) { navViewer(-1); return; }
   if (e.target.closest('#lbnext')) { navViewer(1); return; }
-  if (e.target.closest('[data-vgo]')) { toast('Демо: чекаут VIP · <b>точка входа: медиа, VIP-гейт</b>'); return; }
+  if (e.target.closest('[data-vgo]')) { Lovix.go('purchase/?plan=vip&from=media'); return; }
   if (e.target.closest('[data-vplay]')) {
-    toast(TIER === 'vip' ? 'Демо: воспроизведение видео' : 'Смотреть видео компаньонов можно на тарифе VIP');
+    TIER === 'vip' ? Lovix.todo('Просмотр видео') : toast('Смотреть видео компаньонов можно на тарифе VIP');
     return;
   }
   if (e.target.closest('.frame')) return;
@@ -1535,24 +1474,81 @@ $('#cp').addEventListener('click', e => {
 });
 
 /* ---------- прочее ---------- */
-$('#tierbtn').addEventListener('click', () => {
-  TIER = TIERS[(TIERS.indexOf(TIER) + 1) % TIERS.length];
+document.addEventListener('lovix:session', e => {
+  e.preventDefault();                       // перестраиваемся сами, без перезагрузки
+  balance = e.detail.balance;
+  if (e.detail.tier === TIER) return;
+  TIER = e.detail.tier;
   document.body.dataset.tier = TIER;
-  $('#tierlabel').textContent = TIER_LABEL[TIER];
   $('#callbtn').title = TIER === 'vip' ? 'Аудиозвонок' : 'Аудиозвонок — фича VIP';
   cancelReq();
   $('#mall').classList.remove('open');
   $('#lb').classList.remove('open');
   openChat(cur.id);
-  toast(`Демо: тариф <b>${TIER.toUpperCase()}</b> — замки и гейты обновились`);
 });
-$('#bellbtn').addEventListener('click', () => toast('Центр уведомлений — раздел <b>notifications</b> этого проекта'));
-$('.cl-new').addEventListener('click', () => toast('Демо: создание нового чата (каталог)'));
+$('.cl-new').addEventListener('click', () => Lovix.go(''));   // новый чат — выбор компаньона в каталоге
+
+/* Чат по ссылке: ?bot=N — компаньон каталога (карточки главной, «Избранного», страницы автора);
+   ?with=Имя — персонаж вне каталога (проактив, черновые страницы автора и бота), данные —
+   из sessionStorage (Lovix.chatWith). Новый чат встаёт первым в списке. */
+function chatFromLink() {
+  const q = new URLSearchParams(location.search);
+  let id = null, d = null;
+  if (q.has('bot') && typeof CATALOG_BOTS !== 'undefined' && CATALOG_BOTS[+q.get('bot')]) {
+    const i = +q.get('bot'), b = CATALOG_BOTS[i];
+    id = 'cat' + i;
+    d = { name: b[0], age: b[1], img: Lovix.url('assets/img/bots/' + CATALOG_MEDIA[i]), bio: b[2] };
+    // этот бот уже есть в чатах пользователя (то же имя и возраст) — открыть существующий диалог
+    const known = !GUEST && Object.values(BOTS).find(x => x.catalog && x.name === d.name && x.age === d.age);
+    if (known) { if (!known.img) known.img = d.img; return known.id; }
+  } else if (q.get('with')) {
+    const name = q.get('with');
+    try { d = JSON.parse(sessionStorage.getItem('lovix.chatwith')); } catch (err) {}
+    if (!d || d.name !== name) d = { name };
+    id = 'w-' + name;
+  }
+  if (!id) return null;
+  if (GUEST) LIST.splice(0);                // у анонима в списке только этот бот, как на проде
+  if (!BOTS[id]) {
+    BOTS[id] = {
+      id, name: d.name, age: d.age || '', img: d.img || null, init: d.name[0].toUpperCase(),
+      catalog: true, mode: 'chat', empty: true,
+      bio: d.bio || 'Компаньон из каталога Lovix. Начните диалог — она подстроится под ваш стиль общения и запомнит детали.',
+      facts: [['Личность', 'Новое знакомство']], media: [],
+      msgs: [{ dv: 'Сегодня' }, { from: 'bot', kind: 'text', text: d.text || `Привет! Я ${d.name} 💜 Рада, что ты заглянул — с чего начнём?`, time: nowT() }],
+    };
+  }
+  if (!LIST.some(li => li.id === id)) LIST.unshift({ id, t: 'сейчас' });
+  return id;
+}
 
 /* старт */
+/* Аноним — как на проде (/bot/{slug}/chat): чат открыт — приветствие, профиль, сценарии видны,
+   но любое действие (написать, запросить фото / голосовое / видео, выбрать сценарий, позвонить)
+   открывает регвол: регистрация, после неё — обратно в этот же чат. */
+function regwall() {
+  Lovix.askAuth(location.href, 'signup', { title: `${cur.name} ждёт тебя`, sub: 'Зарегистрируйся бесплатно — и продолжай общение' });
+}
+if (GUEST) {
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#sendbtn, .qchip, [data-scn], #callbtn')) return;
+    e.preventDefault(); e.stopPropagation(); regwall();
+  }, true);
+  document.addEventListener('keydown', e => {
+    if (e.target !== ta || e.key !== 'Enter' || e.shiftKey) return;
+    e.preventDefault(); e.stopPropagation(); regwall();
+  }, true);
+}
+
 renderList();
-openChat('alex');
-setTimeout(() => toast('Кнопка тарифа в топбаре — демо-переключатель: клик циклит <b>VIP → Free → Premium</b>, меняя замки и гейты'), 1500);
+openChat(chatFromLink() || 'alex');
+// подсказка про демо-тариф — один раз за сессию
+try {
+  if (!GUEST && !sessionStorage.getItem('lovix.chat-tip')) {
+    sessionStorage.setItem('lovix.chat-tip', '1');
+    setTimeout(() => toast('Прототип: тип пользователя и тариф — в панели сверху (<b>Аноним · Free · Платный</b>), замки и гейты чата обновятся'), 4500);
+  }
+} catch (err) {}
 </script>
 <script>
 /* V5: чипы панели действий (кнопки у инпута скрыты, сценарии без дубля) */
@@ -1592,5 +1588,6 @@ document.getElementById('quickbar').addEventListener('click', e => {
   }
 });
 </script>
+<script src="../assets/auth.js"></script>
 </body>
 </html>

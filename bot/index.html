@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../assets/shell.css">
+<link rel="stylesheet" href="../assets/bot-card.css">
 <style>
   /* ── Страница компаньона, макет 5219:34178. Классы bp-/cc- ── */
 
@@ -108,71 +111,14 @@
   .bp-more-h h2 { font-size: 1.5rem; font-weight: 800; }
   .bp-more-h a { margin-left: auto; color: #f0abfc; font-size: .9rem; font-weight: 600; cursor: pointer; }
   .bp-more-h a:hover { text-decoration: underline; }
+  .bp-cre { color: inherit; border-radius: 10px; }
+  .bp-cre:hover b { color: #f0abfc; }
+  .bp-links a { cursor: pointer; }
   .bp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
 
-  /* карточка компаньона — по макету Figma 5201:52203 (285×400, r12) */
-  .cc {
-    position: relative; overflow: hidden;
-    border-radius: 12px;
-    aspect-ratio: 285 / 400;
-    display: flex; flex-direction: column; justify-content: flex-end;
-    transition: transform .18s, box-shadow .18s;
-    cursor: pointer;
-  }
-  .cc:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(217,70,239,.16); }
-  .cc-bg { position: absolute; inset: 0; }
-  .cc-img {
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    height: 92%; width: auto; max-width: none;
-    filter: drop-shadow(0 12px 26px rgba(0,0,0,.45));
-  }
-  /* градиент из макета: прозрачный → rgba(16,14,16,.92), высота 110 */
-  .cc-shade {
-    position: absolute; inset: auto 0 0 0; height: 110px;
-    background: linear-gradient(180deg, rgba(16,14,16,0), rgba(16,14,16,.92));
-  }
-  .cc-meta {
-    position: relative;
-    padding: 0 16px 12px;
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .cc-text { display: flex; flex-direction: column; gap: 2px; }
-  /* des/H/h3 semi — 24/28 */
-  .cc-name {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 24px; line-height: 28px; font-weight: 600; color: #fff;
-    white-space: nowrap;
-  }
-  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
-  .cc-name span { opacity: .6; }
-  /* des/S/s1 regu — 14/16 */
-  .cc-desc {
-    font-size: 14px; line-height: 16px; font-weight: 400; color: #fff; opacity: .62;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  .cc-foot { display: flex; align-items: center; gap: 12px; padding: 2px 0; }
-  .cc-m {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 14px; font-weight: 400; color: #fff; opacity: .9;
-  }
-  .cc-m.like { gap: 3px; }
-  .cc-ic { width: 14px; height: 14px; flex: none; }
-
-
+  /* карточка бота — общий компонент assets/bot-card.css + botCardHtml() (как на главной: без описания) */
 
   /* тост — компонент из центра уведомлений, поднят к верху экрана */
-  .toast {
-    position: fixed; top: 24px; left: 50%;
-    transform: translateX(-50%) translateY(-14px);
-    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
-    border-radius: 12px; padding: 12px 18px;
-    font-size: .9rem; font-weight: 600; color: #fff;
-    opacity: 0; pointer-events: none; transition: .25s;
-    z-index: 95; box-shadow: 0 14px 40px rgba(0,0,0,.55);
-    max-width: min(92vw, 480px); text-align: center;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast b { color: #f0abfc; }
 
   @media (max-width: 1100px) {
     .bp-top { grid-template-columns: 1fr; }
@@ -230,37 +176,15 @@
   </defs>
 </svg>
 
-<aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
-  <header class="tb">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
-    <div class="tb-right">
-      <a class="promo">Летняя Распродажа до 75% 🔥</a>
-      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>3</i></button>
-      <div class="avatar">A</div>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="../assets/shell.js"></script>
 
   <main class="content">
 
-    <a class="bp-back"><svg class="ic"><use href="#i-back"/></svg>Назад</a>
+    <a class="bp-back" href="../" data-back><svg class="ic"><use href="#i-back"/></svg>Назад</a>
 
     <div class="bp-top">
       <div class="bp-photo"><img src="../assets/img/model-1.webp" alt="Марго"></div>
@@ -273,7 +197,7 @@
               <span class="bp-num"><svg class="ic"><use href="#i-cc-chat"/></svg>318k</span>
               <span class="bp-num"><svg class="ic"><use href="#i-cc-like"/></svg>4.8</span>
             </div>
-            <button class="btn btn-grad bp-start"><svg class="ic"><use href="#i-chat"/></svg>Начать общение</button>
+            <a class="btn btn-grad bp-start" href="../chat/?with=%D0%9C%D0%B0%D1%80%D0%B3%D0%BE" data-start><svg class="ic"><use href="#i-chat"/></svg>Начать общение</a>
           </div>
 
           <div class="bp-chips">
@@ -316,13 +240,13 @@
 
         <!-- автор и дата публикации: «state profile / des» из макета -->
         <div class="bp-state">
-          <div class="bp-cre">
+          <a class="bp-cre" href="../creator/?u=lunaria">
             <div class="bp-ava">Л</div>
             <div class="bp-col">
               <small>Автор</small>
               <b>@lunaria</b>
             </div>
-          </div>
+          </a>
           <div class="bp-vd"></div>
           <div class="bp-au-stats">
             <span><b>1.24 млн</b> взаимодействий</span>
@@ -337,35 +261,35 @@
     <section class="bp-find">
       <div class="bp-find-l">Где её найти</div>
       <div class="bp-links">
-        <a>Все девушки</a><a>Секстинг</a><a>GPT девушки</a><a>Финдом</a><a>Флирт</a>
-        <a>Горничная</a><a>Весёлый ИИ-чат</a><a>Сестра</a><a>Русские девушки</a>
-        <a>Ролевые игры</a><a>Аниме</a><a>Романтика</a><a>Заботливые</a><a>Дерзкие</a>
-        <a>Чат для развлечения</a><a>Нейросеть для общения</a><a>18+ ИИ-чат</a><a>Фантазии</a>
+        <a href="../">Все девушки</a><a href="#" data-todo="Страница категории „Секстинг“">Секстинг</a><a href="#" data-todo="Страница категории „GPT девушки“">GPT девушки</a><a href="#" data-todo="Страница категории „Финдом“">Финдом</a><a href="#" data-todo="Страница категории «Флирт»">Флирт</a>
+        <a href="#" data-todo="Страница категории „Горничная“">Горничная</a><a href="#" data-todo="Страница категории «Весёлый ИИ-чат»">Весёлый ИИ-чат</a><a href="#" data-todo="Страница категории „Сестра“">Сестра</a><a href="#" data-todo="Страница категории „Русские девушки“">Русские девушки</a>
+        <a href="#" data-todo="Страница категории «Ролевые игры»">Ролевые игры</a><a href="#" data-todo="Страница категории „Аниме“">Аниме</a><a href="#" data-todo="Страница категории „Романтика“">Романтика</a><a href="#" data-todo="Страница категории «Заботливые»">Заботливые</a><a href="#" data-todo="Страница категории „Дерзкие“">Дерзкие</a>
+        <a href="#" data-todo="Страница категории «Чат для развлечения»">Чат для развлечения</a><a href="#" data-todo="Страница категории «Нейросеть для общения»">Нейросеть для общения</a><a href="#" data-todo="Страница категории „18+ ИИ-чат“">18+ ИИ-чат</a><a href="#" data-todo="Страница категории „Фантазии“">Фантазии</a>
       </div>
     </section>
 
     <section class="bp-more">
       <div class="bp-more-h">
         <h2>Другие компаньоны автора</h2>
-        <a>Все компаньоны @lunaria</a>
+        <a href="../creator/?u=lunaria">Все компаньоны @lunaria</a>
       </div>
       <div class="bp-grid" id="grid"></div>
     </section>
 
   </main>
+
+  <footer class="site-foot"></footer>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
 
+<script src="../assets/bot-card.js"></script>
 <script>
-  let toastT;
-  function toast(html) {
-    const t = document.getElementById('toast');
-    t.innerHTML = html;
-    t.classList.add('show');
-    clearTimeout(toastT);
-    toastT = setTimeout(() => t.classList.remove('show'), 2600);
-  }
+  const toast = html => Lovix.toast(html, 2600);
+
+  /* «Назад» — туда, откуда пришли внутри прототипа, иначе в каталог */
+  document.querySelector('[data-back]').addEventListener('click', e => {
+    if (document.referrer.indexOf(Lovix.base) === 0 && history.length > 1) { e.preventDefault(); history.back(); }
+  });
 
   const BOTS = [
     ['Ева', 31, 'Я врач скорой. Броню снимаю только дома и только при тех, кому доверяю.', '191k', '4.6'],
@@ -374,18 +298,6 @@
     ['Инга', 29, 'Я вернулась в город спустя семь лет и первым делом набрала твой номер.', '167k', '4.8'],
   ];
 
-  // кадрировка и тон: два исходных выреза, но разная крупность и подача — карточки не выглядят одинаковыми
-  const FRAME = [
-    { h: '92%',  b: '0',     f: 'saturate(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '126%', b: '-6%',   f: 'saturate(.94) brightness(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '104%', b: '-2%',   f: 'saturate(1.08) contrast(1.04) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '138%', b: '-14%',  f: 'saturate(.9) brightness(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '88%',  b: '0',     f: 'saturate(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '116%', b: '-5%',   f: 'saturate(.96) contrast(1.05) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '98%',  b: '-1%',   f: 'saturate(1.1) brightness(.98) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '132%', b: '-10%',  f: 'saturate(.92) drop-shadow(0 12px 26px rgba(0,0,0,.45))' },
-    { h: '110%', b: '-3%',   f: 'saturate(1.04) contrast(1.02) drop-shadow(0 12px 26px rgba(0,0,0,.45))' }
-  ];
 
   const BG = [
     'linear-gradient(160deg, #3b2a5e, #7b2d6b)',
@@ -399,23 +311,24 @@
     'linear-gradient(160deg, #5e2a2a, #8b3d2d)'
   ];
 
-  document.getElementById('grid').innerHTML = BOTS.map(([name, age, desc, talks, rate], i) => `
-    <article class="cc">
-      <div class="cc-bg" style="background:${BG[i % BG.length]}"></div>
-      <img class="cc-img" src="../assets/img/model-${(i % 2) + 1}.webp" alt="${name}"
-           style="height:${FRAME[i % FRAME.length].h}; bottom:${FRAME[i % FRAME.length].b}; filter:${FRAME[i % FRAME.length].f}">
-      <div class="cc-shade"></div>
-      <div class="cc-meta">
-        <div class="cc-text">
-          <div class="cc-name"><b>${name},</b><span>${age}</span></div>
-          <p class="cc-desc">${desc}</p>
-        </div>
-        <div class="cc-foot">
-          <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
-          <span class="cc-m like"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${rate}</span>
-        </div>
-      </div>
-    </article>`).join('');
+  // лайки черновых компаньонов (в черновике был рейтинг; на карточках, как на главной, — число лайков)
+  const likesOf = t => (parseFloat(t) * 0.065).toFixed(1).replace(/\.0$/, '') + 'k';
+  document.getElementById('grid').innerHTML = BOTS.map(([name, age, desc, talks, rate], i) => botCardHtml({
+    name, age, img: `../assets/img/model-${(i % 2) + 1}.webp`, bg: BG[i % BG.length],
+    href: `../chat/?with=${encodeURIComponent(name)}`, linkAttrs: ` data-with="${i}"`, label: `Чат: ${name}, ${age}`,
+    metrics: [talks, likesOf(talks)],
+  })).join('');
+  initBotCards(document.getElementById('grid'));   // наведение — как в каталоге
+
+  /* «Начать общение» и другие компаньоны автора — чат с персонажем (имя, фото, первая реплика) */
+  document.addEventListener('click', e => {
+    const st = e.target.closest('[data-start]'), w = e.target.closest('[data-with]');
+    if (!st && !w) return;
+    e.preventDefault();
+    const [name, age, desc] = st ? BOTS[0] : BOTS[+w.dataset.with];
+    const n = st ? 0 : +w.dataset.with;
+    Lovix.chatWith({ name, age, img: Lovix.url('assets/img/model-' + (n % 2 + 1) + '.webp'), text: desc });
+  });
 
   const sub = document.getElementById('sub');
   sub.onclick = () => {
@@ -425,5 +338,6 @@
   };
 </script>
 
+<script src="../assets/auth.js"></script>
 </body>
 </html>

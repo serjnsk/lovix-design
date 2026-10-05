@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../assets/shell.css">
 <style>
   .content { max-width: 1100px; padding: 34px 28px 80px; }
   .hero { text-align: center; max-width: 680px; margin: 20px auto 0; }
@@ -127,18 +129,6 @@
   .ck-go { margin-top: 6px; padding: .95rem 1rem; font-size: 1rem; }
   .ck-note { text-align: center; color: rgb(var(--muted2)); font-size: .76rem; margin-top: 12px; }
 
-  .toast {
-    position: fixed; bottom: 130px; left: 50%;
-    transform: translateX(-50%) translateY(14px);
-    background: #1e1b22; border: 1px solid rgba(217,70,239,.45);
-    border-radius: 12px; padding: 12px 18px;
-    font-size: .9rem; font-weight: 600;
-    opacity: 0; pointer-events: none; transition: .25s;
-    z-index: 90; box-shadow: 0 14px 40px rgba(0,0,0,.55);
-    max-width: min(92vw, 480px); text-align: center;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast b { color: #f0abfc; }
 
   @media (max-width: 940px) {
     .packs { grid-template-columns: 1fr; max-width: 400px; margin: 36px auto 0; }
@@ -177,32 +167,11 @@
   </defs>
 </svg>
 
-<aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
-    <a class="sb-item on"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
-  <header class="tb">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
-    <div class="tb-right">
-      <a class="promo">Летняя Распродажа до 75% 🔥</a>
-      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>1</i></button>
-      <div class="avatar">A</div>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="../assets/shell.js"></script>
 
   <main class="content">
 
@@ -267,6 +236,8 @@
     </div>
 
   </main>
+
+  <footer class="site-foot"></footer>
 </div>
 
 <!-- чекаут покупки пакета -->
@@ -303,8 +274,15 @@
   </div>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
 
+<script>
+  // пакеты — только для Premium и VIP (правило П5): Free-пользователя ведём на тарифы
+  if (Lovix.session().tier === 'free') {
+    Lovix.toastNext('Пакеты токенов — для подписчиков <b>Premium</b> и <b>VIP</b>. Сначала выберите тариф');
+    location.replace(Lovix.url('purchase/'));
+  }
+</script>
 <script src="../assets/packs.js"></script>
+<script src="../assets/auth.js"></script>
 </body>
 </html>

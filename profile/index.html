@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/lovix.css">
+<link rel="stylesheet" href="../assets/auth.css">
+<link rel="stylesheet" href="../assets/shell.css">
 <style>
   /* ── Профиль (ЛК), макет 4930:2332. Классы lk-, общие стили не трогаются ── */
 
@@ -245,47 +247,25 @@
   </defs>
 </svg>
 
-<aside class="sb">
-  <button class="sb-burger" aria-label="Меню"><svg class="ic"><use href="#i-menu"/></svg></button>
-  <nav class="sb-top">
-    <a class="sb-item"><svg class="ic"><use href="#i-plus"/></svg>Создать</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-compass"/></svg>Обзор</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-chat"/></svg>Мои чаты</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-users"/></svg>Мои персонажи</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-heart-o"/></svg>Мои подписки</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-gem"/></svg>Подписка</a>
-  </nav>
-  <nav class="sb-bottom">
-    <a class="sb-item on"><svg class="ic"><use href="#i-user"/></svg>Мой аккаунт</a>
-    <a class="sb-item"><svg class="ic"><use href="#i-mail"/></svg>Поддержка</a>
-    <a class="sb-item"><span class="sb-flag">🇷🇺</span>Русский</a>
-  </nav>
-</aside>
+<aside class="sb"></aside>
 
 <div class="page">
-  <header class="tb">
-    <a class="logo"><svg class="ic"><use href="#i-heart"/></svg><b>LOVI<span>X</span></b></a>
-    <nav class="tb-nav"><a>Девушки</a><a>Anime</a><a>Парни</a></nav>
-    <div class="tb-right">
-      <a class="promo">Летняя Распродажа до 75% 🔥</a>
-      <button class="bell"><svg class="ic"><use href="#i-bell"/></svg><i>3</i></button>
-      <div class="avatar">К</div>
-    </div>
-  </header>
+  <header class="tb"></header>
+  <script src="../assets/shell.js"></script>
 
   <main class="content">
 
-    <a class="lk-back"><svg class="ic"><use href="#i-back"/></svg>Назад</a>
+    <a class="lk-back" href="../" data-back><svg class="ic"><use href="#i-back"/></svg>Назад</a>
 
     <div class="lk-layout">
 
       <nav class="lk-nav">
         <a class="on"><svg class="ic"><use href="#i-user"/></svg>Профиль</a>
-        <a><svg class="ic"><use href="#i-gem"/></svg>Тарифы</a>
-        <a><svg class="ic"><use href="#i-clock"/></svg>История токенов</a>
-        <a><svg class="ic"><use href="#i-users"/></svg>Партнёрская программа</a>
+        <a href="../purchase/"><svg class="ic"><use href="#i-gem"/></svg>Тарифы</a>
+        <a href="#" data-todo="История токенов"><svg class="ic"><use href="#i-clock"/></svg>История токенов</a>
+        <a href="#" data-todo="Партнёрская программа"><svg class="ic"><use href="#i-users"/></svg>Партнёрская программа</a>
         <div class="lk-div"></div>
-        <a><svg class="ic"><use href="#i-x"/></svg>Выход</a>
+        <a href="#" data-lx-logout><svg class="ic"><use href="#i-x"/></svg>Выход</a>
       </nav>
 
       <div class="lk-col">
@@ -303,7 +283,7 @@
 
           <div class="lk-bio">
             <p class="lk-bio-text" id="bioText"></p>
-            <a class="lk-au-link" href="../author/v1.html" target="_blank" rel="noopener">Посмотреть, как мой профиль видят другие</a>
+            <a class="lk-au-link" href="../creator/?u=lunaria">Посмотреть, как мой профиль видят другие</a>
           </div>
         </section>
 
@@ -312,10 +292,10 @@
           <div class="lk-plan">
             <div class="lk-lbl">Подписка</div>
             <div>
-              <b>Premium</b>
-              <small>активна до 05.03.2026</small>
+              <b id="lk-tier">Premium</b>
+              <small id="lk-until">активна до 05.03.2027</small>
             </div>
-            <button class="lk-btn" style="width:100%">Сменить тариф</button>
+            <a class="lk-btn" href="../purchase/" style="width:100%;text-align:center">Сменить тариф</a>
           </div>
           <div class="lk-vdiv"></div>
           <div class="lk-feat">
@@ -339,12 +319,12 @@
         <section class="lk-card">
           <div class="lk-bal-head">
             <div class="lk-lbl">Баланс токенов</div>
-            <button class="lk-btn grad">Купить токены</button>
+            <a class="lk-btn grad" href="../packages/" id="lk-buy">Купить токены</a>
           </div>
           <div class="lk-bal-row">
-            <b>247</b><span>осталось</span><span class="of">из 300</span>
+            <b id="lk-bal">247</b><span>осталось</span><span class="of" id="lk-of">из 300</span>
           </div>
-          <div class="lk-track"><i style="width:82%"></i></div>
+          <div class="lk-track"><i id="lk-track" style="width:82%"></i></div>
           <div class="lk-upd"><svg class="ic"><use href="#i-refresh"/></svg>Транш обновится 01.08.2026</div>
         </section>
 
@@ -354,8 +334,8 @@
             <div class="lk-lbl">Управление данными</div>
             <p class="lk-hint" style="margin-top:12px">Необратимые действия. Будьте внимательны.</p>
             <div class="lk-danger">
-              <button>Удалить всех AI-компаньонов</button>
-              <button>Удалить все чаты</button>
+              <button type="button" data-todo="Подтверждение удаления компаньонов">Удалить всех AI-компаньонов</button>
+              <button type="button" data-todo="Подтверждение удаления чатов">Удалить все чаты</button>
             </div>
           </section>
 
@@ -373,6 +353,8 @@
       </div>
     </div>
   </main>
+
+  <footer class="site-foot"></footer>
 </div>
 
 <div class="lk-ov" id="ov">
@@ -439,7 +421,26 @@
   save.onclick = () => { if (ta.value.length <= MAX) { bio = ta.value.trim(); drawBio(); close(); } };
 
   drawBio();
+
+  /* тариф и баланс — из демо-сессии (assets/shell.js): меняются в меню аватара и после «оплаты» */
+  function drawPlan() {
+    const s = Lovix.session(), tranche = { free: 0, premium: 300, vip: 550 }[s.tier];
+    document.getElementById('lk-tier').textContent = Lovix.tierName(s.tier);
+    document.getElementById('lk-until').textContent = s.tier === 'free' ? 'бесплатный тариф · 5 сообщений в месяц' : 'активна до 05.03.2027';
+    document.getElementById('lk-bal').textContent = s.tier === 'free' ? 0 : s.balance;
+    document.getElementById('lk-of').textContent = s.tier === 'free' ? 'токены — на Premium и VIP' : 'из ' + tranche;
+    document.getElementById('lk-track').style.width = s.tier === 'free' ? '0' : Math.min(100, Math.round(s.balance / tranche * 100)) + '%';
+    const buy = document.getElementById('lk-buy');
+    buy.textContent = s.tier === 'free' ? 'Оформить подписку' : 'Купить токены';
+    buy.href = s.tier === 'free' ? '../purchase/' : '../packages/';
+  }
+  drawPlan();
+  document.addEventListener('lovix:session', e => { e.preventDefault(); drawPlan(); });
+  document.querySelector('[data-back]').addEventListener('click', e => {
+    if (document.referrer.indexOf(Lovix.base) === 0 && history.length > 1) { e.preventDefault(); history.back(); }
+  });
 </script>
 
+<script src="../assets/auth.js"></script>
 </body>
 </html>

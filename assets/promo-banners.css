@@ -1,5 +1,5 @@
-/* Промо-баннеры главной (pb-*). Общий файл для catalog/v2.html и страниц-листов
-   с переводами баннеров (catalog/banners-ru|en|de.html) — одна вёрстка на все.
+/* Промо-баннеры главной (pb-*). Общий файл для главной (index.html, /en/, /de/) и страниц-листов
+   с переводами баннеров (design/banners-ru|en|de.html) — одна вёрстка на все.
    Зависит от токенов assets/lovix.css (--acc-from, --acc-to). */
 
 /* ── Промо-баннеры (pb-*). Формат по референсу secrets.ai: две карточки
@@ -201,7 +201,6 @@
      арта — на текст не заходит; у карточек с парами/тройкой на телефоне одна фигура
      (у группового чата — две), левый край фигуры смягчён маской. ── */
 @media (max-width: 560px) {
-  .content { padding-top: 12px; }
   .pb-track { grid-auto-columns: 100%; column-gap: 12px; }
   .pb-card::before { padding-bottom: 36.9%; }
   .pb-txt { width: 61%; padding: 10px 0 10px 14px; gap: 2px; }

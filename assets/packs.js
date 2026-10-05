@@ -36,14 +36,8 @@ function openCk(pack) {
 }
 function closeCk() { document.getElementById('ck').classList.remove('open'); }
 
-let toastTimer;
-function toast(html) {
-  const t = document.getElementById('toast');
-  t.innerHTML = html;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
-}
+// тост — общий (assets/shell.js)
+const toast = html => window.Lovix && Lovix.toast(html);
 
 document.addEventListener('click', e => {
   const buy = e.target.closest('.js-buy');
@@ -52,10 +46,20 @@ document.addEventListener('click', e => {
   if (opt) { ckPay = opt.dataset.ckpay; renderCk(); return; }
   if (e.target.closest('#ck-go')) {
     closeCk();
-    toast('Переход к оплате: <b>' + fmtN(PACKS[ckPack].tok) + ' токенов</b> · <b>' + PAY_NAMES[ckPay] + '</b>');
+    // в проде — редирект к провайдеру; в прототипе покупка «проходит» сразу: токены
+    // добавляются к балансу демо-сессии (виден в топбаре, тратится в чате)
+    const tok = PACKS[ckPack].tok;
+    if (window.Lovix) Lovix.setBalance(Lovix.session().balance + tok, true);
+    toast('Оплата (демо): <b>' + fmtN(tok) + ' токенов</b> · ' + PAY_NAMES[ckPay] + ' — зачислены на баланс');
     return;
   }
   const back = document.getElementById('ck');
   if (e.target.closest('#ck-x') || e.target === back) closeCk();
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCk(); });
+
+/* Прямая ссылка на чекаут пакета: ?pack=100|300|700 — из пейволла чата и уведомлений */
+(() => {
+  const m = location.search.match(/[?&]pack=p?(\d+)/);
+  if (m && PACKS['p' + m[1]]) openCk('p' + m[1]);
+})();

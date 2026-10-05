@@ -194,37 +194,46 @@
      ≈ 11%, каталог (фильтры + первый ряд карточек) ≈ 50%. Карточка баннера
      выше (5:4) и почти во всю ширину, текст под ней ужат, фильтры — в одну
      прокручиваемую строку, чтобы карточки каталога начинались до середины экрана. ── */
+/* ── телефон: формфактор как у secrets.ai на мобильном — одна карточка во всю ширину
+     в той же пропорции 1800:664 (на 375px — 347×128), без «выглядывания» следующей,
+     точки под баннером. Текст ужат под низкую карточку: бейджи 9.5px, заголовок 15.5px,
+     две строки подзаголовка 12px, кнопка 11.5px. Фигура высотой 128px умещается в колонку
+     арта — на текст не заходит; у карточек с парами/тройкой на телефоне одна фигура
+     (у группового чата — две), левый край фигуры смягчён маской. ── */
 @media (max-width: 560px) {
   .content { padding-top: 12px; }
-  .pb-track { grid-auto-columns: 90%; }
-  .pb-card::before { padding-bottom: 80%; }      /* 5:4 */
-  .pb-txt { width: 60%; padding: 16px 0 16px 16px; gap: 6px; }
-  .pb-h { font-size: 19px; }
-  .pb-sub { display: -webkit-box; font-size: 13px; }   /* на высокой карточке абзац помещается */
-  .pb-price { display: flex; }
-  .pb-cta { font-size: 12px; padding: 8px 13px; margin-top: 2px; }
-  .pb-art { width: 48%; }
-  /* фигуры шире узкой колонки арта и заходят под текст: на телефоне у карточки одна
-     фигура (вторая/третья уходят), а левый край каждой фигуры растворяется маской,
-     чтобы под текстом не было контрастного силуэта */
-  .pb-art > img { height: 100%; -webkit-mask-image: linear-gradient(to right, transparent, #000 40%); mask-image: linear-gradient(to right, transparent, #000 40%); }
-  .pb-sale .pb-art > img { height: 88%; right: -6%; }   /* широкий вырез с разведёнными руками — чуть меньше и правее */
+  .pb-track { grid-auto-columns: 100%; column-gap: 12px; }
+  .pb-card::before { padding-bottom: 36.9%; }
+  .pb-txt { width: 61%; padding: 10px 0 10px 14px; gap: 2px; }
+  .pb-badges { gap: 4px; margin-bottom: 1px; }
+  .pb-badge { padding: 2px 7px; font-size: 9.5px; letter-spacing: .06em; }
+  .pb-h { font-size: 15px; line-height: 1.12; }
+  .pb-sub { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; font-size: 12px; line-height: 1.25; }
+  .pb-price { display: flex; gap: 6px; font-size: 11px; }
+  .pb-price b { font-size: 15px; }
+  .pb-cta { font-size: 11.5px; padding: 5px 10px; margin-top: 2px; gap: 4px; }
+  .pb-art { width: 44%; }
+  .pb-art > img { height: 100%; -webkit-mask-image: linear-gradient(to right, transparent, #000 30%); mask-image: linear-gradient(to right, transparent, #000 30%); }
+  .pb-sale .pb-art > img { height: 92%; right: -4%; }   /* широкий вырез с разведёнными руками — чуть меньше и правее */
   .pb-art .l, .pb-anime .pb-art .a1, .pb-anime .pb-art .a2 { display: none; }
   .pb-art .r, .pb-anime .pb-art .a3 { right: 4%; z-index: 1; filter: none; }
   /* групповой чат — смысл карточки в двух фигурах: обе остаются, левая меньше и за правой */
-  .pb-group .pb-art .l { display: block; height: 84%; right: 36%; z-index: 0; filter: brightness(.8); }
+  .pb-group .pb-art .l { display: block; height: 84%; right: 40%; z-index: 0; filter: brightness(.8); }
   .pb-group .pb-art .r { right: -2%; }
-  .pb-duo { left: auto; right: 4%; }
-  .pb-anime .pb-art { width: 48%; }
+  .pb-anime .pb-art { width: 44%; }
   .pb-anime .pb-art > img { height: 100%; }
-  .pb-sub { -webkit-line-clamp: 3; line-clamp: 3; }   /* на высокой карточке есть место для третьей строки */
-  .pb-pill, .pb-creator, .pb-duo { font-size: 11px; }
+  /* декор — в нижний угол карточки, мельче; у пилюль только иконка/ник */
+  .pb-pill, .pb-creator, .pb-duo { font-size: 10px; padding: 3px 8px 3px 3px; gap: 5px; bottom: 8px; top: auto; left: auto; right: 3%; }
+  .pb-pill .ph, .pb-creator .av { width: 20px; height: 20px; }
+  .pb-pill .ph svg { width: 11px; height: 11px; }
+  .pb-creator .av img { left: -22px; top: -1px; width: 64px; }
+  .pb-eq { height: 11px; } .pb-eq i { height: 11px; width: 2.5px; }
   .pb-pill .txt, .pb-creator span { display: none; }
-  /* пилюля звонка и кнопка play — в нижний угол карточки, чтобы не закрывать лицо и тело фигуры */
-  .pb-pill { left: auto; right: 4%; top: auto; bottom: 14px; }
-  .pb-play { left: auto; right: 5%; top: auto; bottom: 14px; margin: 0; width: 38px; height: 38px; }
-  .pb-tag { left: auto; right: 4%; font-size: 16px; padding: 5px 9px; }   /* ярлык — в угол, не на лицо */
-  .pb-price b { font-size: 18px; }
+  .pb-duo { padding: 3px 8px; }
+  .pb-play { left: auto; right: 4%; top: auto; bottom: 8px; margin: 0; width: 30px; height: 30px; }
+  .pb-play svg { width: 13px; height: 13px; margin-left: 2px; }
+  .pb-tag { left: auto; right: 3%; top: 8px; font-size: 13px; padding: 4px 7px; }
+  .pb-tag small { font-size: 7.5px; }
   .pb-dots { margin-top: 8px; }
 }
 @media (prefers-reduced-motion: reduce) {

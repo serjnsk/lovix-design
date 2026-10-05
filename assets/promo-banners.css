@@ -232,7 +232,7 @@
   .pb-duo { padding: 3px 8px; }
   .pb-play { left: auto; right: 4%; top: auto; bottom: 8px; margin: 0; width: 30px; height: 30px; }
   .pb-play svg { width: 13px; height: 13px; margin-left: 2px; }
-  .pb-tag { left: auto; right: 3%; top: 8px; font-size: 13px; padding: 4px 7px; }
+  .pb-tag { left: auto; right: 3%; top: auto; bottom: 8px; font-size: 13px; padding: 4px 7px; }   /* в нижний угол — сверху ложился на лицо */
   .pb-tag small { font-size: 7.5px; }
   .pb-dots { margin-top: 8px; }
 }

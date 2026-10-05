@@ -321,8 +321,8 @@
   .toast a { color: #f0abfc; font-weight: 700; }
   @media (max-width: 560px) { .toast { white-space: normal; max-width: calc(100vw - 32px); text-align: center; } }
 
-  /* ── Промо-карточки в сетке (референс — плитки secrets.ai/browse: коллаж из трёх
-       портретов сверху, тёмный градиент снизу, курсивный заголовок капсом, подзаголовок, CTA).
+  /* ── Промо-карточки в сетке (референс — плитки secrets.ai/browse: одно фото с тремя
+       девушками сверху, тёмный градиент снизу, курсивный заголовок капсом, подзаголовок, CTA).
        Две карточки: «создать компаньона» (фуксия → роза, как акцент бренда) и акция
        «VIP на год» (золото → оранж, как pb-sale). Место в сетке задаёт скрипт placePromo():
        создание — 2-й ряд, 3-я колонка; акция — 4-й ряд, 2-я колонка (на 2 колонках —
@@ -334,24 +334,15 @@
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
   }
   .cc.promo:focus-visible { box-shadow: inset 0 0 0 2px rgba(240,171,252,.8); }
-  /* коллаж: три портрета в ряд, у каждого — лицо в верхней части кадра */
-  .cc-trio { position: absolute; inset: 0 0 auto 0; height: 66%; display: flex; overflow: hidden; }
-  .cc-trio img {
-    flex: 1 1 0; min-width: 0; height: 100%; object-fit: cover; object-position: 50% 8%;
-    transition: transform .5s ease;
+  /* одно фото с тремя девушками (как у референса): во всю ширину сверху, лица в верхней
+     трети, снизу плавно уходит в фон карточки через mask — текст ложится на чистый цвет */
+  .cc-art {
+    position: absolute; inset: 0 0 auto 0; height: 70%; overflow: hidden;
+    -webkit-mask-image: linear-gradient(180deg, #000 42%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 42%, transparent 100%);
   }
-  .cc-trio img:nth-child(2) { flex-basis: 20%; }   /* центральный портрет чуть шире */
-  .cc.is-active .cc-trio img { transform: scale(1.05); }
-  /* тонировка коллажа в цвет карточки + плавный уход в фон снизу */
-  .cc-trio::before {
-    content: ""; position: absolute; inset: 0; z-index: 1;
-    background: var(--pr-tint, rgba(120,40,160,.2));
-    mix-blend-mode: multiply;
-  }
-  .cc-trio::after {
-    content: ""; position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(180deg, transparent 38%, var(--pr-bg, #1b1038) 100%);
-  }
+  .cc-art img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: transform .5s ease; }
+  .cc.is-active .cc-art img { transform: scale(1.05); }
   .cc.promo .cc-meta { padding: 0 14px 14px; gap: 10px; align-items: center; text-align: center; }
   .cc.promo .cc-text { gap: 6px; align-items: center; }
   .cc-promo-h {
@@ -371,16 +362,16 @@
   .cc-promo-cta .ic { width: 16px; height: 16px; }
   .cc.promo:hover .cc-promo-cta { filter: brightness(1.08); transform: translateY(-1px); }
   /* «создать компаньона» — акцент бренда */
-  .cc.promo-create { --pr-a: #d946ef; --pr-b: #f43f5e; --pr-bg: #2a1140; --pr-tint: rgba(150,50,190,.28); --pr-glow: rgba(217,70,239,.38); }
+  .cc.promo-create { --pr-a: #d946ef; --pr-b: #f43f5e; --pr-bg: #2a1140; --pr-glow: rgba(217,70,239,.38); }
   .cc.promo-create::after { box-shadow: inset 0 0 0 1.5px rgba(217,70,239,.75), inset 0 0 44px rgba(217,70,239,.45); }
   .cc.promo-create .cc-promo-h { background: linear-gradient(90deg, #fff 40%, #f0abfc); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none; }
   /* акция «VIP на год» — золото, как pb-sale */
-  .cc.promo-sale { --pr-a: #ffc86b; --pr-b: #ff8a3d; --pr-bg: #2a1407; --pr-tint: rgba(210,110,40,.32); --pr-glow: rgba(255,170,80,.35); }
+  .cc.promo-sale { --pr-a: #ffc86b; --pr-b: #ff8a3d; --pr-bg: #2a1407; --pr-glow: rgba(255,170,80,.35); }
   .cc.promo-sale::after { box-shadow: inset 0 0 0 1.5px rgba(255,190,100,.75), inset 0 0 44px rgba(255,150,60,.4); }
   .cc.promo-sale.is-active { box-shadow: 0 22px 50px rgba(255,160,70,.22); }
   .cc.promo-sale .cc-promo-cta { color: #2b1206; }
   .cc.promo-sale .cc-promo-h { color: #ffe3b3; font-size: 20px; }
-  .cc.promo-sale .cc-trio { height: 58%; }
+  .cc.promo-sale .cc-art { height: 62%; }
   .cc.promo-sale .cc-price { margin-top: 4px; }
   /* бейдж акции — сверху справа, на месте сердечка */
   .cc-promo-tag {
@@ -435,7 +426,7 @@
     .cc.promo .cc-meta { padding: 0 10px 10px; gap: 8px; }
     .cc-promo-h { font-size: 17px; }
     .cc.promo-sale .cc-promo-h { font-size: 13.5px; }
-    .cc-promo-sub { font-size: 11px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+    .cc-promo-sub { display: none; }   /* на двух колонках места нет — заголовок + кнопка */
     .cc-promo-cta { height: 36px; font-size: 11px; letter-spacing: 0; gap: 6px; padding: 0 8px; }
     .cc-promo-cta .xs-hide { display: none; }
     .cc-promo-cta .ic { width: 14px; height: 14px; }
@@ -780,26 +771,18 @@
      для VIP акция скрывается. Портреты коллажа — из каталога ботов. */
   const createCard = `
     <a class="cc promo promo-create" href="#" data-intent="create" id="promo-create">
-      <div class="cc-trio" aria-hidden="true">
-        <img src="../assets/img/bots/15-anna.jpg" alt="" loading="eager">
-        <img src="../assets/img/bots/12-taisiya-3.jpg" alt="" loading="eager">
-        <img src="../assets/img/bots/17-tamara.jpg" alt="" loading="eager">
-      </div>
+      <div class="cc-art" aria-hidden="true"><img src="../assets/img/promo/create-trio.webp" alt="" loading="eager"></div>
       <div class="cc-meta">
         <div class="cc-text">
           <div class="cc-promo-h">Создай<br>свою</div>
-          <p class="cc-promo-sub">Воплоти фантазию в&nbsp;компаньонке с&nbsp;характером и&nbsp;внешностью по&nbsp;твоему вкусу.</p>
+          <p class="cc-promo-sub">Внешность, характер и&nbsp;стиль общения&nbsp;— по&nbsp;твоему вкусу.</p>
         </div>
         <span class="cc-promo-cta">Создать <svg class="ic"><use href="#i-plus"/></svg></span>
       </div>
     </a>`;
   const saleCard = `
     <a class="cc promo promo-sale" href="../price/index.html" data-intent="sale" data-hide-for="vip" id="promo-sale">
-      <div class="cc-trio" aria-hidden="true">
-        <img src="../assets/img/bots/06-lada-5.jpg" alt="" loading="lazy">
-        <img src="../assets/img/bots/09-yuliya-2.jpg" alt="" loading="lazy">
-        <img src="../assets/img/bots/01-aleksandra.jpg" alt="" loading="lazy">
-      </div>
+      <div class="cc-art" aria-hidden="true"><img src="../assets/img/promo/sale-trio.webp" alt="" loading="lazy"></div>
       <span class="cc-promo-tag">Акция</span>
       <div class="cc-meta">
         <div class="cc-text">

@@ -204,13 +204,13 @@
   /* подложка под текст — выше и плотнее (референс: чёрный 60 % → прозрачный на половине
      высоты): держит белый текст даже на светлом фото */
   .cc-shade {
-    position: absolute; inset: auto 0 0 0; height: 62%; z-index: 1;
-    background: linear-gradient(180deg, rgba(16,14,16,0) 0%, rgba(16,14,16,.45) 40%, rgba(16,14,16,.9) 100%);
+    position: absolute; inset: auto 0 0 0; height: 48%; z-index: 1;
+    background: linear-gradient(180deg, rgba(16,14,16,0) 0%, rgba(16,14,16,.5) 45%, rgba(16,14,16,.9) 100%);
   }
   .cc-meta {
     position: relative; z-index: 2;
     padding: 0 14px 14px;
-    display: flex; flex-direction: column; gap: 8px;
+    display: flex; flex-direction: column; gap: 10px;
   }
   .cc-text { display: flex; flex-direction: column; gap: 3px; }
   /* des/H/h3 semi — 24/28; тень отделяет текст от светлых участков фото */
@@ -220,14 +220,8 @@
     white-space: nowrap;
     text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 2px 14px rgba(0,0,0,.45);
   }
-  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+  .cc-name b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .cc-name span { opacity: .7; }
-  /* des/S/s1 regu — 14/16 */
-  .cc-desc {
-    font-size: 14px; line-height: 17px; font-weight: 400; color: rgba(255,255,255,.85);
-    text-shadow: 0 1px 2px rgba(0,0,0,.6), 0 1px 10px rgba(0,0,0,.4);
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  }
   /* метрики — тёмные пилюли с блюром (референс: black/75 + blur): читаются на любом фото */
   .cc-foot { display: flex; align-items: center; gap: 6px; }
   .cc-m {
@@ -423,6 +417,12 @@
 
   @media (max-width: 560px) {
     .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    /* карточка бота на двух колонках (~150px): имя меньше, пилюли метрик компактнее */
+    .cc-meta { padding: 0 10px 10px; gap: 8px; }
+    .cc-name { font-size: 18px; line-height: 22px; gap: 5px; }
+    .cc-foot { gap: 4px; }
+    .cc-m { padding: 3px 6px; font-size: 11.5px; gap: 3px; }
+    .cc-ic { width: 12px; height: 12px; }
     .cc.promo .cc-meta { padding: 0 10px 10px; gap: 8px; }
     .cc-promo-h { font-size: 17px; }
     .cc.promo-sale .cc-promo-h { font-size: 13.5px; }
@@ -755,10 +755,7 @@
         <svg class="ic o"><use href="#i-heart-o"/></svg><svg class="ic f"><use href="#i-heart-f"/></svg>
       </button>
       <div class="cc-meta">
-        <div class="cc-text">
-          <div class="cc-name"><b>${name},</b><span>${age}</span></div>
-          <p class="cc-desc">${desc}</p>
-        </div>
+        <div class="cc-name"><b>${name},</b><span>${age}</span></div>
         <div class="cc-foot">
           <span class="cc-m"><svg class="cc-ic"><use href="#i-cc-chat"/></svg>${talks}</span>
           <span class="cc-m like" title="Лайки"><svg class="cc-ic"><use href="#i-cc-like"/></svg>${fmt(likes)}</span>
